@@ -1,21 +1,37 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from 'material-ui/styles';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui/Typography';
+import Avatar from 'material-ui/Avatar';
 
-class Header extends Component {
-  render() {
-    return (
-		<section>
-			<header>	
-			<nav className="tower-navigation">
-					<div className="tower-logo-container">
-						<img src={process.env.PUBLIC_URL + '/favicon.ico'} alt='logoimage'/>
-						<a tabindex='0' className="tower-logo"> - FABRIC EXPLORER </a>
-					</div>
-					<a tabindex='0' className="tower-logo-hidden">Tower Control</a>
-				</nav>
-			</header>
-    </section>
-    );
+const styles = theme => ({
+  root: {
+		width: '100%',		
+    backgroundColor: theme.palette.background.paper,
   }
+});
+
+
+function Header(props) {
+  const { classes } = props;
+  return (
+    <div className={classes.root}>
+      <AppBar position="static" color="default">
+        <Toolbar>
+					<Avatar src={process.env.PUBLIC_URL + '/favicon.ico'} alt='logoimage' className={classes.avatar} />
+          <Typography type="title" color="inherit" className={classes.flex}>
+						FABRIC EXPLORER
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
 }
 
-export default Header;
+Header.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Header);
