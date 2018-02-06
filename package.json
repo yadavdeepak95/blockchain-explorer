@@ -1,7 +1,7 @@
 {
-  "name": "blockchain-explorer",
+  "name": "hyperledger-explorer",
   "version": "3.0.0",
-  "description": "blockchain-explorer",
+  "description": "hyperledger-explorer",
   "private": true,
   "main": "main.js",
   "keywords": [

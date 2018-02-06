@@ -1,6 +1,6 @@
 {
-  "short_name": "blockchainexplorer",
-  "name": "Blockchain Explorer",
+  "short_name": "hyperledgerexplorer", 
+  "name": "Hyperledger Explorer",
   "icons": [
     {
       "src": "favicon.ico",

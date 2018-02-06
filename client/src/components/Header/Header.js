@@ -23,7 +23,7 @@ function Header(props) {
         <Toolbar>
           <Avatar src={process.env.PUBLIC_URL + '/favicon.ico'} alt='logoimage' className={classes.avatar} />
           <Typography type="title" color="inherit" className={classes.flex}>
-            BLOCKCHAIN EXPLORER
+          HYPERLEDGER EXPLORER
           </Typography>
         </Toolbar>
       </AppBar>

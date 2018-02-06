@@ -43,7 +43,7 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
  Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `config.json` accordingly. 
 
-## Running blockchain-explorer
+## Running hyperledger-explorer
 
 On another terminal, 
 1. `cd blockchain-explorer`
@@ -71,9 +71,9 @@ Launch the URL http://localhost:8080 on a browser.
 
 ## Screenshots
 
-This is how the blockchain-explorer looks like,
+This is how the hyperledger-explorer looks like,
 
-![Blockchain Explorer](https://raw.githubusercontent.com/JeevaSang/blockchainimage/master/explorer1.png)
+![Hyperledger Explorer](https://raw.githubusercontent.com/JeevaSang/blockchainimage/master/explorer1.png)
 
-![Blockchain Explorer](https://raw.githubusercontent.com/JeevaSang/blockchainimage/master/explorer2.png)
+![Hyperledger Explorer](https://raw.githubusercontent.com/JeevaSang/blockchainimage/master/explorer2.png)
  

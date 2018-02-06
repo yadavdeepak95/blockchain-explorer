@@ -1,6 +1,6 @@
 ## Contributing
 
-We welcome contributions to the Blockchain Explorer Project in many forms, and
+We welcome contributions to the Hyperledger Explorer Project in many forms, and
 there's always plenty to do! 
 
 Please visit the 

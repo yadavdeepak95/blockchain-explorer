@@ -1,4 +1,4 @@
-const namespaces = 'blockchain-explorer';
+const namespaces = 'hyperledger-explorer';
 
 export const PEER_LIST_POST = `${namespaces}/PEER_LIST_POST`;
 export const CHANNEL_LIST = `${namespaces}/CHANNEL_LIST`;
