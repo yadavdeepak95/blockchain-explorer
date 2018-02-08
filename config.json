@@ -7,7 +7,7 @@
 				"requests": "grpcs://127.0.0.1:7051",
 				"events": "grpcs://127.0.0.1:7053",
 				"server-hostname": "peer0.org1.example.com",
-				"tls_cacerts": "fabric-path/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				"tls_cacerts": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
 			"admin": {
 				"key": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
