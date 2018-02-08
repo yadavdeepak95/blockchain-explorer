@@ -9,7 +9,7 @@ const InitialState = new Record({
 });
 
 const countHeader = handleActions({
-    [actionTypes.COUNT_HEADER_GET]: (state = InitialState(), action) => state
+    [actionTypes.COUNT_HEADER_POST]: (state = InitialState(), action) => state
         .set('loaded', true)
         .set('countHeader', action.payload)
         .set('errors', action.error),

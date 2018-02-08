@@ -5,7 +5,7 @@ import { post } from '../../../services/request.js';
 export const getHeaderCount = () => dispatch => {
     post('/api/status/get')
         .then(resp => {
-            dispatch(createAction(actionTypes.COUNT_HEADER_GET)(resp))
+            dispatch(createAction(actionTypes.COUNT_HEADER_POST)(resp))
         }).catch((error) => {
             console.error(error);
         })
