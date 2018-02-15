@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import   '../../static/css/main.css';
 import Header from '../Header/Header';
 import Main from '../Main';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -6,7 +7,7 @@ import { createMuiTheme } from 'material-ui/styles';
 import indigo from 'material-ui/colors/indigo';
 import lightBlue from 'material-ui/colors/lightBlue';
 import red from 'material-ui/colors/red';
-
+import HeaderView from '../Header/HeaderView';
 const muiTheme = createMuiTheme({
   palette: {
     contrastThreshold: 3,
@@ -25,7 +26,7 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={muiTheme} >
       <div>
-			<Header />
+			<HeaderView />
       <Main />
 			</div>
       </MuiThemeProvider>

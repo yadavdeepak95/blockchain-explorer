@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import BlocksChart from "../Charts/BlocksChart";
 import TransactionsChart from '../Charts/TransactionsChart';
 import CountHeader from '../CountHeader/CountHeader';
-
+import MenuBar from '../CountHeader/MenuBar';
 class Layout extends Component {
     constructor(props) {
         super(props);
@@ -12,7 +12,7 @@ class Layout extends Component {
         return (
             <div>
                 <div>
-                    <CountHeader />
+                    <MenuBar />
                 </div>
                 <div>
                     <BlocksChart />

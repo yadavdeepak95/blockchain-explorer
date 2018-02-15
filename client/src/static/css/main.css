@@ -1,0 +1,23 @@
+#root > div > div:nth-child(1) > nav > a
+{
+font-size: 30pt;
+margin-left: 530px;
+}
+ div.menuItems > nav > ul{
+    margin-left: 300px!important;
+}
+ div.menuItems > nav > ul > li{
+padding-left: 130px;
+font-size:13pt;
+}
+#root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table{
+    min-width: 970px;
+    border: 3px #4A90E2 solid;
+}
+.table thead th{
+    border-bottom-color: #4A90E2!important;
+}
+
+#root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table th> tbody td {
+    border-color: #4A90E2!important;
+}
