@@ -4,6 +4,7 @@ import { post } from '../../../services/request.js';
 export const getChannelList = () => dispatch => {
     post('/channellist')
         .then(resp => {
+            console.log("from channel action",resp);
             dispatch(createAction(actionTypes.CHANNEL_LIST)(resp))
         }).catch((error) => {
             console.error(error);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import   '../../static/css/main.css';
+import '../../static/css/main.css';
 import Header from '../Header/Header';
 import Main from '../Main';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -8,6 +8,7 @@ import indigo from 'material-ui/colors/indigo';
 import lightBlue from 'material-ui/colors/lightBlue';
 import red from 'material-ui/colors/red';
 import HeaderView from '../Header/HeaderView';
+import LandingPage from '../View/LandingPage';
 const muiTheme = createMuiTheme({
   palette: {
     contrastThreshold: 3,
@@ -22,13 +23,29 @@ const muiTheme = createMuiTheme({
 
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { loading: true }
+  }
+  componentWillMount() {
+    console.log("inside mount ", this.state.loading);
+    setTimeout(() => this.setState({ loading: false }), 6000);
+  }
+  componentDidMount(){
+    console.log('mounted', this.state.loading);
+  }
   render() {
+    if (this.state.loading) {
+      return (
+        <LandingPage />
+      );
+    }
     return (
       <MuiThemeProvider theme={muiTheme} >
-      <div>
-			<HeaderView />
-      <Main />
-			</div>
+        <div>
+          <HeaderView />
+          <Main />
+        </div>
       </MuiThemeProvider>
     );
   }

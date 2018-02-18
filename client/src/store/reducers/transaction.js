@@ -4,16 +4,16 @@ import * as actionTypes from '../actions/action-types';
 
 const InitialState = new Record({
     loaded: false,
-    block: {},
+    transaction: {},
     errors: {},
 });
 
-const block = handleActions({
-    [actionTypes.BLOCK_INFO_POST]: (state = InitialState(), action) => state
+const transaction = handleActions({
+    [actionTypes.TRANSACTION_POST]: (state = InitialState(), action) => state
         .set('loaded', true)
-        .set('block', action.payload)
+        .set('transaction', action.payload)
         .set('errors', action.error),
 
 }, new InitialState());
 
-export default block
+export default transaction

@@ -4,15 +4,19 @@ import { Link } from 'react-router-dom';
 const Peers = ({ peerList }) => {
     return (
         <div>
-            <Table>
+            <Table className="peerList" >
                 <thead>
-                    <th>Peer Name</th>
+                    <tr>
+                        <th>Peer Name</th>
+                        <th>Request Url</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {peerList.map(peer=>
-                    <tr key={peer.server_hostname}>
-                        <td>{peer.server_hostname} </td>
-                    </tr>)}
+                    {peerList.map(peer =>
+                        <tr key={peer.server_hostname}>
+                            <td>{peer.server_hostname} </td>
+                            <td>{peer.requests} </td>
+                        </tr>)}
                 </tbody>
             </Table>
         </div>

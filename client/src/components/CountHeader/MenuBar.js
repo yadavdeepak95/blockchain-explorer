@@ -3,22 +3,21 @@ import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
+import { Badge } from 'reactstrap';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 import PropTypes from 'prop-types';
-import TransactionView from "../View/TransactionView";
-import ChaincodeView from "../View/ChaincodeView";
-import BlockView from "../View/BlockView";
-import PeerView from "../View/PeerView";
-import ChannelView from "../View/ChannelView";
 import Peers from '../Lists/Peers';
 import Blocks from '../Lists/Blocks';
 import Transactions from '../Lists/Transactions';
+import DashboardView from '../View/DashboardView';
 import Channels from '../Lists/Channels';
-import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
+import { getBlockList as getBlockListCreator, getBlockInfo as getBlockInfoCreator } from '../../store/actions/block/action-creators';
+import { getTransactionInfo as getTransactionInfoCreator } from '../../store/actions/transaction/action-creators';
 import { getLatestBlock as getLatestBlockCreator } from '../../store/actions/latestBlock/action-creators';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
+
 import {
   Collapse,
   Navbar,
@@ -54,17 +53,17 @@ const styles = theme => ({
 class MenuBar extends Component {
   constructor(props) {
     super(props);
-    this.state = { activeView: 'ChaincodeView' }
     this.state = {
+      activeView: 'DashboardView',
+      activeTab: { dashboardTab: true, peersTab: false, blocksTab: false },
       countHeader: { countHeader: this.props.getCountHeader() }
-      //json structure  {chaincodeCount: 0, txCount: 0, latestBlock: 0, peerCount: 0 }
-    };
+    }
 
-    this.handleClickChaincodeView = this.handleClickChaincodeView.bind(this);
     this.handleClickTransactionView = this.handleClickTransactionView.bind(this);
     this.handleClickBlockView = this.handleClickBlockView.bind(this);
     this.handleClickChannelView = this.handleClickChannelView.bind(this);
     this.handleClickPeerView = this.handleClickPeerView.bind(this);
+    this.handleClickDashboardView = this.handleClickDashboardView.bind(this);
   }
 
   componentWillMount() {
@@ -80,12 +79,15 @@ class MenuBar extends Component {
 
 
   componentDidMount() {
+
     //TODO isolate interval
     setInterval(() => {
       this.props.getCountHeader();
       this.props.getLatestBlock();
-      // console.log(this.props.countHeader.countHeader.latestBlock);
+
+      //  console.log(this.props.countHeader.countHeader.latestBlock);
       // console.dir(this.props.blockList);
+      // this.props.loadBlockList(this.props.countHeader.countHeader.latestBlock);
       this.props.getBlockList(this.props.countHeader.countHeader.latestBlock);
       // .then(data =>
       //   this.props.getBlockList(data.latestBlock)
@@ -99,24 +101,42 @@ class MenuBar extends Component {
   componentDidUpdate(prevProps, prevState) {
   }
 
-
-  handleClickChaincodeView() {
-    //TODO add constants for activeView
-    this.setState({ activeView: 'ChaincodeView' });
-  }
   handleClickTransactionView() {
     this.setState({ activeView: 'TransactionView' });
   }
   handleClickBlockView() {
     this.setState({ activeView: 'BlockView' });
+    this.setState({
+      activeTab: {
+        dashboardTab: false,
+        peersTab: false,
+        blocksTab: true
+      }
+    });
   }
   handleClickChannelView() {
     this.setState({ activeView: 'ChannelView' });
   }
   handleClickPeerView() {
     this.setState({ activeView: 'PeerView' });
+    this.setState({
+      activeTab: {
+        dashboardTab: false,
+        peersTab: true,
+        blocksTab: false
+      }
+    });
   }
-
+  handleClickDashboardView() {
+    this.setState({ activeView: 'DashboardView' });
+    this.setState({
+      activeTab: {
+        dashboardTab: true,
+        peersTab: false,
+        blocksTab: false
+      }
+    });
+  }
 
   render() {
     const { classes } = this.props;
@@ -125,14 +145,15 @@ class MenuBar extends Component {
     let currentView = null;
     /* could be routed */
     switch (this.state.activeView) {
-      case 'ChaincodeView':
-        currentView = <ChaincodeView />;
-        break;
       case 'TransactionView':
         currentView = <Transactions transactionList={this.props.transactionList} />;
         break;
       case 'BlockView':
-        currentView = <Blocks blockList={this.props.blockList.rows} />;
+        currentView = <Blocks blockList={this.props.blockList.rows}
+          block={this.props.block}
+          getBlockInfo={this.props.getBlockInfo}
+          transaction={this.props.transaction}
+          getTransactionInfo={this.props.getTransactionInfo} />;
         break;
       case 'ChannelView':
         currentView = <Channels channelList={this.props.channelList} />;
@@ -140,8 +161,11 @@ class MenuBar extends Component {
       case 'PeerView':
         currentView = <Peers peerList={this.props.peerList} />;
         break;
+      case 'DashboardView':
+        currentView = <DashboardView />;
+        break;
       default:
-        currentView = <PeerView />;
+        currentView = <DashboardView />;
         break;
     }
 
@@ -150,10 +174,9 @@ class MenuBar extends Component {
         <div className="menuItems">
           <Navbar color="faded" light expand="md">
             <Nav className="ml-auto" navbar>
-              <NavItem onClick={this.handleClickPeerView}>NETWORK </NavItem>
-              <NavItem onClick={this.handleClickBlockView}>BLOCKS </NavItem>
-              <NavItem onClick={this.handleClickTransactionView}>TRANSACTIONS </NavItem>
-              <NavItem onClick={this.handleClickChannelView}>CHANNEL </NavItem>
+              <NavItem active={this.state.activeTab.dashboardTab} onClick={this.handleClickDashboardView}>DASHBOARD </NavItem>
+              <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK <Badge>{this.props.countHeader.countHeader.peerCount}</Badge> </NavItem>
+              <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS <Badge>{this.props.countHeader.countHeader.latestBlock}</Badge></NavItem>
             </Nav>
           </Navbar>
         </div>
@@ -170,7 +193,9 @@ class MenuBar extends Component {
 const mapDispatchToProps = (dispatch) => ({
   getCountHeader: () => dispatch(getCountHeaderCreator()),
   getLatestBlock: () => dispatch(getLatestBlockCreator()),
-  getBlockList: () => dispatch(getBlockListCreator())
+  getBlockList: (latestBlock) => dispatch(getBlockListCreator(latestBlock)),
+  getBlockInfo: (number) => dispatch(getBlockInfoCreator(number)),
+  getTransactionInfo: (tx_id) => dispatch(getTransactionInfoCreator(tx_id))
 });
 
 
@@ -179,7 +204,9 @@ const mapStateToProps = state => ({
   peerList: state.peerList.peerList,
   blockList: state.blockList.blockList,
   transactionList: state.transactionList.transactionList,
-  channelList: state.channelList.channelList
+  channelList: state.channelList.channelList,
+  block: state.block.block,
+  transaction: state.transaction.transaction
 });
 
 

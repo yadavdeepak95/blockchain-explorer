@@ -53,23 +53,17 @@ class HeaderView extends Component {
           <Nav className="ml-auto" navbar>
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
-                CURChannel
+                CHANNEL
                 </DropdownToggle>
               <DropdownMenu >
                 <DropdownItem>
-                  Option 1
-                  </DropdownItem>
-                <DropdownItem>
-                  Option 2
-                  </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>
-                  Reset
+                  {this.props.channelList.channels[0].channel_id}
                   </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
         </Navbar>
+            <hr/>
       </div>
     );
   }
@@ -85,33 +79,3 @@ function mapStateToProps(state, ownProps) {
 //   return {actions: bindActionCreators({...partActions,...secActions}, dispatch)}
 // }
 export default connect(mapStateToProps/*,mapDispatchToProps*/)(HeaderView);
-// const styles = theme => ({
-//   root: {
-//     width: '100%',
-//     backgroundColor: theme.palette.background.paper,
-//   },
-
-// });
-
-
-// function Header(props) {
-//   const { classes } = props;
-//   return (
-//     <div className={classes.root}>
-//       <AppBar position="static" >
-//         <Toolbar>
-//           <Avatar src={process.env.PUBLIC_URL + '/favicon.ico'} alt='logoimage' className={classes.avatar} />
-//           <Typography type="title" color="inherit" className={classes.flex}>
-//           HYPERLEDGER EXPLORER
-//           </Typography>
-//         </Toolbar>
-//       </AppBar>
-//     </div>
-//   );
-// }
-
-// Header.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// };
-
-// export default withStyles(styles)(Header);

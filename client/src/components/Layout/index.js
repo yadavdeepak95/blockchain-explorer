@@ -14,12 +14,12 @@ class Layout extends Component {
                 <div>
                     <MenuBar />
                 </div>
-                <div>
+                {/* <div>
                     <BlocksChart />
                 </div>
                 <div>
                     <TransactionsChart />
-                </div>
+                </div> */}
             </div>
         );
     }
