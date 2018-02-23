@@ -1,8 +1,7 @@
 
-DROP DATABASE IF EXISTS fabricexplorer;
-DROP SCHEMA IF EXISTS fabricexplorer CASCADE;
-CREATE DATABASE fabricexplorer owner hppoc;
 CREATE USER hppoc with password 'password';
+DROP DATABASE IF EXISTS fabricexplorer;
+CREATE DATABASE fabricexplorer owner hppoc;
 \c fabricexplorer;
 --
 
