@@ -175,8 +175,10 @@ class MenuBar extends Component {
           <Navbar color="faded" light expand="md">
             <Nav className="ml-auto" navbar>
               <NavItem active={this.state.activeTab.dashboardTab} onClick={this.handleClickDashboardView}>DASHBOARD </NavItem>
-              <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK <Badge>{this.props.countHeader.countHeader.peerCount}</Badge> </NavItem>
-              <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS <Badge>{this.props.countHeader.countHeader.latestBlock}</Badge></NavItem>
+              <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK  </NavItem>
+              <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
+              <NavItem >TRANSACTIONS</NavItem>
+              <NavItem >SMART CONTRACTS</NavItem>
             </Nav>
           </Navbar>
         </div>

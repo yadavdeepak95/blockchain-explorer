@@ -1,6 +1,8 @@
 import { createAction } from 'redux-actions'
 import * as actionTypes from '../action-types'
 import { post } from '../../../services/request.js';
+import { getTransactionInfo } from '../transaction/action-creators';
+
 export const getBlockList = (latestBlockVar) => dispatch => {
     post('/api/block/list', { "lastblockid": latestBlockVar, "maxblocks": 50 })
         .then(resp => {
@@ -11,10 +13,12 @@ export const getBlockList = (latestBlockVar) => dispatch => {
 }
 
 export const getBlockInfo = (number) => dispatch => {
-    console.log("get info called number is", number);
-    post('/api/block/getinfo', {"number":number} )
+    post('/api/block/getinfo', { "number": number })
         .then(resp => {
             dispatch(createAction(actionTypes.BLOCK_INFO_POST)(resp))
+            if (resp.transactions[0].payload.header.channel_header.tx_id != null) {
+                dispatch(getTransactionInfo(resp.transactions[0].payload.header.channel_header.tx_id));
+            }
         }).catch((error) => {
             console.error(error);
         })

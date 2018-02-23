@@ -63,7 +63,6 @@ class HeaderView extends Component {
             </UncontrolledDropdown>
           </Nav>
         </Navbar>
-            <hr/>
       </div>
     );
   }

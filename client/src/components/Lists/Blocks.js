@@ -93,11 +93,9 @@ const Blocks = ({ blockList, block, transaction, getBlockInfo, getTransactionInf
     );
 
     function selectBlock(blocknum) {
-        console.log('block selected', blocknum);
         getBlockInfo(blocknum);
     }
     function selectTransaction(tx_id) {
-        console.log('transaction selected', tx_id);
         getTransactionInfo(tx_id);
     }
 };

@@ -28,11 +28,10 @@ class App extends Component {
     this.state = { loading: true }
   }
   componentWillMount() {
-    console.log("inside mount ", this.state.loading);
     setTimeout(() => this.setState({ loading: false }), 6000);
   }
-  componentDidMount(){
-    console.log('mounted', this.state.loading);
+  componentDidMount() {
+
   }
   render() {
     if (this.state.loading) {
