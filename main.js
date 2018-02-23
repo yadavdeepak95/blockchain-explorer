@@ -24,12 +24,22 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var query = require('./app/query.js')
-var sql = require('./db/mysqlservice.js')
-
 var config = require('./config.json');
+var query = require('./app/query.js')
+var db = config.whichDb;
+var sqldb = require('./db/pgservice.js')
+var pgdb = require('./db/mysqlservice.js')
+
+if(db === 'pg') {
+    sql = sqldb;
+}else if(db === 'mysql')
+{
+    sql = pgdb;
+}
+
 var host = process.env.HOST || config.host;
 var port = process.env.PORT || config.port;
+
 
 var networkConfig = config["network-config"];
 var org = Object.keys(networkConfig)[0];

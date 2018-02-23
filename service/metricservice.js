@@ -15,12 +15,23 @@
  */
 
 //var bcservice=require('./bcservice.js')
-var sql=require('../db/mysqlservice.js')
+//var sql=require('../db/mysqlservice.js')
 var co=require('co')
 var helper = require('../app/helper.js');
 var query = require('../app/query.js');
 var logger = helper.getLogger('metricservice');
+var config=require('../config.json')
+var db = config.whichDb;
+var pgdb=require('../db/pgservice.js')
+var sqldb=require('../db/mysqlservice.js')
 
+
+if(db === 'pg') {
+   sql = pgdb;
+}else if(db === 'mysql')
+{
+    sql = sqldb;
+}
 var peerList;
 
 //==========================query counts ==========================
@@ -71,11 +82,15 @@ function getTxPerChaincode(channelName,cb) {
 
 function* getStatusGenerate(channelName){
     var chaincodeCount=yield  getChaincodeCount(channelName)
+    if(!chaincodeCount) chaincodeCount=0
     var txCount=yield  getTxCount(channelName)
+    if(!txCount) txCount=0
     var blockCount=yield  getBlockCount(channelName)
+    if(!blockCount) blockCount=0
     blockCount.c=blockCount.c ? blockCount.c: 0
-    var peerCount=  yield  getPeerlistCount(channelName)
-    peerCount.c=peerCount.c ? peerCount.c: 0
+    var peerCount=yield  getPeerlistCount(channelName)
+    if(!peerCount) peerCount=0
+    peerCount.c = peerCount.c ? peerCount.c: 0
     return {'chaincodeCount':chaincodeCount.c,'txCount':txCount.c,'latestBlock':blockCount.c,'peerCount':peerCount.c}
 }
 

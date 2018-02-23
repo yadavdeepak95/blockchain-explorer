@@ -55,7 +55,8 @@ const Blocks = ({ blockList, block, transaction, getBlockInfo, getTransactionInf
                                                 {block.transactions.map(tid =>
                                                     <li onClick={() => selectTransaction(tid.payload.header.channel_header.tx_id)} key={tid.payload.header.channel_header.tx_id} >
                                                         <a href="#">  {tid.payload.header.channel_header.tx_id}</a>
-                                                    </li>)}
+                                                    </li>)
+                                                 }
                                             </ul>
                                         </td>
                                     </tr>
@@ -91,7 +92,6 @@ const Blocks = ({ blockList, block, transaction, getBlockInfo, getTransactionInf
             </Container>
         </div>
     );
-
     function selectBlock(blocknum) {
         getBlockInfo(blocknum);
     }

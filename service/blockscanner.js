@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-var sql=require('../db/mysqlservice.js')
+
 var query=require('../app/query.js')
 var helper=require('../app/helper.js')
 var co=require('co')
@@ -22,7 +22,17 @@ var stomp=require('../socket/websocketserver.js').stomp()
 var logger = helper.getLogger('blockscanner');
 var ledgerMgr=require('../utils/ledgerMgr.js')
 var config=require('../config.json')
+var db = config.whichDb;
+var pgdb=require('../db/pgservice.js')
+var sqldb=require('../db/mysqlservice.js')
 
+
+if(db === 'pg') {
+   sql = pgdb;
+}else if(db === 'mysql')
+{
+    sql = sqldb;
+}
 var blockListener
 
 var networkConfig = config["network-config"];
@@ -107,7 +117,7 @@ function getMaxBlockNum(channelName){
 function getCurBlockNum(channelName){
     let curBlockNum
     return sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channelname='${channelName}'`).then(row=>{
-        if(row.blocknum==null){
+        if(row==null || row.blocknum==null){
             curBlockNum=-1
         }else{
             curBlockNum=parseInt(row.blocknum)
