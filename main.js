@@ -8,6 +8,7 @@ var path = require('path');
 var app = express();
 var http = require('http').Server(app);
 var bodyParser = require('body-parser');
+var helper = require('./app/helper');
 
 require('./socket/websocketserver.js')(http)
 
@@ -171,9 +172,22 @@ app.post('/curChannel', function (req, res) {
     res.send({ 'currentChannel': ledgerMgr.getCurrChannel() })
 })
 
-app.post('/channellist', function (req, res) {
-    query.getChannels(peer, org).then(channel => {
-        res.send(channel);
+app.post('/api/channels', function (req, res) {
+    var channels = [], counter = 0;
+    const orgs_peers = helper.getOrgMapFromConfig(networkConfig);
+
+    orgs_peers.forEach(function (org) {
+        query.getChannels(org['value'], org['key']).then(channel => {
+            channel['channels'].forEach(function (element) {
+                channels.push(element);
+            });
+            if (counter == orgs_peers.length - 1) {
+                var response = {};
+                response["channels"] = channels.filter((currEle, index, arr) => arr.findIndex((ele) => ele.channel_id === currEle.channel_id) === index);
+                res.send(response);
+            }
+            counter++;
+        });
     })
 })
 
