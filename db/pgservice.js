@@ -447,7 +447,6 @@ function getRowsBySQlQuery(sql) {
                 reject(err)
             }
             logger.debug(` the getRowsBySQlQuery ${sql}`)
-            //console.log(` the getRowsBySQlQuery ${sql}`)
 
             if (!res.rows || res.rows.length == 0)
                 resolve(null)

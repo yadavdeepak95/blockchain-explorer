@@ -7,6 +7,10 @@ import countHeader from './countHeader.js'
 import channel from './channel';
 import block from './block';
 import transaction from './transaction';
+import blockPerMin from './blockPerMin';
+import blockPerHour from './blockPerHour';
+import txPerMin from './txPerMin';
+import txPerHour from './txPerHour';
 export default combineReducers({
     peerList,
     channelList,
@@ -15,5 +19,9 @@ export default combineReducers({
     channel,
     transactionList,
     block,
-    transaction
+    transaction,
+    blockPerMin,
+    blockPerHour,
+    txPerMin,
+    txPerHour
 })

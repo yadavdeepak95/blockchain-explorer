@@ -1,6 +1,5 @@
 import React from 'react';
-import { Table, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Table } from 'reactstrap';
 const Channels = ({ channelList }) => {
     return (
         <div>

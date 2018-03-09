@@ -3,10 +3,9 @@ import { Record } from 'immutable'
 import * as actionTypes from '../actions/action-types'
 
 const InitialState = new Record({
-    fetching: false,
     loaded: false,
     channel: {},
-    error: {},
+    errors: {}
 
 })
 

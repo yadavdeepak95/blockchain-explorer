@@ -2,12 +2,6 @@ import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
-import { Badge } from 'reactstrap';
-import Button from 'material-ui/Button';
-import Tooltip from 'material-ui/Tooltip';
-import Typography from 'material-ui/Typography';
-import PropTypes from 'prop-types';
 import Peers from '../Lists/Peers';
 import Blocks from '../Lists/Blocks';
 import Transactions from '../Lists/Transactions';
@@ -19,17 +13,9 @@ import { getLatestBlock as getLatestBlockCreator } from '../../store/actions/lat
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 
 import {
-  Collapse,
   Navbar,
-  NavbarToggler,
-  NavbarBrand,
   Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
+  NavItem
 } from 'reactstrap';
 
 const styles = theme => ({
@@ -80,20 +66,10 @@ class MenuBar extends Component {
 
   componentDidMount() {
 
-    //TODO isolate interval
+
     setInterval(() => {
       this.props.getCountHeader();
       this.props.getLatestBlock();
-
-      //  console.log(this.props.countHeader.countHeader.latestBlock);
-      // console.dir(this.props.blockList);
-      // this.props.loadBlockList(this.props.countHeader.countHeader.latestBlock);
-      this.props.getBlockList(this.props.countHeader.countHeader.latestBlock);
-      // .then(data =>
-      //   this.props.getBlockList(data.latestBlock)
-      // ).catch(err => {
-      //   // logger.error(err)
-      // });
     }, 3000)
 
   }
@@ -139,21 +115,14 @@ class MenuBar extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { countHeader } = this.props.countHeader;
-
     let currentView = null;
-    /* could be routed */
+
     switch (this.state.activeView) {
       case 'TransactionView':
         currentView = <Transactions transactionList={this.props.transactionList} />;
         break;
       case 'BlockView':
-        currentView = <Blocks blockList={this.props.blockList.rows}
-          block={this.props.block}
-          getBlockInfo={this.props.getBlockInfo}
-          transaction={this.props.transaction}
-          getTransactionInfo={this.props.getTransactionInfo} />;
+        currentView = <Blocks />;
         break;
       case 'ChannelView':
         currentView = <Channels channelList={this.props.channelList} />;

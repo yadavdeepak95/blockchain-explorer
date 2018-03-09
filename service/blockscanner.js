@@ -58,6 +58,12 @@ function syncBlock() {
 function* saveBlockRange(channelName, start, end) {
     while (start < end) {
         let block = yield query.getBlockByNumber(peer, channelName, start, org)
+         /** block creation timestamp is not in the latest fabric API,
+         will use the first transaction timestamp */
+         let firstTxTimestamp = block.data.data[0].payload.header.channel_header.timestamp;
+         if (!firstTxTimestamp) {
+             firstTxTimestamp = null
+         }
         blockListener.emit('createBlock', block)
         yield sql.saveRow('blocks',
             {
@@ -65,7 +71,8 @@ function* saveBlockRange(channelName, start, end) {
                 'channelname': channelName,
                 'prehash': block.header.previous_hash,
                 'datahash': block.header.data_hash,
-                'txcount': block.data.data.length
+                'txcount': block.data.data.length,
+                'createdt': new Date(firstTxTimestamp)
             })
         //push last block
         stomp.send('/topic/block/all', {}, start)
@@ -120,8 +127,6 @@ function getCurBlockNum(channelName) {
         logger.error(err)
     })
 }
-
-// syncBlock('mychannel')
 
 // ====================chaincodes=====================================
 function* saveChaincodes(channelName) {

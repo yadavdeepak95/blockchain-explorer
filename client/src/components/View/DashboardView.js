@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
-import BlockChart from '../Charts/BlocksChart';
-import TransactionChart from '../Charts/TransactionsChart';
-import { Alert, Card, Row, Col, CardBody } from 'reactstrap';
+import ChartStats from '../Charts/ChartStats';
+import PeerGraph from '../Charts/PeerGraph';
+import {  Card, Row,  CardBody } from 'reactstrap';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
-import { Graph } from 'react-d3-graph';
 import FontAwesome from 'react-fontawesome';
 class DashboardView extends Component {
     constructor(props) {
@@ -47,7 +46,7 @@ class DashboardView extends Component {
                         <Card className="count-card dark-card">
                             <CardBody>
                                 <h1>{this.props.countHeader.countHeader.latestBlock}</h1>
-                                <h4> <FontAwesome name="square-o" /> Blocks</h4>
+                                <h4> <FontAwesome name="cube" /> Blocks</h4>
                             </CardBody>
                         </Card>
                         <Card className="count-card light-card" >
@@ -70,9 +69,8 @@ class DashboardView extends Component {
                         </Card>
                     </Row>
                 </div>
-                    <BlockChart />
-                    <TransactionChart />
-
+                <ChartStats />
+                <PeerGraph />
             </div>
         );
     }

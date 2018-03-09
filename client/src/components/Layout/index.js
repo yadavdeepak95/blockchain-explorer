@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import BlocksChart from "../Charts/BlocksChart";
-import TransactionsChart from '../Charts/TransactionsChart';
 import MenuBar from '../CountHeader/MenuBar';
 class Layout extends Component {
     constructor(props) {
@@ -13,12 +11,6 @@ class Layout extends Component {
                 <div>
                     <MenuBar />
                 </div>
-                {/* <div>
-                    <BlocksChart />
-                </div>
-                <div>
-                    <TransactionsChart />
-                </div> */}
             </div>
         );
     }

@@ -41,7 +41,9 @@ div.menuItems > nav{
  .light-card{
      background-color: #F2F1EF;
  }
-
+.chart-stats{
+    margin-top: 15px;
+}
 /* Table and List  */
 #root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table{
     min-width: 970px;
@@ -58,6 +60,7 @@ div.menuItems > nav{
 
 #blockList{
     border: 1px #bdc3c7 solid;
+    width: 1090px;
 }
 #blockDetails{
     border: 1px #bdc3c7 solid;
@@ -65,6 +68,12 @@ div.menuItems > nav{
 }
 #blockDetails > a{
     text-decoration: none;
+}
+.hash-hide{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
 }
 #txDetails{
     border: 1px #bdc3c7 solid;
@@ -78,8 +87,9 @@ div.menuItems > nav{
     max-width: 550px;
 }
 .scrollTable{
-    height: 600px;
-    overflow: auto;
+    /* height: 750px; */
+    /* overflow: auto; */
+    width: 1200px;
 }
 .fixed-header thead >tr{
     position: relative;
@@ -98,4 +108,60 @@ div.menuItems > nav{
 .wip{
     color:#bdc3c7;
     font-size:16pt;
+}
+/* Peer Graph  */
+.peer-graph{
+    margin-top: 10px;
+}
+div.custom-container {
+	background-color: #242424;
+}
+
+svg.custom .node circle {
+	fill: #F3F3FF;
+	stroke: #2593B8;
+	stroke-width: 1.5px;
+}
+
+svg.custom .node text {
+	font-size: 14px;
+	background-color: #444;
+	/* fill: #F4F4F4; */
+	fill: #000000;
+	/* text-shadow: 0 1px 4px black; */
+}
+
+svg.custom .node {
+	cursor: pointer;
+}
+
+svg.custom path.link {
+	fill: none;
+	stroke: #2593B8;
+	stroke-width: 1.5px;
+}
+
+/* Pagination */
+
+.pagination li {
+    float: left;
+    padding: 2px 8px;
+    text-decoration: none;
+    font-size: 12pt;
+    border-radius: 3px;
+    margin-left: 3px;
+    border:solid #bdc3c7 2px;
+}
+.pagination li > a{
+    color: black;
+}
+.pagination li.active {
+    background-color: #22313F;
+    color: white;
+    border-radius: 3px;
+    border:solid #bdc3c7 2px;
+}
+.pagination li.active a{
+    color: white;
+
 }

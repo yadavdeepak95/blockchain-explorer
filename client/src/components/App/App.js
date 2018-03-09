@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../../static/css/main.css';
-import Header from '../Header/Header';
 import Main from '../Main';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { createMuiTheme } from 'material-ui/styles';

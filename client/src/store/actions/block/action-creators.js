@@ -3,8 +3,9 @@ import * as actionTypes from '../action-types'
 import { post } from '../../../services/request.js';
 import { getTransactionInfo } from '../transaction/action-creators';
 
-export const getBlockList = (latestBlockVar) => dispatch => {
-    post('/api/block/list', { "lastblockid": latestBlockVar, "maxblocks": 50 })
+
+export const getBlockList = (offset) => dispatch => {
+    post('/api/blockAndTxList', { "blocknum": "0","channel":"mychannel", "limitrows": "10","offset":offset })
         .then(resp => {
             dispatch(createAction(actionTypes.BLOCK_LIST_POST)(resp))
         }).catch((error) => {
