@@ -10,7 +10,7 @@ const InitialState = new Record({
 })
 
 const transactionList = handleActions({
-    [actionTypes.BLOCK_LIST_POST]: (state = InitialState(), action) => state
+    [actionTypes.TX_LIST]: (state = InitialState(), action) => state
         .set('transactionList', action.payload)
         .set('loaded', true)
         .set('errors', action.error)

@@ -88,6 +88,7 @@ function* saveBlockRange(channelName, start, end) {
             } catch (err) {
                 chaincode = ""
             }
+            console.dir(tx.payload.header.signature_header.creator.Mspid);
             yield sql.saveRow('transaction',
                 {
                     'channelname': channelName,

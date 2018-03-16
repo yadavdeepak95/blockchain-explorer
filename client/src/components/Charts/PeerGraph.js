@@ -1,52 +1,88 @@
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
-import { getBlocksPerMin as getBlocksPerMinCreator
- } from '../../store/actions/charts/action-creators';
-import Tree from 'react-tree-graph';
-import Card, { CardContent } from 'material-ui/Card';
+import {
+    getBlocksPerMin as getBlocksPerMinCreator
+} from '../../store/actions/charts/action-creators';
+import { Graph } from 'react-d3-graph';
+import { Card, CardHeader, CardBody } from 'reactstrap';
 import 'react-tree-graph/dist/style.css';
 class PeerGraph extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: {
-                name: "parent",
-                children: [
-                    { name: 'child1' },
-                    { name: 'child2' },
-                    { name: 'child3' },
-                    { name: 'child4' }
+                nodes: [
+                    { id: 'child1' },
+                    { id: 'child2' },
+                    { id: 'child3' },
+                    { id: 'child4' }
+                ],
+                links: [
+                    { source: 'child1', target: 'child2' },
+                    { source: 'child2', target: 'child3' },
+                    { source: 'child3', target: 'child4' },
+                    { source: 'child4', target: 'child1' }
                 ]
+            },
+            myConfig: {
+                height: 300,
+                width: 600,
+                maxZoom: 1.5,
+                minZoom: 1.5,
+                node: {
+                    fontSize: 10,
+                    fontWeight: "bold",
+                    labelProperty: "id",
+                    color: '#0353A4',
+                    size: 200
+                },
+                links: {
+                    "color": "#d3d3d3",
+                    "strokeWidth": 1.5,
+                }
             }
 
         }
     }
     componentDidMount() {
-        var names = [];
+        var nodes = [];
+        var links = [];
         for (var i = 0; i < this.props.peerList.length; i++) {
-            names[i] = { name: this.props.peerList[i].server_hostname };
+            nodes[i] = { id: this.props.peerList[i].server_hostname };
+            if (i < (this.props.peerList.length - 1)) {
+                links[i] = {
+                    source: this.props.peerList[i].server_hostname,
+                    target: this.props.peerList[i + 1].server_hostname
+                };
+            }
+            else {
+                links[i] = {
+                    source: this.props.peerList[i].server_hostname,
+                    target: this.props.peerList[0].server_hostname
+                };
+            }
         }
         this.setState({
             data: {
-                name: this.props.channel.currentChannel,
-                children: names
+                nodes: nodes,
+                links: links
             }
         });
+
     }
     render() {
         return (
             <div className="peer-graph">
                 <Card>
-                    <CardContent>
-                        <div className="custome-container" >
-                            <Tree
-                                data={this.state.data}
-                                height={350}
-                                width={1070}
-                                svgProps={{ className: 'custom' }} />
-                        </div>
-                    </CardContent>
+                    <CardHeader>
+                        <h5>PeerGraph</h5>
+                    </CardHeader>
+                    <CardBody>
+                        <Graph id="graph-id"
+                            data={this.state.data}
+                            config={this.state.myConfig} />
+                    </CardBody>
                 </Card>
             </div>
         );

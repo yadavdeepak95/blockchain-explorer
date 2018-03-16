@@ -36,13 +36,30 @@ div.menuItems > nav{
  .dark-card{
      /* background-color:#BFBFBF; */
     /* background-color: #bdc3c7; */
-     background-color: rgb(207, 207, 206);
+     /* background-color: #cfcfce; */
+     background-color: #6d6d6c;
+     color:#f7f7f7;
  }
  .light-card{
      background-color: #F2F1EF;
  }
 .chart-stats{
     margin-top: 15px;
+}
+.lower-dash{
+    margin-top:15px;
+}
+.timeline{
+    width: 633px;
+}
+.timeline-items{
+    background-color:#cfcfce;
+    padding: 5px;
+}
+.card-header{
+    background-color: #6d6d6c;
+     color:#f7f7f7;
+     font:bold;
 }
 /* Table and List  */
 #root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table{
@@ -110,9 +127,10 @@ div.menuItems > nav{
     font-size:16pt;
 }
 /* Peer Graph  */
-.peer-graph{
-    margin-top: 10px;
+ .peer-graph{
+    width: 633px;
 }
+
 div.custom-container {
 	background-color: #242424;
 }

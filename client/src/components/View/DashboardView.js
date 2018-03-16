@@ -3,37 +3,15 @@ import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import ChartStats from '../Charts/ChartStats';
 import PeerGraph from '../Charts/PeerGraph';
-import {  Card, Row,  CardBody } from 'reactstrap';
+import TimelineStream from '../Lists/TimelineStream';
+import OrgPieChart from '../Charts/OrgPieChart';
+import { Card, Row, Col, CardBody } from 'reactstrap';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 import FontAwesome from 'react-fontawesome';
 class DashboardView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: {
-                nodes: [
-                    { id: 'Peer1' },
-                    { id: 'Peer2' },
-                    { id: 'Peer3' },
-                    { id: 'Peer4' }
-                ],
-                links: [
-                    { source: 'Peer1', target: 'Peer2' },
-                    { source: 'Peer1', target: 'Peer3' },
-                    { source: 'Peer4', target: 'Peer3' },
-                ]
-            },
-            myConfig: {
-                nodeHighlightBehavior: true,
-                node: {
-                    color: 'gray',
-                    size: 200,
-                    highlightStrokeColor: 'blue'
-                },
-                link: {
-                    highlightColor: 'lightblue'
-                }
-            }
         }
     }
     componentDidMount() {
@@ -69,9 +47,23 @@ class DashboardView extends Component {
                         </Card>
                     </Row>
                 </div>
-                <ChartStats />
-                <PeerGraph />
-            </div>
+                <Row>
+                    <Col lg="6">
+                        <ChartStats />
+                    </Col>
+                    <Col lg="6">
+                        <OrgPieChart />
+                    </Col>
+                </Row>
+                <Row className="lower-dash">
+                    <Col lg="6">
+                    <TimelineStream />
+                    </Col>
+                    <Col lg="6">
+                        <PeerGraph />
+                    </Col>
+                </Row>
+            </div >
         );
     }
 }

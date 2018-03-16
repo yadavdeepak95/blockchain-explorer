@@ -169,6 +169,29 @@ app.post("/api/blockAndTxList", function (req, res) {
         return res.send({})
     }
 });
+app.get("/api/txList/:channel/:blocknum/:txid/:limitrows/:offset", function (req, res) {
+    let channelName = req.params.channel;
+    let blockNum = parseInt(req.params.blocknum);
+    let txid = parseInt(req.params.txid);
+    let limitRows = parseInt(req.params.limitrows);
+    let offset = parseInt(req.params.offset);
+    if (isNaN(offset)) {
+        offset = 0;
+    }
+    if (isNaN(txid)) {
+        txid = 0;
+    }
+    if (channelName && !isNaN(limitRows)) {
+        statusMetrics.getTxList(channelName, blockNum, txid, limitRows, offset)
+            .then(rows => {
+                if (rows) {
+                    return res.send({ rows })
+                }
+            })
+    } else {
+        return res.send({})
+    }
+});
 app.post("/stats/charts", function (req, res) {
     let lastblockid = req.body.lastblockid
     let maxblocks = req.body.maxblocks

@@ -79,6 +79,14 @@ class MenuBar extends Component {
 
   handleClickTransactionView() {
     this.setState({ activeView: 'TransactionView' });
+    this.setState({
+      activeTab: {
+        dashboardTab: false,
+        peersTab: false,
+        blocksTab: false,
+        txTab: true
+      }
+    });
   }
   handleClickBlockView() {
     this.setState({ activeView: 'BlockView' });
@@ -86,7 +94,8 @@ class MenuBar extends Component {
       activeTab: {
         dashboardTab: false,
         peersTab: false,
-        blocksTab: true
+        blocksTab: true,
+        txTab: false
       }
     });
   }
@@ -99,7 +108,8 @@ class MenuBar extends Component {
       activeTab: {
         dashboardTab: false,
         peersTab: true,
-        blocksTab: false
+        blocksTab: false,
+        txTab: false
       }
     });
   }
@@ -109,7 +119,8 @@ class MenuBar extends Component {
       activeTab: {
         dashboardTab: true,
         peersTab: false,
-        blocksTab: false
+        blocksTab: false,
+        txTab: false
       }
     });
   }
@@ -119,7 +130,7 @@ class MenuBar extends Component {
 
     switch (this.state.activeView) {
       case 'TransactionView':
-        currentView = <Transactions transactionList={this.props.transactionList} />;
+        currentView = <Transactions />;
         break;
       case 'BlockView':
         currentView = <Blocks />;
@@ -146,7 +157,7 @@ class MenuBar extends Component {
               <NavItem active={this.state.activeTab.dashboardTab} onClick={this.handleClickDashboardView}>DASHBOARD </NavItem>
               <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK  </NavItem>
               <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
-              <NavItem >TRANSACTIONS</NavItem>
+              <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}>TRANSACTIONS</NavItem>
               <NavItem >SMART CONTRACTS</NavItem>
             </Nav>
           </Navbar>

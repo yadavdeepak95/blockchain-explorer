@@ -344,6 +344,14 @@ function getBlockAndTxList(channelName, blockNum, limitRows, offset) {
 }
 
 
+function getTxList(channelName, blockNum, txid, limitRows, offset) {
+  let sqlTxList = ` select * from transaction where  blockid >= ${blockNum} and id >= ${txid} and
+   channelname = '${channelName}'  order by  transaction.id desc limit ${limitRows}
+   offset ${offset} `;
+  return sql.getRowsBySQlQuery(sqlTxList);
+
+}
+
 exports.getStatus = getStatus
 exports.getTxPerChaincode = getTxPerChaincode
 exports.getPeerList = getPeerList
@@ -360,3 +368,4 @@ exports.getBlocksByWeek = getBlocksByWeek
 exports.getBlocksByMonth = getBlocksByMonth
 exports.getBlocksByYear = getBlocksByYear
 exports.getBlockAndTxList = getBlockAndTxList
+exports.getTxList = getTxList
