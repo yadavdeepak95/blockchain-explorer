@@ -24,9 +24,9 @@ class OrgPieChart extends Component {
                         <h5>Organization Transactions</h5>
                     </CardHeader>
                     <CardBody>
-                        <PieChart width={535} height={310}>
+                        <PieChart width={535} height={230}>
                             <Legend align="right" height={15} />
-                            <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} label fill="fill" />
+                            <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%"  outerRadius={50} label fill="fill" />
                             <Tooltip />
                         </PieChart>
                     </CardBody>

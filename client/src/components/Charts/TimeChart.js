@@ -23,7 +23,7 @@ const TimeChart = ({ chartData }) => {
     <div>
       <Card >
         <CardContent >
-          <ScatterChart width={570} height={230}>
+          <ScatterChart width={570} height={145}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="datetime" />
             <YAxis domain={[0, dataMax]} dataKey="count" />

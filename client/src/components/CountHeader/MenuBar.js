@@ -7,7 +7,7 @@ import Blocks from '../Lists/Blocks';
 import Transactions from '../Lists/Transactions';
 import DashboardView from '../View/DashboardView';
 import Channels from '../Lists/Channels';
-import { getBlockList as getBlockListCreator, getBlockInfo as getBlockInfoCreator } from '../../store/actions/block/action-creators';
+import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
 import { getTransactionInfo as getTransactionInfoCreator } from '../../store/actions/transaction/action-creators';
 import { getLatestBlock as getLatestBlockCreator } from '../../store/actions/latestBlock/action-creators';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
@@ -68,8 +68,8 @@ class MenuBar extends Component {
 
 
     setInterval(() => {
-      this.props.getCountHeader();
-      this.props.getLatestBlock();
+      this.props.getCountHeader(this.props.channel.currentChannel);
+      this.props.getLatestBlock(this.props.channel.currentChannel,0);
     }, 3000)
 
   }
@@ -173,10 +173,9 @@ class MenuBar extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getCountHeader: () => dispatch(getCountHeaderCreator()),
-  getLatestBlock: () => dispatch(getLatestBlockCreator()),
-  getBlockList: (latestBlock) => dispatch(getBlockListCreator(latestBlock)),
-  getBlockInfo: (number) => dispatch(getBlockInfoCreator(number)),
+  getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
+  getLatestBlock: (curChannel) => dispatch(getLatestBlockCreator(curChannel)),
+  getBlockList: (channel,offset) => dispatch(getBlockListCreator(channel,offset)),
   getTransactionInfo: (tx_id) => dispatch(getTransactionInfoCreator(tx_id))
 });
 
@@ -188,7 +187,8 @@ const mapStateToProps = state => ({
   transactionList: state.transactionList.transactionList,
   channelList: state.channelList.channelList,
   block: state.block.block,
-  transaction: state.transaction.transaction
+  transaction: state.transaction.transaction,
+  channel: state.channel.channel
 });
 
 

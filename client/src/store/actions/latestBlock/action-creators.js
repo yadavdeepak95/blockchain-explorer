@@ -1,8 +1,9 @@
 import { createAction } from 'redux-actions'
 import * as actionTypes from '../action-types'
-import { post } from '../../../services/request.js';
-export const getLatestBlock = () => dispatch => {
-    post('/api/status/get')
+import { get } from '../../../services/request.js';
+export const getLatestBlock = (channel) => dispatch => {
+    // post('/api/status/get')
+    get('/api/status/'+channel)
         .then(resp => {
             dispatch(createAction(actionTypes.LATEST_BLOCK)(resp.latestBlock))
         }).catch((error) => {

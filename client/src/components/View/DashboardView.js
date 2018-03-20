@@ -69,7 +69,7 @@ class DashboardView extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    getCountHeader: () => dispatch(getCountHeaderCreator()),
+    getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
 });
 const mapStateToProps = state => ({
     countHeader: state.countHeader,

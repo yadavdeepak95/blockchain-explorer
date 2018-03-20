@@ -36,7 +36,7 @@ class Blocks extends Component {
     handlePageChange(pageNumber) {
         var newOffset = (pageNumber - 1) * this.state.limitrows;
         this.setState({ activePage: pageNumber, currentOffset: newOffset });
-        this.props.getBlockList(newOffset);
+        this.props.getBlockList(this.props.channel.currentChannel,newOffset);
     }
     componentWillMount() {
 
@@ -49,7 +49,7 @@ class Blocks extends Component {
 
     componentDidMount() {
         setInterval(() => {
-            this.props.getBlockList(this.state.currentOffset);
+            this.props.getBlockList(this.props.channel.currentChannel,this.state.currentOffset);
         }, 60000)
     }
 
@@ -119,11 +119,12 @@ class Blocks extends Component {
     }
 };
 const mapDispatchToProps = (dispatch) => ({
-    getBlockList: (offset) => dispatch(getBlockListCreator(offset)),
+    getBlockList: (channel,offset) => dispatch(getBlockListCreator(channel,offset)),
 });
 const mapStateToProps = state => ({
-    blockList: state.blockList.blockList.rows,
-    countHeader: state.countHeader.countHeader
+    blockList: state.blockList.blockList,
+    countHeader: state.countHeader.countHeader,
+    channel : state.channel.channel
 });
 // export default Blocks;
 export default compose(

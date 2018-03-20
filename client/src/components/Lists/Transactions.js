@@ -64,14 +64,14 @@ class Transactions extends Component {
                                         {this.props.transactionList.map(tx =>
                                             <tr key={tx.id} >
                                                 <td> <p className="hash-hide" >{tx.txhash}</p> </td>
-                                                <td>creator</td>
+                                                <td> </td>
                                                 <td>{tx.channelname} </td>
-                                                <td>type </td>
-                                                <td>payload </td>
+                                                <td>  </td>
+                                                <td>  </td>
                                                 <td>{tx.chaincodename} </td>
                                                 <td>{this.convertTime(tx.createdt)} </td>
-                                                <td>read bit </td>
-                                                <td>write bit</td>
+                                                <td>  </td>
+                                                <td>  </td>
                                             </tr>
                                         )}
 

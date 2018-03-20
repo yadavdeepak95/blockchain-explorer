@@ -25,13 +25,13 @@ div.menuItems > nav{
 /* Dashboard */
  .count-card{
      min-width: 320px;
-     min-height: 180px;
+     min-height: 100px;
      padding-left: 5px;
      margin-left: 5px;
      text-align: center;
  }
 .card-body > h1{
-    font-size: 50pt;
+    font-size: 25pt;
 }
  .dark-card{
      /* background-color:#BFBFBF; */
@@ -44,13 +44,19 @@ div.menuItems > nav{
      background-color: #F2F1EF;
  }
 .chart-stats{
-    margin-top: 15px;
+    margin-top: 10px;
 }
 .lower-dash{
-    margin-top:15px;
+    margin-top:10px;
+}
+.activity-stream{
+    width: 633px;
 }
 .timeline{
-    width: 633px;
+    height: 320px;
+}
+.timeline-event{
+
 }
 .timeline-items{
     background-color:#cfcfce;
