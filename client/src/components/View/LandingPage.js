@@ -39,7 +39,7 @@ class LandingPage extends Component {
             this.props.getTxPerMin(nextProps.channel.currentChannel);
             this.props.getBlocksPerHour(nextProps.channel.currentChannel);
             this.props.getBlocksPerMin(nextProps.channel.currentChannel);
-            this.props.getTransactionList(nextProps.channel.currentChannel);
+            this.props.getTransactionList(nextProps.channel.currentChannel,0);
             this.props.getBlockList(nextProps.channel.currentChannel, 0);
         }
     }
@@ -66,7 +66,7 @@ const mapDispatchToProps = (dispatch) => ({
     getTxPerMin: (curChannel) => dispatch(getTxPerMinCreator(curChannel)),
     getBlocksPerHour: (curChannel) => dispatch(getBlocksPerHourCreator(curChannel)),
     getBlocksPerMin: (curChannel) => dispatch(getBlocksPerMinCreator(curChannel)),
-    getTransactionList: (curChannel) => dispatch(getTransactionListCreator(curChannel)),
+    getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset)),
     getBlockList: (curChannel, offset) => dispatch(getBlockListCreator(curChannel, offset)),
     getPeerList: (curChannel) => dispatch(getPeerListCreator(curChannel))
 });

@@ -31,7 +31,7 @@ class Transactions extends Component {
     handlePageChange(pageNumber) {
         var newOffset = (pageNumber - 1) * this.state.limitrows;
         this.setState({ activePage: pageNumber, currentOffset: newOffset });
-        this.props.getTransactionList(newOffset);
+        this.props.getTransactionList(this.props.channel.currentChannel,newOffset);
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ totalBlocks: this.props.countHeader.txCount });
@@ -96,11 +96,12 @@ class Transactions extends Component {
     }
 };
 const mapDispatchToProps = (dispatch) => ({
-    getTransactionList: (offset) => dispatch(getTransactionListCreator(offset)),
+    getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset)),
 });
 const mapStateToProps = state => ({
     transactionList: state.transactionList.transactionList.rows,
-    countHeader: state.countHeader.countHeader
+    countHeader: state.countHeader.countHeader,
+    channel: state.channel.channel
 });
 
 export default compose(
