@@ -58,7 +58,7 @@ class MenuBar extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (JSON.stringify(nextProps.countHeader) !== JSON.stringify(this.props.countHeader)) {
-      console.log('nextProps.countHeader !== this.props.countHeader')
+      // console.log('nextProps.countHeader !== this.props.countHeader')
       this.setState({ countHeader: nextProps.countHeader });
     }
   }
