@@ -10,8 +10,6 @@ import { getBlocksPerMin as getBlocksPerMinCreator } from '../../store/actions/c
 import { getBlocksPerHour as getBlocksPerHourCreator } from '../../store/actions/charts/action-creators';
 import { getTxPerMin as getTxPerMinCreator } from '../../store/actions/charts/action-creators';
 import { getTxPerHour as getTxPerHourCreator } from '../../store/actions/charts/action-creators';
-import { getChannelList as getChannelListCreator } from '../../store/actions/chanelList/action-creators';
-import { getChannel as getChannelCreator } from '../../store/actions/channel/action-creators';
 import { getHeaderCount as getHeaderCountCreator } from '../../store/actions/header/action-creators';
 
 class LandingPage extends Component {
@@ -32,7 +30,7 @@ class LandingPage extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.channel.currentChannel != this.props.channel.currentChannel) {
+        if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
             this.props.getPeerList(nextProps.channel.currentChannel);
             this.props.getHeaderCount(nextProps.channel.currentChannel);
             this.props.getTxPerHour(nextProps.channel.currentChannel);
