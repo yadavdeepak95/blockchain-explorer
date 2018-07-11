@@ -1,0 +1,63 @@
+{
+    "network-config": {
+        "clients": {
+            "client_1": {
+                "organization": "Org1",
+                "adminName": "Org1Admin",
+                "channel": "mychannel",
+                "asLocalhost": true,
+                "credentialStore": {
+                    "path": "./tmp/credentialStore_Org1/credential",
+                    "cryptoStore": {
+                        "path": "./tmp/credentialStore_Org1/crypto"
+                    }
+                }
+            }
+        },
+        "channels": {
+            "mychannel": {
+                "peers": {
+                    "peer0.org1.example.com:7051": {}
+                },
+                "connection": {
+                    "timeout": {
+                        "peer": {
+                            "endorser": "6000",
+                            "eventHub": "6000",
+                            "eventReg": "6000"
+                        }
+                    }
+                }
+            }
+        },
+        "organizations": {
+            "Org1": {
+                "mspid": "Org1MSP",
+                "adminPrivateKey": {
+                    "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+                },
+                "signedCert": {
+                    "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+                }
+            }
+        },
+        "peers": {
+            "peer0.org1.example.com:7051": {
+                "tlsCACerts": {
+                    "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+                },
+                "url": "grpcs://localhost:7051",
+                "eventUrl": "grpcs://localhost:7053",
+                "grpcOptions": {
+                    "ssl-target-name-override": "peer0.org1.example.com"
+                }
+            }
+        },
+        "keyValueStore": "/tmp/fabric-client-kvs",
+        "configtxgenToolPath": "fabric-path/fabric-samples/bin",
+        "eventWaitTime": "30000",
+        "synchBlocksTime": "3",
+        "license": "Apache-2.0",
+        "version": "1.0"
+    }
+}
