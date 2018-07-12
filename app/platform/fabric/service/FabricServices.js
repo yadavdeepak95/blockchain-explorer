@@ -62,6 +62,7 @@ class FabricServices {
                 "channel_version": block.data.data[0].payload.header.channel_header.version,
                 "genesis_block_hash": genesis_block_hash
             }
+            client.setChannelGenHash(channel_name, genesis_block_hash);
             await this.persistence.getCrudService().saveChannel(channel_row);
         }
     }
@@ -118,22 +119,33 @@ class FabricServices {
 
     async insertNewPeer(peer, genesis_block_hash, client) {
 
-        let events = "";
+
+
+        let peers = client.getHFClient()._network_config._network_config.peers;
+
+        console.log(JSON.stringify());
+
         const host_port = peer.endpoint.split(':');
-        if (client) {
-            let evenHub = client.getEventHub();
-            if (host_port[0] === evenHub._ep._options['grpc.ssl_target_name_override']) {
-                events = evenHub.getPeerAddr();
-            }
+        let requestUrl = peer.endpoint;
+        let event = "";
+        if (peers[requestUrl] && peers[requestUrl].url) {
+            requestUrl = peers[requestUrl].url;
         }
+
+        if (peers[requestUrl] && peers[requestUrl].eventUrl) {
+            event = peers[requestUrl].eventUrl;
+        }
+
+        // peer0.org1.example.com:7051
 
         let peer_row = {
             //"org": org_name,
             // "name": peer.endpoint,
             "mspid": peer.mspid,
-            "requests": peer.endpoint,
-            "events": events,
+            "requests": requestUrl,
+            "events": event,
             "server_hostname": host_port[0],
+            "genesis_block_hash": genesis_block_hash,
             "peer_type": "PEER"
         }
         console.log(" PEER :>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(peer_row));
@@ -153,6 +165,7 @@ class FabricServices {
             "mspid": orderer.org_name,
             "requests": orderer.host + ":" + orderer.port,
             "server_hostname": orderer.host,
+            "genesis_block_hash": genesis_block_hash,
             "peer_type": "ORDERER"
         }
         console.log(" ORDERER :>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(orderer_row));
@@ -249,12 +262,14 @@ class FabricServices {
 
         console.log('Channel name' + channel_name);
 
-        let channelConfig = await this.persistence.getCrudService().getChannelConfig(channel_name);
+        let client = this.platform.getChannelClient(channel_name);
 
-        if (!channelConfig) {
+        let genesis_block_hash = client.getChannelGenHash(channel_name);
+
+        if (!genesis_block_hash) {
             let client = this.platform.getChannelClient(channel_name);
             await saveChannelFromBlock(client, channel_name);
-            channelConfig = await this.persistence.getCrudService().getChannelConfig(channel_name);
+            genesis_block_hash = client.getChannelGenHash(channel_name);
         }
 
         //console.log('Get Channel Config >>>>>>>' + JSON.stringify(channelConfig));
@@ -262,7 +277,7 @@ class FabricServices {
         let createdt = await this.getBlockTimeStamp(header.channel_header.timestamp);
         let blockhash = await fileUtil.generateBlockHash(block.header);
 
-        if (channelConfig) {
+        if (genesis_block_hash) {
 
             let block_row = {
                 "blocknum": block.header.number,
@@ -272,10 +287,8 @@ class FabricServices {
                 "createdt": createdt,
                 "prev_blockhash": '',
                 "blockhash": blockhash,
-                "genesis_block_hash": channelConfig.genesis_block_hash
+                "genesis_block_hash": genesis_block_hash
             }
-
-            let client = this.platform.getChannelClient(channel_name);
 
             let txLen = block.data.data.length
             for (let i = 0; i < txLen; i++) {
@@ -366,7 +379,7 @@ class FabricServices {
                     'type': txObj.payload.header.channel_header.typeString,
                     'read_set': read_set,
                     'write_set': write_set,
-                    'genesis_block_hash': channelConfig.genesis_block_hash,
+                    'genesis_block_hash': genesis_block_hash,
                     'validation_code': validation_code,
                     'envelope_signature': envelope_signature,
                     'payload_extension': payload_extension,
@@ -425,6 +438,10 @@ class FabricServices {
 
         return new Date(dateStr);
     };
+
+    getCurrentChannel() {
+        return
+    }
 
 
     getPlatform() {

@@ -13,7 +13,8 @@ class FabricClient {
         this.defaultChannel = {};
         this.defaultOrderer = null;
         this.eventHub = {};
-        this.asLocalhost = false
+        this.channelGenHash = new Map();
+        this.asLocalhost = false;
         this.fabricServices = fabricServices;
     }
 
@@ -265,6 +266,19 @@ class FabricClient {
         return newpeer;
     }
 
+    getChannelNames() {
+
+        return Array.from(this.channelGenHash.keys());
+    }
+
+    getChannelGenHash(channel_name) {
+        return this.channelGenHash.get(channel_name);
+    }
+
+    setChannelGenHash(name, g_hash) {
+        this.channelGenHash.set(name, g_hash);
+    }
+
     setAsLocalhost(value) {
         this.asLocalhost = value;
     }
@@ -291,6 +305,9 @@ class FabricClient {
     getDefaultOrderer() {
         return this.defaultOrderer;
     }
+
+
+
 
 }
 

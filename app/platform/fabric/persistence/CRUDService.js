@@ -130,10 +130,6 @@ class CRUDService {
         }
     }
 
-
-
-
-
     async saveChannel(channel) {
         let c = await sql.getRowByPkOne(`select count(1) as c from channel where name='${channel.name}' and genesis_block_hash='${channel.genesis_block_hash}'`)
         if (c.c == 0) {
@@ -151,7 +147,7 @@ class CRUDService {
     }
 
     async savePeer(peer) {
-        let c = await sql.getRowByPkOne(`select count(1) as c from peer where genesis_block_hash='${peer.genesis_block_hash}' and requests='${peer.requests}' `)
+        let c = await sql.getRowByPkOne(`select count(1) as c from peer where genesis_block_hash='${peer.genesis_block_hash}' and server_hostname='${peer.server_hostname}' `)
         if (c.c == 0) {
             await sql.saveRow('peer', peer)
         }

@@ -6,6 +6,7 @@ var path = require("path");
 var fs = require('fs-extra');
 var FabricClient = require('./FabricClient.js');
 var FabricServices = require('./service/FabricServices.js');
+var RestServices = require('./service/RestServices.js');
 var dbroutes = require("./rest/dbroutes.js");
 var platformroutes = require("./rest/platformroutes.js");
 
@@ -20,7 +21,9 @@ class Platform {
     this.broadcaster = broadcaster;
     this.clients = new Map();
     this.channelsClient = new Map();
+    this.defaultClient;
     this.fabricServices = new FabricServices(this, persistence, broadcaster);
+    this.restServices = new RestServices(this, persistence, broadcaster);
     this.synchBlocksTime = 60000;
     this.config;
   }
@@ -34,8 +37,8 @@ class Platform {
     // update client network configuration details to DB
     await this.fabricServices.loadNetworkConfigToDB();
 
-    await dbroutes(this.app, this.fabricServices);
-    await platformroutes(this.app, this.fabricServices);
+    await dbroutes(this.app, this.restServices);
+    await platformroutes(this.app, this.restServices);
 
     setInterval(function () {
       _self.isEventHubConnected();
@@ -57,6 +60,14 @@ class Platform {
     this.config = all_config;
 
     for (let client_name in all_config.clients) {
+
+      console.log("defaultClient " + this.defaultClient);
+
+      if (!this.defaultClient) {
+        this.defaultClient = client_name;
+      }
+
+      console.log("defaultClient " + this.defaultClient);
 
       let client_config = all_config.clients[client_name];
 
@@ -164,6 +175,16 @@ class Platform {
 
   getFabricServices() {
     return this.fabricServices;
+  }
+
+  getRestServices() {
+    return this.restServices;
+  }
+
+  getDefaultClient() {
+    console.log("defaultClient " + this.defaultClient);
+    console.log("defaultClient Object" + this.clients.get(this.defaultClient));
+    return this.clients.get(this.defaultClient);
   }
 
   async distroy() {

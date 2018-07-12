@@ -101,8 +101,13 @@ class MetricService {
   async getPeerList(channelName, cb) {
     try {
       var peerArray = await this.getPeerData(channelName);
-      cb(peerArray)
+      if (cb) {
+        cb(peerArray)
+      } else {
+        return peerArray;
+      }
     } catch (err) {
+      console.log(err);
       logger.error(err)
       cb([])
     }

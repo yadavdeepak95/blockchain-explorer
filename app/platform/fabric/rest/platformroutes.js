@@ -5,12 +5,12 @@
 
 var requtil = require("./requestutils");
 
-const platformroutes = async function (app, fabricServices) {
+const platformroutes = async function (app, restServices) {
 
- // let platform = platform;
+  // let platform = platform;
   //let proxy = platform.getDefaultProxy();
-  let statusMetrics = fabricServices.getPersistence().getMetricService();
-  let crudService = fabricServices.getPersistence().getCrudService();
+  let statusMetrics = restServices.getPersistence().getMetricService();
+  let crudService = restServices.getPersistence().getCrudService();
 
   /***
       Block by number
@@ -21,7 +21,7 @@ const platformroutes = async function (app, fabricServices) {
   app.get("/api/block/:channel/:number", function (req, res) {
     let number = parseInt(req.params.number);
     let channelName = req.params.channel;
-    if (!isNaN(number) && channelName) {
+    /*if (!isNaN(number) && channelName) {
       proxy.getBlockByNumber(channelName, number).then(block => {
         res.send({
           status: 200,
@@ -31,9 +31,11 @@ const platformroutes = async function (app, fabricServices) {
           transactions: block.data.data
         });
       });
-    } else {
-      return requtil.invalidRequest(req, res);
-    }
+    } else {*/
+
+    console.log("/api/block/:channel/:number");
+    return requtil.invalidRequest(req, res);
+    //}
   });
 
   /**
@@ -51,15 +53,19 @@ const platformroutes = async function (app, fabricServices) {
       */
 
   app.get("/api/channels", function (req, res) {
-    var channels = [],
-      counter = 0;
-    var channels = platform.getChannels();
 
-    var response = {
+
+    let channels = restServices.getChannels();
+
+    let response = {
       status: 200
     };
-    response["channels"] = [...new Set(channels)];
+    response["channels"] = channels;
+    console.log("this.channelGenHash response >>> " + JSON.stringify(response));
+
     res.send(response);
+
+
   });
 
   /**
@@ -68,11 +74,10 @@ const platformroutes = async function (app, fabricServices) {
   curl -i 'http://<host>:<port>/api/curChannel'
   */
   app.get("/api/curChannel", function (req, res) {
- this.proxy.getGenesisBlockHash().then((data)=>{
-  res.send({
-    currentChannel: data
-  });
- })
+    console.log("/api/curChannel");
+    restServices.getCurrentChannel().then((data) => {
+      res.send(data);
+    })
 
   });
 
@@ -82,12 +87,16 @@ const platformroutes = async function (app, fabricServices) {
   curl -i 'http://<host>:<port>/api/curChannel'
   */
   app.get("/api/changeChannel/:channelName", function (req, res) {
+    /*
     let channelName = req.params.channelName;
     proxy.changeChannel(channelName);
     ledgerMgr.ledgerEvent.emit("changeLedger");
     res.send({
       currentChannel: proxy.getDefaultChannel()
-    });
+    });*/
+    //remove
+    console.log("/api/changeChannel/:channelName");
+    return requtil.invalidRequest(req, res);
   });
 
 
@@ -115,7 +124,7 @@ const platformroutes = async function (app, fabricServices) {
   */
 
   app.post('/api/channel', async function (req, res) {
-    try {
+    /*try {
       // upload channel config, and org config
       let artifacts = await requtil.aSyncUpload(req, res);
       let chCreate = await chs.createChannel(artifacts, platform, crudService);
@@ -132,7 +141,10 @@ const platformroutes = async function (app, fabricServices) {
         message: "Invalid request, payload"
       }
       return res.send(channelError);
-    }
+    }*/
+    //remove
+    console.log('/api/channel');
+    return requtil.invalidRequest(req, res);
   });
 
   /***
@@ -145,16 +157,17 @@ const platformroutes = async function (app, fabricServices) {
   */
 
   app.post("/api/joinChannel", function (req, res) {
-    var channelName = req.body.channelName;
+    /*var channelName = req.body.channelName;
     var peers = req.body.peers;
     var orgName = req.body.orgName;
     if (channelName && peers && orgName) {
       proxy.joinChannel(channelName, peers, orgName, platform).then(resp => {
         return res.send(resp);
       });
-    } else {
-      return requtil.invalidRequest(req, res);
-    }
+    } else {*/
+    console.log("/api/joinChannel");
+    return requtil.invalidRequest(req, res);
+    //}
   });
 
   /**
@@ -178,7 +191,7 @@ const platformroutes = async function (app, fabricServices) {
     if (channelName) {
       statusMetrics.getTxPerChaincode(channelName, async function (data) {
         for (let chaincode of data) {
-          let temp = await proxy.loadChaincodeSrc(chaincode.path);
+          let temp = await restServices.loadChaincodeSrc(chaincode.path);
           chaincode.source = temp;
         }
         res.send({
@@ -206,9 +219,13 @@ const platformroutes = async function (app, fabricServices) {
   app.get("/api/peersStatus/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-       platform.getPeersStatus(channelName,function (data) {
+
+      console.log("/api/peersStatus/:channel");
+
+      restServices.getPeersStatus(channelName).then((data) => {
         res.send({ status: 200, peers: data });
-      });
+      })
+
     } else {
       return requtil.invalidRequest(req, res);
     }
