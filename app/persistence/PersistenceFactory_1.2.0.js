@@ -10,13 +10,13 @@ class PersistenceFactory {
 
         console.log(db);
 
-        if(db === 'postgreSQL') {
-            var persist =  new Persist();
+        if (db === 'postgreSQL') {
+            var persist = new Persist();
             await persist.initialize();
             return persist;
         }
 
-        throw("Invalid Platform");
+        throw ("Persistence implementation is not found for " + db);
     }
 }
 

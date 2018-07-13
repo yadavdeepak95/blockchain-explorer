@@ -15,9 +15,9 @@ class RestServices {
 
         let client = this.platform.getDefaultClient();
         let channel = client.getDefaultChannel();
-        let genesis_block_hash = client.getChannelGenHash(channel.getName());
-        if (genesis_block_hash) {
-            return { "currentChannel": genesis_block_hash };
+        let channel_genesis_hash = client.getChannelGenHash(channel.getName());
+        if (channel_genesis_hash) {
+            return { "currentChannel": channel_genesis_hash };
         }
         else {
             return { "status": 1, "message": "Channel not found in the Context ", "currentChannel": "" };
@@ -27,12 +27,26 @@ class RestServices {
     async loadChaincodeSrc(path) {
         return chaincodeService.loadChaincodeSrc(path);
     }
-    async getPeersStatus(genesis_block_hash) {
-        console.log('genesis_block_hash >>>>>>' + genesis_block_hash);
+    async getPeersStatus(channel_genesis_hash) {
 
-        let peers = await this.persistence.getMetricService().getPeerList(genesis_block_hash);
-        console.log(JSON.stringify(peers));
+        let nodes = await this.persistence.getMetricService().getPeerList(channel_genesis_hash);
+        let peers = [];
 
+        let client = this.platform.getDefaultClient();
+
+        for (let node of nodes) {
+            if (node.peer_type === "PEER") {
+                let res = await client.getPeerStatus(node);
+                node.status = res.status;
+                peers.push(node);
+            }
+        }
+        return peers;
+    }
+    async changeChannel(channel_genesis_hash) {
+
+        let client = this.platform.getDefaultClient();
+        return client.setDefaultChannel(channel_genesis_hash);
 
     }
 

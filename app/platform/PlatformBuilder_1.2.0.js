@@ -14,11 +14,11 @@ class PlatformBuilder {
                 await platform.initialize();
                 return platform;
             }
-        }catch(e){
+        } catch (e) {
             console.log(e);
         }
 
-        throw ("Invalid Platform");
+        throw ("Platform implimenation is not found for " + pltfrm);
     }
 }
 

@@ -32,10 +32,10 @@ class MetricService {
 
   async getPeerData(channelName) {
     let peerArray = []
-    var c1 = await sql.getRowsBySQlNoCondtion(`select channel.name as channelname,c.requests as requests,c.genesis_block_hash as genesis_block_hash ,c.server_hostname as server_hostname from peer as c inner join  channel on c.genesis_block_hash=channel.genesis_block_hash where c.genesis_block_hash='${channelName}'`);
+    var c1 = await sql.getRowsBySQlNoCondtion(`select channel.name as channelname,c.requests as requests,c.genesis_block_hash as genesis_block_hash ,c.server_hostname as server_hostname, c.mspid as mspid, c.peer_type as peer_type  from peer as c inner join  channel on c.genesis_block_hash=channel.genesis_block_hash where c.genesis_block_hash='${channelName}'`);
     for (var i = 0, len = c1.length; i < len; i++) {
       var item = c1[i];
-      peerArray.push({ 'name': item.channelname, 'requests': item.requests, 'server_hostname': item.server_hostname, "genesis_block_hash": item.genesis_block_hash })
+      peerArray.push({ 'name': item.channelname, 'requests': item.requests, 'server_hostname': item.server_hostname, "genesis_block_hash": item.genesis_block_hash, "mspid": item.mspid, "peer_type": item.peer_type })
     }
     return peerArray
   }
@@ -367,7 +367,7 @@ class MetricService {
 
   async findMissingBlockNumber(channelName, maxHeight) {
     let sqlQuery = `SELECT s.id AS missing_id
-    FROM generate_series(0, ${maxHeight}) s(id) WHERE NOT EXISTS (SELECT 1 FROM blocks WHERE blocknum = s.id )`;
+    FROM generate_series(0, ${maxHeight}) s(id) WHERE NOT EXISTS (SELECT 1 FROM blocks WHERE blocknum = s.id and genesis_block_hash ='${channelName}' )`;
 
     return sql.getRowsBySQlQuery(sqlQuery);
 

@@ -43,9 +43,13 @@ class Explorer {
     }
 
     close() {
-        this.persistence.closeconnection();
+        if (this.persistence) {
+            this.persistence.closeconnection();
+        }
         for (let platform of this.platforms) {
-            platform.distroy();
+            if (platform) {
+                platform.distroy();
+            }
         }
     }
 }

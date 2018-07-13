@@ -52,6 +52,8 @@ CREATE TABLE peer_ref_chaincode (
   id SERIAL PRIMARY KEY,
   peerid varchar(64) DEFAULT NULL,
   chaincodeid varchar(64) DEFAULT NULL,
+  cc_version varchar(64) DEFAULT NULL,
+  channelid character varying(256) DEFAULT NULL,
   createdt Timestamp DEFAULT NULL
 );
 ALTER table peer_ref_chaincode owner to hppoc;

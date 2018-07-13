@@ -31,24 +31,23 @@ class FabricServices {
 
     }
 
-    async loadNetworkConfigToDB() {
+    async synchNetworkConfigToDB() {
         let _self = this;
         let clients = this.platform.getClients();
-        for (var [client_key, client] of clients.entries()) {
-            console.log(client_key + ' = ' + client);
+        for (var [client_name, client] of clients.entries()) {
             let channels = client.getChannels();
-            for (var [channel_key, channel] of channels.entries()) {
+            for (var [channel_name, channel] of channels.entries()) {
 
                 let block = await this.getGenesisBlock(client, channel);
-                let genesis_block_hash = await fileUtil.generateBlockHash(block.header);
+                let channel_genesis_hash = await fileUtil.generateBlockHash(block.header);
 
-                await this.insertNewChannel(client, channel, block, genesis_block_hash);
-                await this.insertFromDiscoveryResults(client, channel, genesis_block_hash);
+                await this.insertNewChannel(client, channel, block, channel_genesis_hash);
+                await this.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
             }
         }
     }
 
-    async insertNewChannel(client, channel, block, genesis_block_hash) {
+    async insertNewChannel(client, channel, block, channel_genesis_hash) {
 
         if (block.data && block.data.data.length > 0 && block.data.data[0]) {
             let channel_name = channel.getName();
@@ -60,14 +59,15 @@ class FabricServices {
                 "trans": 0,
                 "channel_hash": "",
                 "channel_version": block.data.data[0].payload.header.channel_header.version,
-                "genesis_block_hash": genesis_block_hash
+                "genesis_block_hash": channel_genesis_hash
             }
-            client.setChannelGenHash(channel_name, genesis_block_hash);
+            client.setChannelGenHash(channel_name, channel_genesis_hash);
             await this.persistence.getCrudService().saveChannel(channel_row);
+
         }
     }
 
-    async insertFromDiscoveryResults(client, channel, genesis_block_hash) {
+    async insertFromDiscoveryResults(client, channel, channel_genesis_hash) {
 
         let channel_name = channel.getName();
         let discoveryResults;
@@ -76,16 +76,14 @@ class FabricServices {
             discoveryResults = await channel.getDiscoveryResults();
         }
         catch (e) {
-            // console.log(e);
             discoveryResults = await client.initializeChannelFromDiscover(channel_name);
         }
 
-        //console.log("clients >>>>>>>>>3 " + JSON.stringify(discoveryResults));
         if (discoveryResults && discoveryResults.peers_by_org) {
             for (let org_name in discoveryResults.peers_by_org) {
                 let org = discoveryResults.peers_by_org[org_name];
                 for (var peer of org.peers) {
-                    await this.insertNewPeer(peer, genesis_block_hash, client);
+                    await this.insertNewPeer(peer, channel_genesis_hash, client);
                 }
             }
         }
@@ -96,93 +94,73 @@ class FabricServices {
                 let org = discoveryResults.orderers[org_name];
                 for (var orderer of org.endpoints) {
                     orderer.org_name = org_name;
-                    await this.insertNewOrderers(orderer, genesis_block_hash);
+                    await this.insertNewOrderers(orderer, channel_genesis_hash, client);
                 }
             }
         }
 
-        if (discoveryResults && discoveryResults.endorsement_targets) {
-            await this.insertNewChaincode(client, channel, genesis_block_hash);
-        }
+        await this.insertNewChannelChaincode(client, channel, channel_genesis_hash, discoveryResults);
 
-        //console.log('chaincode_peer_row' + JSON.stringify(discoveryResults.peers_by_org));
 
-        if (discoveryResults && discoveryResults.peers_by_org) {
-            for (let org_name in discoveryResults.peers_by_org) {
-                let org = discoveryResults.peers_by_org[org_name];
-                for (var peer of org.peers) {
-                    await this.insertNewChaincodePeerRef(peer);
-                }
-            }
-        }
     }
 
-    async insertNewPeer(peer, genesis_block_hash, client) {
+    async insertNewPeer(peer, channel_genesis_hash, client) {
 
+        let eventurl = "";
+        let requesturl = peer.endpoint;
 
-
-        let peers = client.getHFClient()._network_config._network_config.peers;
-
-        console.log(JSON.stringify());
+        if (client.client_config.peers && client.client_config.peers[requesturl] && client.client_config.peers[requesturl].url) {
+            requesturl = client.client_config.peers[requesturl].url;
+        }
+        if (client.client_config.peers && client.client_config.peers[requesturl] && client.client_config.peers[requesturl].eventUrl) {
+            eventurl = client.client_config.peers[requesturl].eventUrl;
+        }
 
         const host_port = peer.endpoint.split(':');
-        let requestUrl = peer.endpoint;
-        let event = "";
-        if (peers[requestUrl] && peers[requestUrl].url) {
-            requestUrl = peers[requestUrl].url;
-        }
-
-        if (peers[requestUrl] && peers[requestUrl].eventUrl) {
-            event = peers[requestUrl].eventUrl;
-        }
-
-        // peer0.org1.example.com:7051
 
         let peer_row = {
-            //"org": org_name,
-            // "name": peer.endpoint,
             "mspid": peer.mspid,
-            "requests": requestUrl,
-            "events": event,
+            "requests": requesturl,
+            "events": eventurl,
             "server_hostname": host_port[0],
-            "genesis_block_hash": genesis_block_hash,
+            "genesis_block_hash": channel_genesis_hash,
             "peer_type": "PEER"
         }
-        console.log(" PEER :>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(peer_row));
         await this.persistence.getCrudService().savePeer(peer_row);
         let channel_peer_row = {
             "peerid": host_port[0],
-            "channelid": genesis_block_hash
+            "channelid": channel_genesis_hash
         }
-        console.log(" PEER Channel:>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(channel_peer_row));
         await this.persistence.getCrudService().savePeerChannelRef(channel_peer_row);
 
     }
-    async insertNewOrderers(orderer, genesis_block_hash) {
+    async insertNewOrderers(orderer, channel_genesis_hash, client) {
+
+        let requesturl = orderer.host + ":" + orderer.port;
+
+        if (client.client_config.orderers && client.client_config.orderers[requesturl] && client.client_config.orderers[requesturl].url) {
+            requesturl = client.client_config.orderers[requesturl].url;
+        }
 
         let orderer_row = {
-            //"name": orderer.host,
             "mspid": orderer.org_name,
-            "requests": orderer.host + ":" + orderer.port,
+            "requests": requesturl,
             "server_hostname": orderer.host,
-            "genesis_block_hash": genesis_block_hash,
+            "genesis_block_hash": channel_genesis_hash,
             "peer_type": "ORDERER"
         }
-        console.log(" ORDERER :>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(orderer_row));
         await this.persistence.getCrudService().savePeer(orderer_row);
         let channel_orderer_row = {
             "peerid": orderer.host,
-            "channelid": genesis_block_hash
+            "channelid": channel_genesis_hash
         }
-        console.log(" ORDERER CHANNEL :>>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(channel_orderer_row));
         await this.persistence.getCrudService().savePeerChannelRef(channel_orderer_row);
     }
 
-    async insertNewChaincode(client, channel, genesis_block_hash) {
-
+    async insertNewChannelChaincode(client, channel, channel_genesis_hash, discoveryResults) {
 
         let chaincodes = await channel.queryInstantiatedChaincodes(client.getDefaultPeer(), true);
-        console.log('chaincode_peer_row' + JSON.stringify(chaincodes));
+
         for (let chaincode of chaincodes.chaincodes) {
             let chaincode_row = {
                 "name": chaincode.name,
@@ -190,26 +168,36 @@ class FabricServices {
                 "path": chaincode.path,
                 "txcount": 0,
                 "createdt": new Date(),
-                "genesis_block_hash": genesis_block_hash
+                "genesis_block_hash": channel_genesis_hash
             }
             await this.persistence.getCrudService().saveChaincode(chaincode_row);
+
+            if (discoveryResults && discoveryResults.peers_by_org) {
+                for (let org_name in discoveryResults.peers_by_org) {
+                    let org = discoveryResults.peers_by_org[org_name];
+                    for (var peer of org.peers) {
+                        for (var c_code of peer.chaincodes) {
+                            if (c_code.name === chaincode.name && c_code.version === chaincode.version) {
+                                await this.insertNewChaincodePeerRef(c_code, peer.endpoint, channel_genesis_hash);
+                            }
+                        }
+                    }
+                }
+            }
 
         }
 
     }
 
-    async insertNewChaincodePeerRef(peer) {
-
-        for (var chaincode of peer.chaincodes) {
-            const host_port = peer.endpoint.split(':');
-            let chaincode_peer_row = {
-                "chaincodeid": chaincode.name,
-                "peerid": host_port[0],
-            }
-            console.log('chaincode_peer_row' + JSON.stringify(chaincode_peer_row));
-            await this.persistence.getCrudService().saveChaincodPeerRef(chaincode_peer_row);
+    async insertNewChaincodePeerRef(chaincode, endpoint, channel_genesis_hash) {
+        let host_port = endpoint.split(':');
+        let chaincode_peer_row = {
+            "chaincodeid": chaincode.name,
+            "cc_version": chaincode.version,
+            "peerid": host_port[0],
+            "channelid": channel_genesis_hash
         }
-
+        await this.persistence.getCrudService().saveChaincodPeerRef(chaincode_peer_row);
     }
 
     async synchBlocks(client_name) {
@@ -219,30 +207,29 @@ class FabricServices {
             return;
         }
         let client = this.platform.getClient(client_name);
-        let channels = await client.getHFClient().queryChannels(client.getDefaultPeer().getName(), true);
+        let channels = await client.getHFC_Client().queryChannels(client.getDefaultPeer().getName(), true);
 
         for (let channel of channels.channels) {
             let channel_name = channel.channel_id;
             if (!client.getChannels().get(channel_name)) {
-                await saveChannelFromBlock(client, channel_name);
+                await this.saveChannelFromBlock(client, channel_name);
             }
         }
         console.log('Synch Blocks >>> ' + JSON.stringify(channels));
 
         for (let channel of channels.channels) {
+
             let channel_name = channel.channel_id;
 
-            let channelInfo = await client.getHFClient().getChannel(channel_name).queryInfo(client.getDefaultPeer(), true);
-
+            let channelInfo = await client.getHFC_Client().getChannel(channel_name).queryInfo(client.getDefaultPeer(), true);
+            let channel_genesis_hash = client.getChannelGenHash(channel_name);
             let blockHeight = (parseInt(channelInfo.height.low) - 1);
-            let results = await this.persistence.getMetricService().findMissingBlockNumber(channel_name, blockHeight);
-
+            let results = await this.persistence.getMetricService().findMissingBlockNumber(channel_genesis_hash, blockHeight);
 
             if (results) {
                 for (let result of results) {
-                    //queryBlock(blockNumber, target, useAdmin, skipDecode)
                     console.log('Missing Block Numbers' + JSON.stringify(result));
-                    let block = await client.getHFClient().getChannel(channel_name).queryBlock(result.missing_id, client.getDefaultPeer().getName(), true);
+                    let block = await client.getHFC_Client().getChannel(channel_name).queryBlock(result.missing_id, client.getDefaultPeer().getName(), true);
                     //console.log('Missing Block Numbers' + JSON.stringify(block));
                     await this.processBlockEvent(block);
                 }
@@ -264,12 +251,12 @@ class FabricServices {
 
         let client = this.platform.getChannelClient(channel_name);
 
-        let genesis_block_hash = client.getChannelGenHash(channel_name);
+        let channel_genesis_hash = client.getChannelGenHash(channel_name);
 
-        if (!genesis_block_hash) {
+        if (!channel_genesis_hash) {
             let client = this.platform.getChannelClient(channel_name);
             await saveChannelFromBlock(client, channel_name);
-            genesis_block_hash = client.getChannelGenHash(channel_name);
+            channel_genesis_hash = client.getChannelGenHash(channel_name);
         }
 
         //console.log('Get Channel Config >>>>>>>' + JSON.stringify(channelConfig));
@@ -277,7 +264,7 @@ class FabricServices {
         let createdt = await this.getBlockTimeStamp(header.channel_header.timestamp);
         let blockhash = await fileUtil.generateBlockHash(block.header);
 
-        if (genesis_block_hash) {
+        if (channel_genesis_hash) {
 
             let block_row = {
                 "blocknum": block.header.number,
@@ -287,7 +274,7 @@ class FabricServices {
                 "createdt": createdt,
                 "prev_blockhash": '',
                 "blockhash": blockhash,
-                "genesis_block_hash": genesis_block_hash
+                "genesis_block_hash": channel_genesis_hash
             }
 
             let txLen = block.data.data.length
@@ -308,7 +295,7 @@ class FabricServices {
                 let mspId = [];
 
                 if (txid != undefined && txid != "") {
-                    var processedTransaction = await client.getHFClient().getChannel(channel_name).queryTransaction(txid, client.getDefaultPeer(), true);
+                    var processedTransaction = await client.getHFC_Client().getChannel(channel_name).queryTransaction(txid, client.getDefaultPeer(), true);
                     txObj = processedTransaction.transactionEnvelope;
                     validation_code = convertValidationCode(processedTransaction.validationCode);
                 }
@@ -379,7 +366,7 @@ class FabricServices {
                     'type': txObj.payload.header.channel_header.typeString,
                     'read_set': read_set,
                     'write_set': write_set,
-                    'genesis_block_hash': genesis_block_hash,
+                    'genesis_block_hash': channel_genesis_hash,
                     'validation_code': validation_code,
                     'envelope_signature': envelope_signature,
                     'payload_extension': payload_extension,
@@ -406,10 +393,10 @@ class FabricServices {
         client.initializeChannelFromDiscover(channel_name);
 
         let block = await this.getGenesisBlock(client, channel);
-        let genesis_block_hash = await fileUtil.generateBlockHash(block.header);
+        let channel_genesis_hash = await fileUtil.generateBlockHash(block.header);
 
-        await this.insertNewChannel(client, channel, block, genesis_block_hash);
-        await this.insertFromDiscoveryResults(client, channel, genesis_block_hash);
+        await this.insertNewChannel(client, channel, block, channel_genesis_hash);
+        await this.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
 
     }
 
@@ -420,12 +407,12 @@ class FabricServices {
 
         let request = {
             orderer: defaultOrderer,
-            txId: client.getHFClient().newTransactionID(true) //get an admin based transactionID
+            txId: client.getHFC_Client().newTransactionID(true) //get an admin based transactionID
         };
 
         let genesisBlock = await channel.getGenesisBlock(request);
         let block = BlockDecoder.decodeBlock(genesisBlock);
-        //console.log(" Genesis Block: >>>>>>>>>>>>>>>>>>>>>" + JSON.stringify(block));
+
         return block;
     }
 
@@ -438,7 +425,6 @@ class FabricServices {
 
         return new Date(dateStr);
     };
-
     getCurrentChannel() {
         return
     }

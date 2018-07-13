@@ -42,7 +42,7 @@ ADD COLUMN endorser_signature character varying DEFAULT NULL;
 ALTER TABLE transaction DROP COLUMN channelname;
 ALTER TABLE blocks DROP COLUMN channelname;
 
-ALTER TABLE peer_ref_channel ALTER COLUMN peerid TYPE varchar(64), ALTER COLUMN channelid TYPE varchar(64);
+ALTER TABLE peer_ref_channel ALTER COLUMN peerid TYPE varchar(64), ALTER COLUMN channelid TYPE character varying(256);
 ALTER TABLE peer ADD COLUMN peer_type character varying(64) DEFAULT NULL;
 
 

@@ -10,7 +10,7 @@ const dbroutes = (app, restServices) => {
   var crudService = restServices.getPersistence().getCrudService();
 
   app.get("/api/status/:channel", function (req, res) {
-    console.log("dbroutes:/api/status/:channel");
+
     let channelName = req.params.channel;
     if (channelName) {
       statusMetrics.getStatus(channelName, function (data) {
@@ -43,7 +43,7 @@ const dbroutes = (app, restServices) => {
   }
   */
   app.get("/api/block/transactions/:channel/:number", async function (req, res) {
-    console.log("dbroutes:/api/block/transactions/:channel/:number");
+
     let number = parseInt(req.params.number);
     let channelName = req.params.channel;
     if (!isNaN(number) && channelName) {
@@ -77,7 +77,7 @@ const dbroutes = (app, restServices) => {
   */
 
   app.get("/api/transaction/:channel/:txid", function (req, res) {
-    console.log("dbroutes:/api/transaction/:channel/:txid");
+
     let txid = req.params.txid;
     let channelName = req.params.channel;
     if (txid && txid != "0" && channelName) {
@@ -102,7 +102,7 @@ const dbroutes = (app, restServices) => {
   "createdt":"2018-03-09T19:40:59.000Z","chaincodename":"mycc"}]}
   */
   app.get("/api/txList/:channel/:blocknum/:txid", function (req, res) {
-    console.log("dbroutes:/api/txList/:channel/:blocknum/:txid");
+
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
     let txid = parseInt(req.params.txid);
@@ -134,7 +134,7 @@ const dbroutes = (app, restServices) => {
   ]
   */
   app.get("/api/peers/:channel", function (req, res) {
-    console.log("dbroutes:/api/peers/:channel");
+
     let channelName = req.params.channel;
     if (channelName) {
       statusMetrics.getPeerList(channelName, function (data) {
@@ -158,7 +158,7 @@ const dbroutes = (app, restServices) => {
   */
 
   app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
-    console.log("dbroutes:/api/blockAndTxList/:channel/:blocknum");
+
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
 
@@ -188,7 +188,7 @@ const dbroutes = (app, restServices) => {
   */
 
   app.get("/api/txByMinute/:channel/:hours", function (req, res) {
-    console.log("dbroutes:/api/txByMinute/:channel/:hours");
+
     let channelName = req.params.channel;
     let hours = parseInt(req.params.hours);
 
@@ -214,7 +214,7 @@ const dbroutes = (app, restServices) => {
   */
 
   app.get("/api/txByHour/:channel/:days", function (req, res) {
-    console.log("dbroutes:/api/txByHour/:channel/:days");
+
     let channelName = req.params.channel;
     let days = parseInt(req.params.days);
 
@@ -242,7 +242,7 @@ const dbroutes = (app, restServices) => {
   */
 
   app.get("/api/blocksByMinute/:channel/:hours", function (req, res) {
-    console.log("dbroutes:/api/blocksByMinute/:channel/:hours");
+
     let channelName = req.params.channel;
     let hours = parseInt(req.params.hours);
 
@@ -268,7 +268,7 @@ const dbroutes = (app, restServices) => {
   */
 
   app.get("/api/blocksByHour/:channel/:days", function (req, res) {
-    console.log("dbroutes:/api/blocksByHour/:channel/:days");
+
     let channelName = req.params.channel;
     let days = parseInt(req.params.days);
 
@@ -294,7 +294,7 @@ const dbroutes = (app, restServices) => {
   */
   app.get("/api/txByOrg/:channel", function (req, res) {
 
-    console.log("dbroutes:/api/txByOrg/:channel");
+
     let channelName = req.params.channel;
 
     if (channelName) {
@@ -324,7 +324,7 @@ const dbroutes = (app, restServices) => {
          */
 
   app.get("/api/channels/info", function (req, res) {
-    console.log("dbroutes:/api/channels/info");
+
     crudService.getChannelsInfo().then(data => {
       res.send({ status: 200, channels: data })
     }).catch(err => res.send({ status: 500 }))

@@ -81,7 +81,7 @@ class CRUDService {
         and genesis_block_hash='${block.genesis_block_hash}' and prehash='${block.prehash}' and datahash='${block.datahash}' `)
         if (c.c == 0) {
             await sql.saveRow('blocks', block);
-
+            await sql.updateBySql(`update channel set blocks =blocks+1 where genesis_block_hash='${block.genesis_block_hash}'`);
             return true;
         }
 
@@ -89,8 +89,17 @@ class CRUDService {
     }
 
     async saveTransaction(transaction) {
-        await sql.saveRow('transaction', transaction);
-        await sql.updateBySql(`update chaincodes set txcount =txcount+1 where genesis_block_hash='${transaction.genesis_block_hash}'`);
+        let c = await sql.getRowByPkOne(`select count(1) as c from transaction where blockid='${transaction.blockid}' and txhash='${transaction.txhash}' and genesis_block_hash='${transaction.genesis_block_hash}'`);
+
+        if (c.c == 0) {
+            await sql.saveRow('transaction', transaction);
+            await sql.updateBySql(`update chaincodes set txcount =txcount+1 where genesis_block_hash='${transaction.genesis_block_hash}'`);
+            await sql.updateBySql(`update channel set trans =trans+1 where genesis_block_hash='${transaction.genesis_block_hash}'`);
+            return true;
+        }
+
+        return false;
+
     }
 
 
@@ -124,7 +133,7 @@ class CRUDService {
 
     async saveChaincodPeerRef(peers_ref_chaincode) {
 
-        let c = await sql.getRowByPkOne(`select count(1) as c from peer_ref_chaincode prc where prc.peerid= '${peers_ref_chaincode.peerid}' and prc.chaincodeid='${peers_ref_chaincode.chaincodeid}' `)
+        let c = await sql.getRowByPkOne(`select count(1) as c from peer_ref_chaincode prc where prc.peerid= '${peers_ref_chaincode.peerid}' and prc.chaincodeid='${peers_ref_chaincode.chaincodeid}' and cc_version='${peers_ref_chaincode.cc_version}' and channelid='${peers_ref_chaincode.channelid}'`)
         if (c.c == 0) {
             await sql.saveRow('peer_ref_chaincode', peers_ref_chaincode)
         }
@@ -141,8 +150,6 @@ class CRUDService {
                 "channel_hash": channel.channel_hash,
                 "genesis_block_hash": channel.genesis_block_hash
             })
-        } else {
-            await sql.updateBySql(`update channel set blocks='${channel.blocks}',trans='${channel.trans}',channel_hash='${channel.channel_hash}' where name='${channel.name}'and genesis_block_hash='${channel.genesis_block_hash}'`)
         }
     }
 

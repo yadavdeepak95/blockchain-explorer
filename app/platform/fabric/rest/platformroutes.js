@@ -74,10 +74,9 @@ const platformroutes = async function (app, restServices) {
   curl -i 'http://<host>:<port>/api/curChannel'
   */
   app.get("/api/curChannel", function (req, res) {
-    console.log("/api/curChannel");
     restServices.getCurrentChannel().then((data) => {
       res.send(data);
-    })
+    });
 
   });
 
@@ -87,16 +86,14 @@ const platformroutes = async function (app, restServices) {
   curl -i 'http://<host>:<port>/api/curChannel'
   */
   app.get("/api/changeChannel/:channelName", function (req, res) {
-    /*
-    let channelName = req.params.channelName;
-    proxy.changeChannel(channelName);
-    ledgerMgr.ledgerEvent.emit("changeLedger");
-    res.send({
-      currentChannel: proxy.getDefaultChannel()
-    });*/
-    //remove
-    console.log("/api/changeChannel/:channelName");
-    return requtil.invalidRequest(req, res);
+
+    let channel_genesis_hash = req.params.channelName;
+    restServices.changeChannel(channel_genesis_hash).then((data) => {
+      res.send({
+        currentChannel: data
+      });
+    });
+
   });
 
 
@@ -219,8 +216,6 @@ const platformroutes = async function (app, restServices) {
   app.get("/api/peersStatus/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-
-      console.log("/api/peersStatus/:channel");
 
       restServices.getPeersStatus(channelName).then((data) => {
         res.send({ status: 200, peers: data });
