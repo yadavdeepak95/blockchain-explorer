@@ -30,10 +30,13 @@
     "fast-stats": "0.0.3",
     "fs-extra": "^6.0.1",
     "http-status-codes": "^1.3.0",
+    "husky": "^0.14.3",
     "js-sha256": "^0.9.0",
+    "lint-staged": "^7.2.0",
     "log4js": "^0.6.38",
     "multer": "^1.3.0",
     "pg": "^7.4.1",
+    "prettier": "^1.13.7",
     "prettyjson": "^1.2.1",
     "stomp-broker-js": "^0.1.3",
     "stompjs": "^2.3.3",
@@ -49,7 +52,14 @@
     "eslint-plugin-jsx-a11y": "^6.1.0",
     "eslint-plugin-react": "^7.10.0"
   },
+  "lint-staged": {
+    "**/*.{js,jsx,json,css}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
+  },
   "scripts": {
+    "precommit": "lint-staged",
     "lint": "eslint"
   }
 }
