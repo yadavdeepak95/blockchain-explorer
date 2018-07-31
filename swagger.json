@@ -179,7 +179,7 @@
                   "path": {
                     "type": "string"
                   },
-                  "genesis_block_hash": {
+                  "channel_genesis_hash": {
                     "type": "string"
                   }
                 }
@@ -358,7 +358,7 @@
                 "previous_hash": {
                   "type": "string"
                 },
-                "genesis_block_hash": {
+                "channel_genesis_hash": {
                   "type": "string"
                 },
                 "data_hash": {
@@ -485,7 +485,7 @@
                     "id": {
                       "type": "number"
                     },
-                    "genesis_block_hash": {
+                    "channel_genesis_hash": {
                       "type": "string"
                     },
                     "channelname": {
@@ -592,7 +592,7 @@
                       "channelname": {
                         "type": "string"
                       },
-                      "genesis_block_hash": {
+                      "channel_genesis_hash": {
                         "type": "string"
                       },
                       "blockid": {
@@ -653,7 +653,7 @@
                       "requests": {
                         "type": "string"
                       },
-                      "genesis_block_hash": {
+                      "channel_genesis_hash": {
                         "type": "string"
                       },
                       "server_hostname": {
@@ -764,7 +764,7 @@
                       "blocknum": {
                         "type": "number"
                       },
-                      "genesis_block_hash": {
+                      "channel_genesis_hash": {
                         "type": "string"
                       },
                       "data_hash": {
@@ -1072,7 +1072,7 @@
                       "channelName": {
                         "type": "string"
                       },
-                      "genesis_block_hash": {
+                      "channel_genesis_hash": {
                         "type": "string"
                       },
                       "channel_hash": {

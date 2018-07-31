@@ -2,17 +2,20 @@
 *SPDX-License-Identifier: Apache-2.0
 */
 
-var Platform = require('./fabric/Platform.js');
-
 class PlatformBuilder {
-  static async build(pltfrm) {
-    if (pltfrm == 'fabric') {
-      var platform = new Platform();
-      await platform.initialize();
-      return platform;
+  static async build(app, pltfrm, persistence, broadcaster) {
+    try {
+      if (pltfrm == 'fabric') {
+        var Platform = require('./fabric/Platform');
+        var platform = new Platform(app, persistence, broadcaster);
+        await platform.initialize();
+        return platform;
+      }
+    } catch (e) {
+      console.log('PlatformBuilder >> ' + e);
     }
 
-    throw 'Invalid Platform';
+    throw 'Platform implimenation is not found for ' + pltfrm;
   }
 }
 

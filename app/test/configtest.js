@@ -12,8 +12,8 @@ describe('config.json should contain properties', function() {
     assert.notEqual(null, configtxgenToolPath);
   });
 
-  it('should contain syncStartDate property', function() {
+  /*it('should contain syncStartDate property', function() {
     var syncStartDate = config.syncStartDate;
     assert.notEqual(null, syncStartDate);
-  });
+  });*/
 });

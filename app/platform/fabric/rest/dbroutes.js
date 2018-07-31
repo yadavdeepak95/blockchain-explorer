@@ -28,8 +28,8 @@ const dbroutes = (app, restServices) => {
   curl -i 'http://<host>:<port>/api/block/transactions/<channel_genesis_hash>/<number>'
   Response:
   {
-    "number": 2,
-    "txCount": 1
+    'number': 2,
+    'txCount': 1
   }
   */
   app.get(
@@ -63,10 +63,10 @@ const dbroutes = (app, restServices) => {
   curl -i 'http://<host>:<port>/api/transaction/<channel_genesis_hash>/<txid>'
   Response:
   {
-    "tx_id": "header.channel_header.tx_id",
-    "timestamp": "header.channel_header.timestamp",
-    "channel_id": "header.channel_header.channel_id",
-    "type": "header.channel_header.type"
+    'tx_id': 'header.channel_header.tx_id',
+    'timestamp': 'header.channel_header.timestamp',
+    'channel_id': 'header.channel_header.channel_id',
+    'type': 'header.channel_header.type'
   }
   */
 
@@ -89,9 +89,9 @@ const dbroutes = (app, restServices) => {
   GET /api/txList/
   curl -i 'http://<host>:<port>/api/txList/<channel_genesis_hash>/<blocknum>/<txid>/<limitrows>/<offset>'
   Response:
-  {"rows":[{"id":56,"channelname":"mychannel","blockid":24,
-  "txhash":"c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8",
-  "createdt":"2018-03-09T19:40:59.000Z","chaincodename":"mycc"}]}
+  {'rows':[{'id':56,'channelname':'mychannel','blockid':24,
+  'txhash':'c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8',
+  'createdt':'2018-03-09T19:40:59.000Z','chaincodename':'mycc'}]}
   */
   app.get('/api/txList/:channel_genesis_hash/:blocknum/:txid', function(
     req,
@@ -121,8 +121,8 @@ const dbroutes = (app, restServices) => {
   Response:
   [
     {
-      "requests": "grpcs://127.0.0.1:7051",
-      "server_hostname": "peer0.org1.example.com"
+      'requests': 'grpcs://127.0.0.1:7051',
+      'server_hostname': 'peer0.org1.example.com'
     }
   ]
   */
@@ -142,9 +142,9 @@ const dbroutes = (app, restServices) => {
   GET /api/blockAndTxList
   curl -i 'http://<host>:<port>/api/blockAndTxList/channel_genesis_hash/<blockNum>/<limitrows>/<offset>'
   Response:
-  {"rows":[{"id":51,"blocknum":50,"datahash":"374cceda1c795e95fc31af8f137feec8ab6527b5d6c85017dd8088a456a68dee",
-  "prehash":"16e76ca38975df7a44d2668091e0d3f05758d6fbd0aab76af39f45ad48a9c295","channelname":"mychannel","txcount":1,
-  "createdt":"2018-03-13T15:58:45.000Z","txhash":["6740fb70ed58d5f9c851550e092d08b5e7319b526b5980a984b16bd4934b87ac"]}]}
+  {'rows':[{'id':51,'blocknum':50,'datahash':'374cceda1c795e95fc31af8f137feec8ab6527b5d6c85017dd8088a456a68dee',
+  'prehash':'16e76ca38975df7a44d2668091e0d3f05758d6fbd0aab76af39f45ad48a9c295','channelname':'mychannel','txcount':1,
+  'createdt':'2018-03-13T15:58:45.000Z','txhash':['6740fb70ed58d5f9c851550e092d08b5e7319b526b5980a984b16bd4934b87ac']}]}
   *
   */
 
@@ -175,8 +175,8 @@ const dbroutes = (app, restServices) => {
   GET /api/txByMinute
   curl -i 'http://<host>:<port>/api/txByMinute/<channel_genesis_hash>/<hours>'
   Response:
-  {"rows":[{"datetime":"2018-03-13T17:46:00.000Z","count":"0"},{"datetime":"2018-03-13T17:47:00.000Z","count":"0"},{"datetime":"2018-03-13T17:48:00.000Z","count":"0"},{"datetime":"2018-03-13T17:49:00.000Z","count":"0"},{"datetime":"2018-03-13T17:50:00.000Z","count":"0"},{"datetime":"2018-03-13T17:51:00.000Z","count":"0"},
-  {"datetime":"2018-03-13T17:52:00.000Z","count":"0"},{"datetime":"2018-03-13T17:53:00.000Z","count":"0"}]}
+  {'rows':[{'datetime':'2018-03-13T17:46:00.000Z','count':'0'},{'datetime':'2018-03-13T17:47:00.000Z','count':'0'},{'datetime':'2018-03-13T17:48:00.000Z','count':'0'},{'datetime':'2018-03-13T17:49:00.000Z','count':'0'},{'datetime':'2018-03-13T17:50:00.000Z','count':'0'},{'datetime':'2018-03-13T17:51:00.000Z','count':'0'},
+  {'datetime':'2018-03-13T17:52:00.000Z','count':'0'},{'datetime':'2018-03-13T17:53:00.000Z','count':'0'}]}
 
   */
 
@@ -201,8 +201,8 @@ const dbroutes = (app, restServices) => {
   GET /api/txByHour
   curl -i 'http://<host>:<port>/api/txByHour/<channel_genesis_hash>/<days>'
   Response:
-  {"rows":[{"datetime":"2018-03-12T19:00:00.000Z","count":"0"},
-  {"datetime":"2018-03-12T20:00:00.000Z","count":"0"}]}
+  {'rows':[{'datetime':'2018-03-12T19:00:00.000Z','count':'0'},
+  {'datetime':'2018-03-12T20:00:00.000Z','count':'0'}]}
   */
 
   app.get('/api/txByHour/:channel_genesis_hash/:days', function(req, res) {
@@ -228,7 +228,7 @@ const dbroutes = (app, restServices) => {
   GET /api/blocksByMinute
   curl -i 'http://<host>:<port>/api/blocksByMinute/<channel_genesis_hash>/<hours>'
   Response:
-  {"rows":[{"datetime":"2018-03-13T19:59:00.000Z","count":"0"}]}
+  {'rows':[{'datetime':'2018-03-13T19:59:00.000Z','count':'0'}]}
 
   */
 
@@ -258,7 +258,7 @@ const dbroutes = (app, restServices) => {
   GET /api/blocksByHour
   curl -i 'http://<host>:<port>/api/blocksByHour/<channel_genesis_hash>/<days>'
   Response:
-  {"rows":[{"datetime":"2018-03-13T20:00:00.000Z","count":"0"}]}
+  {'rows':[{'datetime':'2018-03-13T20:00:00.000Z','count':'0'}]}
 
   */
 
@@ -283,7 +283,7 @@ const dbroutes = (app, restServices) => {
   GET /api/txByOrg
   curl -i 'http://<host>:<port>/api/txByOrg/<channel_genesis_hash>'
   Response:
-  {"rows":[{"count":"4","creator_msp_id":"Org1"}]}
+  {'rows':[{'count':'4','creator_msp_id':'Org1'}]}
 
   */
   app.get('/api/txByOrg/:channel_genesis_hash', function(req, res) {
@@ -291,10 +291,18 @@ const dbroutes = (app, restServices) => {
 
     if (channel_genesis_hash) {
       statusMetrics.getTxByOrgs(channel_genesis_hash).then(rows => {
-        if (rows) {
+        restServices.getOrganizations(channel_genesis_hash).then(data => {
+          for (let organization of rows) {
+            var index = data.indexOf(organization.creator_msp_id);
+            if (index > -1) {
+              data.splice(index, 1);
+            }
+          }
+          for (let org_id of data) {
+            rows.push({ count: '0', creator_msp_id: org_id });
+          }
           return res.send({ status: 200, rows });
-        }
-        return requtil.notFound(req, res);
+        });
       });
     } else {
       return requtil.invalidRequest(req, res);
@@ -308,9 +316,9 @@ const dbroutes = (app, restServices) => {
            Response:
            [
              {
-               "channelName": "mychannel",
-               "channel_hash": "",
-               "craetedat": "1/1/2018"
+               'channelName': 'mychannel',
+               'channel_hash': '',
+               'craetedat': '1/1/2018'
              }
            ]
          */

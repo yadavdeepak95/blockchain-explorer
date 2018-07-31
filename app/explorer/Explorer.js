@@ -3,14 +3,15 @@
  */
 var express = require('express');
 var bodyParser = require('body-parser');
-var dbroutes = require('./rest/dbroutes.js');
-var platformroutes = require('./rest/platformroutes.js');
+var PlatformBuilder = require('../platform/PlatformBuilder');
 var explorerconfig = require('./explorerconfig.json');
-var PersistenceFactory = require('../persistence/PersistenceFactory.js');
-var timer = require('./backend/timer.js');
+var PersistenceFactory = require('../persistence/PersistenceFactory');
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../../swagger.json');
-var compression = require('compression');
+
+const PERSISTENCE = 'persistence';
+const PLATFORMS = 'platforms';
 
 class Explorer {
   constructor() {
@@ -22,9 +23,8 @@ class Explorer {
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument)
     );
-    this.app.use(compression());
     this.persistence = {};
-    this.platforms = explorerconfig['platforms'];
+    this.platforms = [];
   }
 
   getApp() {
@@ -32,19 +32,34 @@ class Explorer {
   }
 
   async initialize(broadcaster) {
-    this.persistence = await PersistenceFactory.create(
-      explorerconfig['persistence']
-    );
-    dbroutes(this.app, this.persistence);
-    for (let pltfrm of this.platforms) {
-      await platformroutes(this.app, pltfrm, this.persistence);
-      timer.start(platform, this.persistence, broadcaster);
+    try {
+      this.persistence = await PersistenceFactory.create(
+        explorerconfig[PERSISTENCE]
+      );
+      for (let pltfrm of explorerconfig[PLATFORMS]) {
+        let platform = await PlatformBuilder.build(
+          this.app,
+          pltfrm,
+          this.persistence,
+          broadcaster
+        );
+        this.platforms.push(platform);
+      }
+    } catch (e) {
+      console.log('Explorer >>> ' + e);
+      this.close();
+      process.exit(1);
     }
   }
 
   close() {
     if (this.persistence) {
       this.persistence.closeconnection();
+    }
+    for (let platform of this.platforms) {
+      if (platform) {
+        platform.distroy();
+      }
     }
   }
 }

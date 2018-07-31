@@ -2,8 +2,8 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-var CRUDService = require('./CRUDService.js');
-var MetricService = require('./MetricService.js');
+var CRUDService = require('../../platform/fabric/persistence/CRUDService');
+var MetricService = require('../../platform/fabric/persistence/MetricService');
 var pgservice = require('./db/pgservice.js');
 
 class Persist {

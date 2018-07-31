@@ -16,6 +16,7 @@ var helper = require('./app/helper.js');
 var logger = helper.getLogger('main');
 var express = require('express');
 var path = require('path');
+var Explorer = require('./app/explorer/Explorer');
 
 var host = process.env.HOST || appconfig.host;
 var port = process.env.PORT || appconfig.port;
@@ -34,7 +35,7 @@ class Broadcaster extends WebSocket.Server {
   broadcast(data) {
     this.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        console.log('Broadcast >> ' + JSON.stringify(data));
+        logger.debug('Broadcast >> %j' + data);
         client.send(JSON.stringify(data));
       }
     });
@@ -42,13 +43,8 @@ class Broadcaster extends WebSocket.Server {
 }
 
 var server;
+var explorer;
 async function startExplorer() {
-  var Explorer = {};
-  if (appconfig.version && appconfig.version === '1.2.0') {
-    Explorer = require('./app/explorer/Explorer_' + appconfig.version);
-  } else {
-    Explorer = require('./app/explorer/Explorer');
-  }
   explorer = new Explorer();
   //============ web socket ==============//
   server = http.createServer(explorer.getApp());
@@ -79,13 +75,26 @@ server.on('connection', connection => {
   );
 });
 
+process.on('unhandledRejection', up => {
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Error >>>>>>>>>>>>>>>>>>>>>');
+  console.log(up);
+  explorer.close();
+  process.exit(1);
+});
+process.on('uncaughtException', up => {
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Error >>>>>>>>>>>>>>>>>>>>>');
+  console.log(up);
+  explorer.close();
+  process.exit(1);
+});
+
 // this function is called when you want the server to die gracefully
 // i.e. wait for existing connections
 var shutDown = function() {
   console.log('Received kill signal, shutting down gracefully');
   server.close(() => {
-    console.log('Closed out remaining connections');
     explorer.close();
+    console.log('Closed out connections');
     process.exit(0);
   });
 

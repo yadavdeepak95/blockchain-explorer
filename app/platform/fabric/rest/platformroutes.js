@@ -5,8 +5,6 @@
 var requtil = require('./requestutils');
 
 const platformroutes = async function(app, restServices) {
-  //let platform = platform;
-  //let proxy = platform.getDefaultProxy();
   let statusMetrics = restServices.getPersistence().getMetricService();
   let crudService = restServices.getPersistence().getCrudService();
 
@@ -16,24 +14,24 @@ const platformroutes = async function(app, restServices) {
       curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
       *
       */
-  app.get('/api/block/:channel/:number', function(req, res) {
+  app.get('/api/block/:channel_genesis_hash/:number', function(req, res) {
     let number = parseInt(req.params.number);
-    let channelName = req.params.channel;
-    /*if (!isNaN(number) && channelName) {
-      proxy.getBlockByNumber(channelName, number).then(block => {
-        res.send({
-          status: 200,
-          number: block.header.number.toString(),
-          previous_hash: block.header.previous_hash,
-          data_hash: block.header.data_hash,
-          transactions: block.data.data
+    let channel_genesis_hash = req.params.channel_genesis_hash;
+    if (!isNaN(number) && channel_genesis_hash) {
+      restServices
+        .getBlockByNumber(channel_genesis_hash, number)
+        .then(block => {
+          res.send({
+            status: 200,
+            number: block.header.number.toString(),
+            previous_hash: block.header.previous_hash,
+            data_hash: block.header.data_hash,
+            transactions: block.data.data
+          });
         });
-      });
-    } else {*/
-
-    console.log('/api/block/:channel/:number');
-    return requtil.invalidRequest(req, res);
-    //}
+    } else {
+      return requtil.invalidRequest(req, res);
+    }
   });
 
   /**
@@ -42,9 +40,9 @@ const platformroutes = async function(app, restServices) {
       curl -i http://<host>:<port>/api/channels
       Response:
       {
-      "channels": [
+      'channels': [
           {
-          "channel_id": "mychannel"
+          'channel_id': 'mychannel'
           }
       ]
       }
@@ -52,13 +50,10 @@ const platformroutes = async function(app, restServices) {
 
   app.get('/api/channels', function(req, res) {
     let channels = restServices.getChannels();
-
     let response = {
       status: 200
     };
     response['channels'] = channels;
-    console.log('this.channelGenHash response >>> ' + JSON.stringify(response));
-
     res.send(response);
   });
 
@@ -78,20 +73,17 @@ const platformroutes = async function(app, restServices) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get('/api/changeChannel/:channel_genesis_hash', async function(req, res) {
+  app.get('/api/changeChannel/:channel_genesis_hash', function(req, res) {
     let channel_genesis_hash = req.params.channel_genesis_hash;
-    let channel = await crudService.getChannelByGenesisBlockHash(
-      channel_genesis_hash
-    );
-    restServices.changeChannel(channel.name);
-    let curChannel = await restServices.getGenesisBlockHash(channel.name);
-    res.send({
-      currentChannel: curChannel
+    restServices.changeChannel(channel_genesis_hash).then(data => {
+      res.send({
+        currentChannel: data
+      });
     });
   });
 
   /***
-     Read "blockchain-explorer/app/config/CREATE-CHANNEL.md" on "how to create a channel"
+     Read 'blockchain-explorer/app/config/CREATE-CHANNEL.md' on 'how to create a channel'
 
       The values of the profile and genesisBlock are taken fron the configtx.yaml file that
       is used by the configtxgen tool
@@ -104,60 +96,55 @@ const platformroutes = async function(app, restServices) {
   Create new channel
   POST /api/channel
   Content-Type : application/x-www-form-urlencoded
-  {channelName:"newchannel02"
-  genesisBlock:"TwoOrgsOrdererGenesis"
-  orgName:"Org1"
-  profile:"TwoOrgsChannel"}
-  {fieldname: "channelArtifacts", fieldname: "channelArtifacts"}
-  <input type="file" name="channelArtifacts" multiple />
-  Response: {  success: true, message: "Successfully created channel "   }
+  {channelName:'newchannel02'
+  genesisBlock:'TwoOrgsOrdererGenesis'
+  orgName:'Org1'
+  profile:'TwoOrgsChannel'}
+  {fieldname: 'channelArtifacts', fieldname: 'channelArtifacts'}
+  <input type='file' name='channelArtifacts' multiple />
+  Response: {  success: true, message: 'Successfully created channel '   }
   */
 
   app.post('/api/channel', async function(req, res) {
-    /*try {
+    try {
       // upload channel config, and org config
       let artifacts = await requtil.aSyncUpload(req, res);
-      let chCreate = await chs.createChannel(artifacts, platform, crudService);
+      let chCreate = await restServices.createChannel(artifacts);
       let channelResponse = {
         success: chCreate.success,
         message: chCreate.message
       };
       return res.send(channelResponse);
-
     } catch (err) {
-      logger.error(err)
+      logger.error(err);
       let channelError = {
         success: false,
-        message: "Invalid request, payload"
-      }
+        message: 'Invalid request, payload'
+      };
       return res.send(channelError);
-    }*/
-    //remove
-    console.log('/api/channel');
-    return requtil.invalidRequest(req, res);
+    }
   });
 
   /***
       An API to join channel
   POST /api/joinChannel
 
-  curl -X POST -H "Content-Type: application/json" -d '{ "orgName":"Org1","channelName":"newchannel"}' http://localhost:8080/api/joinChannel
+  curl -X POST -H 'Content-Type: application/json' -d '{ 'orgName':'Org1','channelName':'newchannel'}' http://localhost:8080/api/joinChannel
 
-  Response: {  success: true, message: "Successfully joined peer to the channel "   }
+  Response: {  success: true, message: 'Successfully joined peer to the channel '   }
   */
 
   app.post('/api/joinChannel', function(req, res) {
-    /*var channelName = req.body.channelName;
+    var channelName = req.body.channelName;
     var peers = req.body.peers;
     var orgName = req.body.orgName;
     if (channelName && peers && orgName) {
-      proxy.joinChannel(channelName, peers, orgName, platform).then(resp => {
+      restServices.joinChannel(channelName, peers, orgName).then(resp => {
         return res.send(resp);
       });
-    } else {*/
-    console.log('/api/joinChannel');
-    return requtil.invalidRequest(req, res);
-    //}
+    } else {
+      return requtil.invalidRequest(req, res);
+    }
   });
 
   /**
@@ -167,11 +154,11 @@ const platformroutes = async function(app, restServices) {
       Response:
       [
         {
-          "channelName": "mychannel",
-          "chaincodename": "mycc",
-          "path": "github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02",
-          "version": "1.0",
-          "txCount": 0
+          'channelName': 'mychannel',
+          'chaincodename': 'mycc',
+          'path': 'github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02',
+          'version': '1.0',
+          'txCount': 0
         }
       ]
     */
@@ -200,8 +187,8 @@ const platformroutes = async function(app, restServices) {
   Response:
   [
     {
-      "requests": "grpcs://127.0.0.1:7051",
-      "server_hostname": "peer0.org1.example.com"
+      'requests': 'grpcs://127.0.0.1:7051',
+      'server_hostname': 'peer0.org1.example.com'
     }
   ]
   */
