@@ -1,10 +1,10 @@
 'use strict';
 
 var chaincodeService = require('./chaincodeService.js');
-var helper = require('../../../helper.js');
+var helper = require('../../../common/helper');
 var logger = helper.getLogger('RestServices');
 
-class RestServices {
+class ProxyServices {
   constructor(platform, persistence) {
     this.platform = platform;
     this.persistence = persistence;
@@ -43,7 +43,6 @@ class RestServices {
     for (let node of nodes) {
       if (node.peer_type === 'PEER') {
         let res = await client.getPeerStatus(node);
-        console.log(JSON.stringify(res));
         node.status = res.status ? res.status : 'DOWN';
         peers.push(node);
       }
@@ -125,8 +124,18 @@ class RestServices {
     return client.getStatus();
   }
 
-  getChannels() {
-    let respose = this.platform.getClient().getChannelNames();
+  async getChannels() {
+    let client_channels = this.platform.getClient().getChannelNames();
+    let channels = await this.persistence.getCrudService().getChannelsInfo();
+    let respose = [];
+
+    for (let i = 0; i < channels.length; i++) {
+      var index = client_channels.indexOf(channels[i].channelname);
+      if (!(index > -1)) {
+        await this.platform.getClient().initializeNewChannel(channels[i].channelname);
+      }
+      respose.push(channels[i].channelname);
+    }
     logger.debug('getChannels >> %j', respose);
     return respose;
   }
@@ -140,4 +149,4 @@ class RestServices {
   }
 }
 
-module.exports = RestServices;
+module.exports = ProxyServices;

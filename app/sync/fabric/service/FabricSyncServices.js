@@ -3,14 +3,14 @@
 var fs = require('fs-extra');
 var grpc = require('grpc');
 var convertHex = require('convert-hex');
-var helper = require('../../../helper.js');
-var logger = helper.getLogger('FabricServices');
-const FabricUtils = require('../utils/FabricUtils');
-const explorer_const = require('../utils/FabricUtils').explorer.const;
+var helper = require('../../../common/helper');
+var logger = helper.getLogger('FabricSyncServices');
+const FabricUtils = require('../../../platform/fabric/utils/FabricUtils');
+const fabric_const = require('../../../platform/fabric/utils/FabricUtils').fabric.const;
 
 var _transProto = grpc.load(
   __dirname +
-    '/../../../../node_modules/fabric-client/lib/protos/peer/transaction.proto'
+  '/../../../../node_modules/fabric-client/lib/protos/peer/transaction.proto'
 ).protos;
 
 const blocksInProcess = [];
@@ -23,29 +23,34 @@ for (let i = 0; i < keys.length; i++) {
   _validation_codes[new_key] = keys[i];
 }
 
-class FabricServices {
-  constructor(platform, persistence) {
-    this.platform = platform;
+class FabricSyncServices {
+  constructor(fabricScanner, persistence) {
+    this.fabricScanner = fabricScanner;
     this.persistence = persistence;
     this.blocks = [];
     this.synchInProcess = [];
   }
 
-  async initialize() {}
+  async initialize() { }
 
   async synchNetworkConfigToDB(client) {
     let channels = client.getChannels();
+
+
     for (var [channel_name, channel] of channels.entries()) {
+
       let block = await client.getGenesisBlock(channel);
       let channel_genesis_hash = await FabricUtils.generateBlockHash(
         block.header
       );
+
       let res = await this.insertNewChannel(
         client,
         channel,
         block,
         channel_genesis_hash
       );
+
       if (res) {
         await this.insertFromDiscoveryResults(
           client,
@@ -55,15 +60,18 @@ class FabricServices {
       } else {
         return false;
       }
+
     }
     return true;
   }
   // insert new channel to DB
   async insertNewChannel(client, channel, block, channel_genesis_hash) {
     let channel_name = channel.getName();
+
     let channelInfo = await this.persistence
       .getCrudService()
       .getChannel(channel_name, channel_genesis_hash);
+
     if (!channelInfo) {
       let count = await this.persistence
         .getCrudService()
@@ -87,12 +95,12 @@ class FabricServices {
         }
       } else {
         var notify = {
-          notify_type: explorer_const.NOTITY_TYPE_EXISTCHANNEL,
-          network_name: this.platform.network_name,
+          notify_type: fabric_const.NOTITY_TYPE_EXISTCHANNEL,
+          network_name: this.fabricScanner.network_name,
           client_name: client.client_name,
           channel_name: channel_name
         };
-        process.send(notify);
+        this.fabricScanner.send(notify);
         return false;
       }
     }
@@ -317,7 +325,7 @@ class FabricServices {
     if (!channel_genesis_hash) {
       // get discovery and insert channel details to db and create new channel object in client context
       setTimeout(
-        async function(client, channel_name, block) {
+        async function (client, channel_name, block) {
           await client.initializeNewChannel(channel_name);
           channel_genesis_hash = client.getChannelGenHash(channel_name);
           // inserting new channel details to DB
@@ -335,13 +343,13 @@ class FabricServices {
           );
 
           var notify = {
-            notify_type: explorer_const.NOTITY_TYPE_NEWCHANNEL,
-            network_name: _self.platform.network_name,
+            notify_type: fabric_const.NOTITY_TYPE_NEWCHANNEL,
+            network_name: _self.fabricScanner.network_name,
             client_name: client.client_name,
             channel_name: channel_name
           };
 
-          process.send(notify);
+          _self.fabricScanner.send(notify);
         },
         10000,
         client,
@@ -349,10 +357,10 @@ class FabricServices {
         block
       );
     } else if (
-      header.channel_header.typeString === explorer_const.BLOCK_TYPE_CONFIG
+      header.channel_header.typeString === fabric_const.BLOCK_TYPE_CONFIG
     ) {
       setTimeout(
-        async function(client, channel_name, channel_genesis_hash) {
+        async function (client, channel_name, channel_genesis_hash) {
           // get discovery and insert new peer, orders details to db
           let channel = client.hfc_client.getChannel(channel_name);
           await client.initializeChannelFromDiscover(channel_name);
@@ -362,13 +370,13 @@ class FabricServices {
             channel_genesis_hash
           );
           var notify = {
-            notify_type: explorer_const.NOTITY_TYPE_UPDATECHANNEL,
-            network_name: _self.platform.network_name,
+            notify_type: fabric_const.NOTITY_TYPE_UPDATECHANNEL,
+            network_name: _self.fabricScanner.network_name,
             client_name: client.client_name,
             channel_name: channel_name
           };
 
-          process.send(notify);
+          _self.fabricScanner.send(notify);
         },
         10000,
         client,
@@ -485,11 +493,11 @@ class FabricServices {
         // checking new chaincode is deployed
         if (
           header.channel_header.typeString ===
-            explorer_const.BLOCK_TYPE_ENDORSER_TRANSACTION &&
-          chaincode === explorer_const.CHAINCODE_LSCC
+          fabric_const.BLOCK_TYPE_ENDORSER_TRANSACTION &&
+          chaincode === fabric_const.CHAINCODE_LSCC
         ) {
           setTimeout(
-            async function(client, channel_name, channel_genesis_hash) {
+            async function (client, channel_name, channel_genesis_hash) {
               let channel = client.hfc_client.getChannel(channel_name);
               // get discovery and insert chaincode details to db
               await _self.insertFromDiscoveryResults(
@@ -499,13 +507,14 @@ class FabricServices {
               );
 
               var notify = {
-                notify_type: explorer_const.NOTITY_TYPE_CHAINCODE,
-                network_name: _self.platform.network_name,
+                notify_type: fabric_const.NOTITY_TYPE_CHAINCODE,
+                network_name: _self.fabricScanner.network_name,
                 client_name: client.client_name,
                 channel_name: channel_name
               };
 
-              process.send(notify);
+              _self.fabricScanner.send(notify);
+
             },
             10000,
             client,
@@ -536,7 +545,7 @@ class FabricServices {
           payload_proposal_hash: payload_proposal_hash,
           endorser_id_bytes: endorser_id_bytes
         };
-        explorer_const;
+
         // insert transaction
         let res = await this.persistence
           .getCrudService()
@@ -547,8 +556,8 @@ class FabricServices {
       if (status) {
         //push last block
         var notify = {
-          notify_type: explorer_const.NOTITY_TYPE_BLOCK,
-          network_name: this.platform.network_name,
+          notify_type: fabric_const.NOTITY_TYPE_BLOCK,
+          network_name: _self.fabricScanner.network_name,
           client_name: client.client_name,
           channel_name: channel_name,
           title: 'Block ' + block.header.number + ' Added',
@@ -564,7 +573,7 @@ class FabricServices {
           datahash: block.header.data_hash
         };
 
-        process.send(notify);
+        _self.fabricScanner.send(notify);
       }
     } else {
       logger.error('Failed to process the block %j', block);
@@ -577,8 +586,8 @@ class FabricServices {
     return;
   }
 
-  getPlatform() {
-    return this.platform;
+  getFabricScanner() {
+    return this.fabricScanner;
   }
 
   getPersistence() {
@@ -586,7 +595,7 @@ class FabricServices {
   }
 }
 
-module.exports = FabricServices;
+module.exports = FabricSyncServices;
 // transaction validation code
 function convertValidationCode(code) {
   if (typeof code === 'string') {

@@ -4,29 +4,26 @@
 
 const path = require('path');
 const fs = require('fs-extra');
-const { fork } = require('child_process');
-const RestServices = require('./service/RestServices.js');
-const dbroutes = require('./rest/dbroutes.js');
-const platformroutes = require('./rest/platformroutes.js');
-const helper = require('../../helper.js');
+
+const ProxyServices = require('./service/ProxyServices.js');
+const helper = require('../../common/helper');
 const logger = helper.getLogger('Platform');
 const FabricUtils = require('./utils/FabricUtils.js');
+const FabricSyncListener = require('./FabricSyncListener.js');
 
-const explorer_const = require('./utils/FabricUtils.js').explorer.const;
+const fabric_const = require('./utils/FabricUtils.js').fabric.const;
 
 const config_path = path.resolve(__dirname, './config.json');
 
 class Platform {
-  constructor(app, persistence, broadcaster) {
-    this.app = app;
+  constructor(persistence) {
     this.persistence = persistence;
-    this.broadcaster = broadcaster;
     this.networks = new Map();
-    this.clientProcess = [];
-    this.restServices = new RestServices(this, persistence);
+    this.proxyServices = new ProxyServices(this, persistence);
     this.defaultNetwork;
     this.defaultClient;
     this.network_configs;
+    this.syncListener;
   }
 
   async initialize() {
@@ -47,16 +44,14 @@ class Platform {
       );
       throw 'There is no client found for Hyperledger fabric platform';
     }
-    // initializing the rest app services
-    await dbroutes(this.app, this.restServices);
-    await platformroutes(this.app, this.restServices);
+
   }
 
   async buildClientsFromFile(config_path) {
     let _self = this;
     // loading the config.json
     let all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
-    let network_configs = all_config[explorer_const.NETWORK_CONFIGS];
+    let network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
     // setting organization enrolment files
     logger.debug('Setting admin organization enrolment files');
@@ -90,87 +85,14 @@ class Platform {
           // set client into clients map
           let clients = this.networks.get(network_name);
           clients.set(client_name, client);
-          if (client.status) {
-            this.startClientProcessor(network_name, client_name);
-          }
         }
       }
     }
   }
 
-  startClientProcessor(network_name, client_name) {
-    const clientProcessor = fork(
-      path.resolve(__dirname, './ClientProcessor.js'),
-      [network_name, client_name]
-    );
-
-    this.clientProcess.push(clientProcessor);
-
-    clientProcessor.on('message', msg => {
-      // get message from child process
-      logger.debug('Message from child %j', msg);
-      if (explorer_const.NOTITY_TYPE_NEWCHANNEL === msg.notify_type) {
-        // initialize new channel instance in parent
-        if (msg.network_name && msg.client_name) {
-          let client = this.networks.get(msg.network_name).get(msg.client_name);
-          if (msg.channel_name) {
-            client.initializeNewChannel(msg.channel_name);
-          } else {
-            logger.error(
-              'Channel name should pass to proces the notification from child process'
-            );
-          }
-        } else {
-          logger.error(
-            'Network name and client name should pass to proces the notification from child process'
-          );
-        }
-      } else if (
-        explorer_const.NOTITY_TYPE_UPDATECHANNEL === msg.notify_type ||
-        explorer_const.NOTITY_TYPE_CHAINCODE === msg.notify_type
-      ) {
-        // update channel details in parent
-        if (msg.network_name && msg.client_name) {
-          let client = this.networks.get(msg.network_name).get(msg.client_name);
-          if (msg.channel_name) {
-            client.initializeChannelFromDiscover(msg.channel_name);
-          } else {
-            logger.error(
-              'Channel name should pass to proces the notification from child process'
-            );
-          }
-        } else {
-          logger.error(
-            'Network name and client name should pass to proces the notification from child process'
-          );
-        }
-      } else if (explorer_const.NOTITY_TYPE_BLOCK === msg.notify_type) {
-        // broad cast new block message to client
-        var notify = {
-          title: msg.title,
-          type: msg.type,
-          message: msg.message,
-          time: msg.time,
-          txcount: msg.txcount,
-          datahash: msg.datahash
-        };
-        this.getBroadcaster().broadcast(notify);
-      } else if (explorer_const.NOTITY_TYPE_EXISTCHANNEL === msg.notify_type) {
-        throw 'Channel name [' +
-          msg.channel_name +
-          '] is already exist in DB , Kindly re-run the DB scripts to proceed';
-      } else if (msg.error) {
-        throw 'Client Processor Error >> ' + msg.error;
-      } else {
-        logger.error(
-          'Child process notify is not implemented for this type %s ',
-          msg.notify_type
-        );
-      }
-    });
-    clientProcessor.send({
-      message: 'Successfully send a message to child process'
-    });
+  initializeSyncLocal(broadcaster) {
+    this.syncListener = new FabricSyncListener(this, broadcaster);
+    this.syncListener.initialize();
   }
 
   changeNetwork(network_name, client_name, channel_name) {
@@ -200,10 +122,6 @@ class Platform {
     }
   }
 
-  getApp() {
-    return this.app;
-  }
-
   getNetworks() {
     return this.networks;
   }
@@ -225,22 +143,20 @@ class Platform {
     return this.fabricServices;
   }
 
-  getRestServices() {
-    return this.restServices;
+  getProxyServices() {
+    return this.proxyServices;
   }
 
   setDefaultClient(defaultClient) {
     this.defaultClient = defaultClient;
   }
 
-  async distroy() {
+  async destroy() {
     console.log(
       '<<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>'
     );
-    for (var [network_name, clients] of this.networks.entries()) {
-      for (let clientPro of this.clientProcess) {
-        clientPro.kill('SIGINT');
-      }
+    if (this.syncListener) {
+      this.syncListener.close();
     }
   }
 }

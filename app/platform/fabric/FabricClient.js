@@ -3,7 +3,7 @@
 */
 
 var Fabric_Client = require('fabric-client');
-var helper = require('../../helper.js');
+var helper = require('../../common/helper');
 var logger = helper.getLogger('FabricClient');
 const BlockDecoder = require('fabric-client/lib/BlockDecoder');
 var Admin = require('./Admin.js');
@@ -14,7 +14,7 @@ var channelService = require('./service/channelService.js');
 var FabricUtils = require('./utils/FabricUtils.js');
 const _commonProto = grpc.load(
   __dirname +
-    '/../../../node_modules/fabric-client/lib/protos/common/common.proto'
+  '/../../../node_modules/fabric-client/lib/protos/common/common.proto'
 ).common;
 var Constants = require('fabric-client/lib/Constants.js');
 var ROLES = Constants.NetworkConfig.ROLES;
@@ -79,10 +79,10 @@ class FabricClient {
         logger.debug('Channel Discovery >>  %s', e);
         throw new Error(
           'Default defined channel ' +
-            this.defaultChannel.getName() +
-            ' not found for the client ' +
-            this.client_name +
-            ' peer'
+          this.defaultChannel.getName() +
+          ' not found for the client ' +
+          this.client_name +
+          ' peer'
         );
       }
       // setting default orderer

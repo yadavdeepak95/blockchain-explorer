@@ -1,7 +1,7 @@
 /*
     SPDX-License-Identifier: Apache-2.0
 */
-var helper = require('../../helper.js');
+var helper = require('../../common/helper');
 var logger = helper.getLogger('FabricEvent');
 
 class FabricEvent {
@@ -54,7 +54,7 @@ class FabricEvent {
     if (this.peerEventHub) {
       this.peerEventHub.connect();
       // wait 5 sec to process blocks
-      setTimeout(function() {
+      setTimeout(function () {
         _self.synchBlocks();
       }, 5000);
     } else {
@@ -96,7 +96,7 @@ class FabricEvent {
     if (eventHub) {
       eventHub.connect(true);
       setTimeout(
-        function(channel_name) {
+        function (channel_name) {
           _self.synchChannelBlocks(channel_name);
         },
         5000,

@@ -1,46 +1,41 @@
 const path = require('path');
 const fs = require('fs-extra');
-const PersistenceFactory = require('../../persistence/PersistenceFactory');
-const explorerconfig = require('../../explorer/explorerconfig.json');
-const FabricServices = require('./service/FabricServices.js');
-const FabricUtils = require('./utils/FabricUtils.js');
+
+const FabricSyncServices = require('./service/FabricSyncServices');
+const FabricUtils = require('../../platform/fabric/utils/FabricUtils');
 const FabricEvent = require('./FabricEvent.js');
 
-const helper = require('../../helper.js');
-const logger = helper.getLogger('Platform');
+const helper = require('../../common/helper');
+const logger = helper.getLogger('FabricScanner');
 
-const explorer_const = require('./utils/FabricUtils.js').explorer.const;
+const fabric_const = require('../../platform/fabric/utils/FabricUtils').fabric.const;
+const config_path = path.resolve(__dirname, '../../platform/fabric/config.json');
 
-const config_path = path.resolve(__dirname, './config.json');
-
-class ClientScanner {
-  constructor(network_name, client_name) {
-    this.network_name = network_name;
-    this.client_name = client_name;
+class FabricScanner {
+  constructor(persistence) {
+    this.network_name;
+    this.client_name;
     this.client;
     this.eventHub;
-    this.persistence;
-    this.fabricServices;
+    this.persistence = persistence;
+    this.fabricSyncServices = new FabricSyncServices(this, this.persistence);
     this.synchBlocksTime = 60000;
     this.client_configs;
   }
 
-  async initialize() {
+  async initialize(args) {
     let _self = this;
+    this.network_name = args[0];
+    this.client_name = args[1];
 
     logger.debug(
       '******* Initialization started for child client process %s ******',
       this.client_name
     );
 
-    this.persistence = await PersistenceFactory.create(
-      explorerconfig[explorer_const.PERSISTENCE]
-    );
-    this.fabricServices = new FabricServices(this, this.persistence);
-
     // loading the config.json
     let all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
-    let network_configs = all_config[explorer_const.NETWORK_CONFIGS];
+    let network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
     // setting the block synch interval time
     await this.setSynchBlocksTime(all_config);
@@ -58,23 +53,23 @@ class ClientScanner {
       this.client_name
     );
     if (!this.client) {
-      throw 'There is no client found for Hyperledger fabric platform';
+      throw 'There is no client found for Hyperledger fabric scanner';
     }
 
     // updating the client network and other details to DB
-    let res = await this.fabricServices.synchNetworkConfigToDB(this.client);
+    let res = await this.fabricSyncServices.synchNetworkConfigToDB(this.client);
 
     if (!res) {
       return;
     }
 
     //start event
-    this.eventHub = new FabricEvent(this.client, this.fabricServices);
+    this.eventHub = new FabricEvent(this.client, this.fabricSyncServices);
     await this.eventHub.initialize();
 
     // setting interval for validating any missing block from the current client ledger
     // set synchBlocksTime property in platform config.json in minutes
-    setInterval(function() {
+    setInterval(function () {
       _self.isChannelEventHubConnected();
     }, this.synchBlocksTime);
     logger.debug(
@@ -88,7 +83,7 @@ class ClientScanner {
       // validate channel event is connected
       let status = this.eventHub.isChannelEventHubConnected(channel_name);
       if (status) {
-        await this.fabricServices.synchBlocks(this.client, channel);
+        await this.fabricSyncServices.synchBlocks(this.client, channel);
       } else {
         // channel client is not connected then it will reconnect
         this.eventHub.connectChannelEventHub(channel_name);
@@ -106,7 +101,15 @@ class ClientScanner {
     }
   }
 
-  close() {
+  send(notify) {
+    try {
+      if (process.send) {
+        process.send(notify);
+      }
+    } catch (e) { }
+  }
+
+  destroy() {
     if (this.eventHub) {
       this.eventHub.disconnectEventHubs();
     }
@@ -116,4 +119,4 @@ class ClientScanner {
   }
 }
 
-module.exports = ClientScanner;
+module.exports = FabricScanner;

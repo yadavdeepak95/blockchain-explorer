@@ -2,11 +2,14 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-var requtil = require('./requestutils');
+var requtil = require('../requestutils');
 
-const platformroutes = async function(app, restServices) {
-  let statusMetrics = restServices.getPersistence().getMetricService();
-  let crudService = restServices.getPersistence().getCrudService();
+const platformroutes = async function (app, platform) {
+
+  let proxyServices = platform.getProxyServices();
+  let statusMetrics = platform.getPersistence().getMetricService();
+  let crudService = platform.getPersistence().getCrudService();
+
 
   /***
       Block by number
@@ -14,11 +17,11 @@ const platformroutes = async function(app, restServices) {
       curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
       *
       */
-  app.get('/api/block/:channel_genesis_hash/:number', function(req, res) {
+  app.get('/api/block/:channel_genesis_hash/:number', function (req, res) {
     let number = parseInt(req.params.number);
     let channel_genesis_hash = req.params.channel_genesis_hash;
     if (!isNaN(number) && channel_genesis_hash) {
-      restServices
+      proxyServices
         .getBlockByNumber(channel_genesis_hash, number)
         .then(block => {
           res.send({
@@ -48,13 +51,16 @@ const platformroutes = async function(app, restServices) {
       }
       */
 
-  app.get('/api/channels', function(req, res) {
-    let channels = restServices.getChannels();
-    let response = {
-      status: 200
-    };
-    response['channels'] = channels;
-    res.send(response);
+  app.get('/api/channels', function (req, res) {
+
+    proxyServices.getChannels().then(channels => {
+      let response = {
+        status: 200
+      };
+      response['channels'] = channels;
+      res.send(response);
+    });
+
   });
 
   /**
@@ -62,8 +68,8 @@ const platformroutes = async function(app, restServices) {
   GET /api/curChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get('/api/curChannel', function(req, res) {
-    restServices.getCurrentChannel().then(data => {
+  app.get('/api/curChannel', function (req, res) {
+    proxyServices.getCurrentChannel().then(data => {
       res.send(data);
     });
   });
@@ -73,9 +79,9 @@ const platformroutes = async function(app, restServices) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get('/api/changeChannel/:channel_genesis_hash', function(req, res) {
+  app.get('/api/changeChannel/:channel_genesis_hash', function (req, res) {
     let channel_genesis_hash = req.params.channel_genesis_hash;
-    restServices.changeChannel(channel_genesis_hash).then(data => {
+    proxyServices.changeChannel(channel_genesis_hash).then(data => {
       res.send({
         currentChannel: data
       });
@@ -105,11 +111,11 @@ const platformroutes = async function(app, restServices) {
   Response: {  success: true, message: 'Successfully created channel '   }
   */
 
-  app.post('/api/channel', async function(req, res) {
+  app.post('/api/channel', async function (req, res) {
     try {
       // upload channel config, and org config
       let artifacts = await requtil.aSyncUpload(req, res);
-      let chCreate = await restServices.createChannel(artifacts);
+      let chCreate = await proxyServices.createChannel(artifacts);
       let channelResponse = {
         success: chCreate.success,
         message: chCreate.message
@@ -134,12 +140,12 @@ const platformroutes = async function(app, restServices) {
   Response: {  success: true, message: 'Successfully joined peer to the channel '   }
   */
 
-  app.post('/api/joinChannel', function(req, res) {
+  app.post('/api/joinChannel', function (req, res) {
     var channelName = req.body.channelName;
     var peers = req.body.peers;
     var orgName = req.body.orgName;
     if (channelName && peers && orgName) {
-      restServices.joinChannel(channelName, peers, orgName).then(resp => {
+      proxyServices.joinChannel(channelName, peers, orgName).then(resp => {
         return res.send(resp);
       });
     } else {
@@ -163,12 +169,12 @@ const platformroutes = async function(app, restServices) {
       ]
     */
 
-  app.get('/api/chaincode/:channel', function(req, res) {
+  app.get('/api/chaincode/:channel', function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, async function(data) {
+      statusMetrics.getTxPerChaincode(channelName, async function (data) {
         for (let chaincode of data) {
-          let temp = await restServices.loadChaincodeSrc(chaincode.path);
+          let temp = await proxyServices.loadChaincodeSrc(chaincode.path);
           chaincode.source = temp;
         }
         res.send({
@@ -193,10 +199,10 @@ const platformroutes = async function(app, restServices) {
   ]
   */
 
-  app.get('/api/peersStatus/:channel', function(req, res) {
+  app.get('/api/peersStatus/:channel', function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-      restServices.getPeersStatus(channelName).then(data => {
+      proxyServices.getPeersStatus(channelName).then(data => {
         res.send({ status: 200, peers: data });
       });
     } else {

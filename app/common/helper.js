@@ -21,6 +21,19 @@ var appList = [];
 var path = require('path');
 var fs = require('fs-extra');
 
+exports.getLogger = getLogger;
+exports.readAllFiles = readAllFiles;
+
+exports.explorer = {
+  const: {
+    PERSISTENCE: 'persistence',
+    PLATFORMS: 'platforms',
+    PLATFORM_FABRIC: 'fabric',
+    PERSISTENCE_POSTGRESQL: 'postgreSQL',
+    SYNC_TYPE_LOCAL: 'local'
+  }
+}
+
 function readAllFiles(dir) {
   var files = fs.readdirSync(dir);
   var certs = [];
@@ -45,7 +58,7 @@ logger.setLevel('INFO');
 
 */
 
-var getLogger = function(moduleName) {
+var getLogger = function (moduleName) {
   if (moduleName == 'pgservice') {
     var logger = log4js.getLogger('pgservice');
   } else {

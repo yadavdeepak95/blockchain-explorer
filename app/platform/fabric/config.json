@@ -36,25 +36,25 @@
           "fullpath": false,
           "adminPrivateKey": {
             "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+              "/home/satyanarayana/hlfabric/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
           },
           "signedCert": {
             "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+              "/home/satyanarayana/hlfabric/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
           }
         },
         "Org2MSP": {
           "mspid": "Org2MSP",
           "adminPrivateKey": {
             "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
+              "/home/satyanarayana/hlfabric/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
           }
         },
         "OrdererMSP": {
           "mspid": "OrdererMSP",
           "adminPrivateKey": {
             "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+              "/home/satyanarayana/hlfabric/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
           }
         }
       },
@@ -62,7 +62,7 @@
         "peer0.org1.example.com": {
           "tlsCACerts": {
             "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+              "/home/satyanarayana/hlfabric/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
           },
           "url": "grpcs://localhost:7051",
           "eventUrl": "grpcs://localhost:7053",
@@ -89,7 +89,7 @@
     "network-2": {}
   },
   "keyValueStore": "/tmp/fabric-client-kvs",
-  "configtxgenToolPath": "fabric-path/fabric-samples/bin",
+  "configtxgenToolPath": "/home/satyanarayana/hlfabric/fabric-samples/bin",
   "eventWaitTime": "30000",
   "synchBlocksTime": "3",
   "license": "Apache-2.0"

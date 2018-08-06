@@ -12,11 +12,11 @@ var http = require('http');
 var url = require('url');
 var WebSocket = require('ws');
 var appconfig = require('./appconfig.json');
-var helper = require('./app/helper.js');
+var helper = require('./app/common/helper.js');
 var logger = helper.getLogger('main');
 var express = require('express');
 var path = require('path');
-var Explorer = require('./app/explorer/Explorer');
+var Explorer = require('./app/Explorer');
 
 var host = process.env.HOST || appconfig.host;
 var port = process.env.PORT || appconfig.port;
@@ -35,7 +35,8 @@ class Broadcaster extends WebSocket.Server {
   broadcast(data) {
     this.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        logger.debug('Broadcast >> %j' + data);
+        logger.debug('Broadcast >> %j' , data);
+        console.log('Broadcast >> %j' , data);
         client.send(JSON.stringify(data));
       }
     });
@@ -75,18 +76,6 @@ server.on('connection', connection => {
   );
 });
 
-process.on('unhandledRejection', up => {
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Error >>>>>>>>>>>>>>>>>>>>>');
-  console.log(up);
-  explorer.close();
-  process.exit(1);
-});
-process.on('uncaughtException', up => {
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Error >>>>>>>>>>>>>>>>>>>>>');
-  console.log(up);
-  explorer.close();
-  process.exit(1);
-});
 
 // this function is called when you want the server to die gracefully
 // i.e. wait for existing connections
@@ -109,6 +98,18 @@ var shutDown = function() {
   connections.forEach(curr => curr.end());
   setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 };
+
+process.on('unhandledRejection', up => {
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Unhandled Rejection >>>>>>>>>>>>>>>>>>>>>');
+  console.log(up);
+  shutDown();
+});
+process.on('uncaughtException', up => {
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Unhandled Exception >>>>>>>>>>>>>>>>>>>>>');
+  console.log(up);
+  shutDown();
+});
+
 // listen for TERM signal .e.g. kill
 process.on('SIGTERM', shutDown);
 // listen for INT signal e.g. Ctrl-C
