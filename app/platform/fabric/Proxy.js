@@ -82,16 +82,7 @@ class Proxy {
 
   async getTxByOrgs(channel_genesis_hash) {
     let rows = await this.persistence.getMetricService().getTxByOrgs(channel_genesis_hash);
-    let client = this.platform.getClient();
-    let channel = client.getChannelByHash(channel_genesis_hash);
-    let msps = [];
-    let organizations = [];
-    if (channel && channel._msp_manager) {
-      msps = channel._msp_manager.getMSPs();
-    }
-    for (let msp_id in msps) {
-      organizations.push(msp_id);
-    }
+    let organizations = await this.persistence.getMetricService().getOrgsData(channel_genesis_hash);
 
     for (let organization of rows) {
       var index = organizations.indexOf(organization.creator_msp_id);
@@ -208,9 +199,9 @@ class Proxy {
       };
       this.broadcaster.broadcast(notify);
     } else if (fabric_const.NOTITY_TYPE_EXISTCHANNEL === msg.notify_type) {
-      throw new ExplorerError('Channel name [' +
+      throw new ExplorerError('Explorer is closing due to channel name [' +
         msg.channel_name +
-        '] is already exist in DB , Kindly re-run the DB scripts to proceed');
+        '] is already exist in DB');
     } else if (msg.error) {
       throw new ExplorerError('Client Processor Error >> ' + msg.error);
     } else {
