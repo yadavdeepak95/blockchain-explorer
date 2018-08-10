@@ -11,6 +11,10 @@ async function start() {
   logger.debug('Start synchronizer');
   synchronizer = new Synchronizer(args);
   await synchronizer.initialize();
+
+  console.log('\n');
+  console.log('Synchronizer pid is ' + process.pid);
+  console.log('\n');
 }
 
 start();
