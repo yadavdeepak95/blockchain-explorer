@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import beautify from 'js-beautify';
 import FontAwesome from 'react-fontawesome';
@@ -19,28 +19,44 @@ const styles = () => ({
   }
 });
 
-export const ChaincodeModal = ({ chaincode }) => {
-  const formattedSrc = beautify(chaincode.source, {
-    indent_size: 4
-  });
-  const srcHeader = `${chaincode.chaincodename} ${chaincode.version}`;
+export class ChaincodeModal extends Component {
 
-  return (
-    <div className="sourceCodeDialog">
-      <div className="dialog">
-        <Card>
-          <CardTitle className="dialogTitle">
-            <FontAwesome name="file-text" className="cubeIcon" />
-            {srcHeader}
-          </CardTitle>
-          <CardBody>
-            <textarea className="source-code" value={formattedSrc} readOnly />
-          </CardBody>
-        </Card>
+  handleClose = () => {
+    const { onClose } = this.props;
+    onClose();
+  };
+
+  render() {
+    const { chaincode } = this.props;
+    const formattedSrc = beautify(chaincode.source, {
+      indent_size: 4
+    });
+    const srcHeader = `${chaincode.chaincodename} ${chaincode.version}`;
+
+    return (
+      <div className="sourceCodeDialog">
+        <div className="dialog">
+          <Card>
+            <CardTitle className="dialogTitle">
+              <FontAwesome name="file-text" className="cubeIcon" />
+              {srcHeader}
+              <button
+                type="button"
+                onClick={this.handleClose}
+                className="closeBtn"
+              >
+                <FontAwesome name="close" />
+              </button>
+            </CardTitle>
+            <CardBody>
+              <textarea className="source-code" value={formattedSrc} readOnly />
+            </CardBody>
+          </Card>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 ChaincodeModal.propTypes = {
   chaincode: chaincodeType
