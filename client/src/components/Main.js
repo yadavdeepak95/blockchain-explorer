@@ -30,6 +30,7 @@ import PageNotFound from './View/PageNotFound';
 
 const {
   currentChannelSelector,
+  blockActivitySelector,
   channelListSelector,
   dashStatsSelector,
   peerStatusSelector,
@@ -44,13 +45,13 @@ const {
   transactionSelector,
   transactionListSelector,
   blockListSearchSelector,
-  transactionListSearchSelector,
-  orgsSelector
+  transactionListSearchSelector
 } = tableSelectors;
 
 export const Main = props => {
   const {
     blockList,
+    blockActivity,
     chaincodeList,
     channels,
     currentChannel,
@@ -63,18 +64,15 @@ export const Main = props => {
     transactionList,
     blockListSearch,
     transactionListSearch,
-    orgs,
     getBlockListSearch,
-    getTransactionListSearch,
-    getOrgs
+    getTransactionListSearch
   } = props;
 
   const blocksViewProps = {
     blockList,
     blockListSearch,
     getBlockListSearch,
-    getOrgs,
-    orgs,
+    transactionByOrg,
     currentChannel,
     getTransaction,
     transaction
@@ -91,7 +89,8 @@ export const Main = props => {
     blockList,
     dashStats,
     peerStatus,
-    transactionByOrg
+    transactionByOrg,
+    blockActivity
   };
 
   const networkViewProps = {
@@ -103,12 +102,10 @@ export const Main = props => {
     transaction,
     transactionList,
     getTransaction,
+    transactionByOrg,
     transactionListSearch,
-    getTransactionListSearch,
-    getOrgs,
-    orgs
+    getTransactionListSearch
   };
-
   return (
     <Router>
       <div className="App">
@@ -179,12 +176,11 @@ export default connect(
     transactionList: transactionListSelector(state),
     blockListSearch: blockListSearchSelector(state),
     transactionListSearch: transactionListSearchSelector(state),
-    orgs: orgsSelector(state)
+    blockActivity: blockActivitySelector(state)
   }),
   {
     getTransaction: tableOperations.transaction,
     getBlockListSearch: tableOperations.blockListSearch,
-    getOrgs: tableOperations.orgs,
     getTransactionListSearch: tableOperations.transactionListSearch
   }
 )(Main);

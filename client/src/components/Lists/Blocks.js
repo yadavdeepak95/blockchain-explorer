@@ -4,19 +4,18 @@
 
 import React, { Component } from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import { Button } from 'reactstrap';
+import { Button, timeoutsShape } from 'reactstrap';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
-
 import find from 'lodash/find';
 import BlockView from '../View/BlockView';
 import TransactionView from '../View/TransactionView';
 import Select from 'react-select';
-
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
+import { isNull } from 'util';
 import {
   blockListType,
   currentChannelType,
@@ -31,12 +30,10 @@ class Blocks extends Component {
       dialogOpen: false,
       dialogOpenBlockHash: false,
       search: false,
-      to: moment().utc(),
+      to: moment(),
       orgs: [],
       options: [],
-      from: moment()
-        .utc()
-        .subtract(1, 'days'),
+      from: moment().subtract(1, 'days'),
       blockHash: {}
     };
   }
@@ -47,15 +44,42 @@ class Blocks extends Component {
     blockList.forEach(element => {
       selection[element.blocknum] = false;
     });
-    this.props.getOrgs(this.props.currentChannel).then(() => {
-      let opts = [];
-      this.props.orgs.forEach(val => {
-        opts.push({ label: val, value: val });
-      });
-      this.setState({ selection, options: opts });
+    let opts = [];
+    this.props.transactionByOrg.forEach(val => {
+      opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
     });
+    this.setState({ selection, options: opts });
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.state.search &&
+      nextProps.currentChannel != this.props.currentChannel
+    ) {
+      if (this.interval != undefined) {
+        clearInterval(this.interval);
+      }
+      this.interval = setInterval(() => {
+        this.searchBlockList(nextProps.currentChannel);
+      }, 60000);
+      this.searchBlockList(nextProps.currentChannel);
+    }
+  }
+  componentWillUnmount() {
+    clearInterval(this.interVal);
+  }
+  searchBlockList = async channel => {
+    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
+      this.state.to
+    ).toString()}`;
+    for (let i = 0; i < this.state.orgs.length; i++) {
+      query += `&&orgs=${this.state.orgs[i].value}`;
+    }
+    let channelhash = this.props.currentChannel;
+    if (channel != undefined) {
+      channelhash = channel;
+    }
+    await this.props.getBlockListSearch(channelhash, query);
+  };
   handleDialogOpen = async tid => {
     const { getTransaction, currentChannel } = this.props;
     await getTransaction(currentChannel, tid);
@@ -69,36 +93,31 @@ class Blocks extends Component {
     this.setState({ dialogOpen: false });
   };
   handleSearch = async () => {
-    let query = `from=${new Date(this.state.from).toISOString()}&&to=${new Date(
-      this.state.to
-    ).toISOString()}`;
-    for (let i = 0; i < this.state.orgs.length; i++) {
-      query += `&&orgs=${this.state.orgs[i].value}`;
+    if (this.interval != undefined) {
+      clearInterval(this.interval);
     }
-    await this.props.getBlockListSearch(this.props.currentChannel, query);
+    this.interval = setInterval(() => {
+      this.searchBlockList();
+    }, 60000);
+    await this.searchBlockList();
     this.setState({ search: true });
   };
   handleClearSearch = () => {
+    if (this.interval != undefined) {
+      clearInterval(this.interval);
+    }
     this.setState({
       search: false,
-      to: moment().utc(),
+      to: moment(),
       orgs: [],
-      from: moment()
-        .utc()
-        .subtract(1, 'days')
+      from: moment().subtract(1, 'days')
     });
   };
   handleDialogOpenBlockHash = blockHash => {
-    const { blockList } = this.props;
-    var data;
-    if (this.state.search) {
-      const { blockListSearch } = this.props;
-      data = find(blockListSearch, item => item.blockhash === blockHash);
-    } else {
-      const { blockList } = this.props;
-      data = find(blockList, item => item.blockhash === blockHash);
-    }
-
+    const blockList = this.state.search
+      ? this.props.blockListSearch
+      : this.props.blockList;
+    const data = find(blockList, item => item.blockhash === blockHash);
     this.setState({
       dialogOpenBlockHash: true,
       blockHash: data
@@ -238,27 +257,32 @@ class Blocks extends Component {
       className: 'hashCell',
       Cell: row => (
         <ul>
-          {row.value.map(tid => (
-            <li
-              key={tid}
-              style={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis'
-              }}
-            >
-              <a
-                className="partialHash"
-                onClick={() => this.handleDialogOpen(tid)}
-                href="#/blocks"
-              >
-                <div className="fullHash lastFullHash" id="showTransactionId">
-                  {tid}
-                </div>{' '}
-                {tid.slice(0, 6)} {!tid ? '' : '... '}
-              </a>
-            </li>
-          ))}
+          {!isNull(row.value)
+            ? row.value.map(tid => (
+                <li
+                  key={tid}
+                  style={{
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
+                  <a
+                    className="partialHash"
+                    onClick={() => this.handleDialogOpen(tid)}
+                    href="#/blocks"
+                  >
+                    <div
+                      className="fullHash lastFullHash"
+                      id="showTransactionId"
+                    >
+                      {tid}
+                    </div>{' '}
+                    {tid.slice(0, 6)} {!tid ? '' : '... '}
+                  </a>
+                </li>
+              ))
+            : 'null'}
         </ul>
       ),
       filterMethod: (filter, rows) =>
@@ -291,7 +315,6 @@ class Blocks extends Component {
               maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
-              utcOffset={moment().utcOffset()}
               onChange={date => {
                 this.setState({ from: date });
               }}
@@ -306,7 +329,6 @@ class Blocks extends Component {
               maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
-              utcOffset={moment().utcOffset()}
               onChange={date => {
                 this.setState({ to: date });
               }}
