@@ -33,7 +33,7 @@ class MetricService {
 
   getBlockCount(channel_genesis_hash) {
     return this.sql.getRowsBySQlCase(
-      `select max(blocknum) c from blocks where channel_genesis_hash='${channel_genesis_hash}'`
+      `select count(1) c from blocks where channel_genesis_hash='${channel_genesis_hash}'`
     );
   }
 

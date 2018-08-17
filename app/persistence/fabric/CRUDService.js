@@ -25,7 +25,7 @@ class CRUDService {
         return this.sql.getRowByPkOne(sqlTxById);
     }
 
-  getBlockAcitvityList(channel_genesis_hash) {
+  getBlockActivityList(channel_genesis_hash) {
     let sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
       SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and
        channel_genesis_hash = '${channel_genesis_hash}' group by transactions.blockid ),
@@ -60,12 +60,12 @@ class CRUDService {
         return this.sql.getRowsBySQlQuery(sqlBlockTxList);
     }
 
-    async getChannelConfig(channelName) {
-        let channelConfig = await this.sql.getRowsBySQlCase(
-            ` select * from channel where channel_genesis_hash ='${channelName}' `
-        );
-        return channelConfig;
-    }
+  async getChannelConfig(channel_genesis_hash) {
+    let channelConfig = await this.sql.getRowsBySQlCase(
+      ` select * from channel where channel_genesis_hash ='${channel_genesis_hash}' `
+    );
+    return channelConfig;
+  }
 
     async getChannel(channelname, channel_genesis_hash) {
         let channel = await this.sql.getRowsBySQlCase(
