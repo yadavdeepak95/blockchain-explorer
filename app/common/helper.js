@@ -58,8 +58,8 @@ var getLogger = function(moduleName) {
   var appLog = 'logs/app/app.log';
   var dbLog = 'logs/db/db.log';
   if (process.env.SYNC_LOG_PATH) {
-    var appLog = process.env.SYNC_LOG_PATH + '/app.log';
-    var dbLog = process.env.SYNC_LOG_PATH + '/db.log';
+    var appLog = process.env.SYNC_LOG_PATH + '/app/app.log';
+    var dbLog = process.env.SYNC_LOG_PATH + '/db/db.log';
   }
   fs.ensureFileSync(appLog);
   fs.ensureFileSync(dbLog);

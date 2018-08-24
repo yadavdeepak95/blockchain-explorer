@@ -456,10 +456,11 @@ class FabricClient {
   }
 
   async getPeerStatus(peer) {
+    let channel = this.getDefaultChannel();
+    await this.initializeChannelFromDiscover(channel._name);
     let adminpeer = this.adminpeers.get(peer.requests);
     let status = {};
     if (adminpeer) {
-      let channel = this.getDefaultChannel();
       let username = this.client_name + '_' + peer.mspid + 'Admin';
       let user = this.adminusers.get(username);
       if (user) {

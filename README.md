@@ -194,8 +194,27 @@ On another terminal.
 - `cd blockchain-explorer/app`
 - Modify explorerconfig.json to update sync properties
 	- sync type (local or host), platform, blocksSyncTime(in min) details.
-		- local : sync process will start with Explorer start.sh
-		- host  : sync process has to be started explicitly with syncstart.sh [Note : pass network-id and client-id to start specific client sync process, else first network and client will be considered]
+
+Sync Process Configuration
+
+- Please restart Explorer if any changes made to explorerconfig.json.
+
+Host (Standalone)
+
+- Ensure same configuration in Explorer explorerconfig.json if sync process is running from different locations
+
+```json
+ "sync": {
+    "type": "host"
+ }
+```
+Local (Run with Explorer)
+
+```json
+ "sync": {
+    "type": "local"
+ }
+```
 
 From new terminal.
 
@@ -204,10 +223,10 @@ From new terminal.
 - Launch the URL http://localhost:8080 on a browser.
 - `./stop.sh`  (it will stop the node server).
 
-From new terminal(If sync = host in explorerconfig.json).
+From new terminal(If Sync Process in Standalone).
 
 - `cd blockchain-explorer/`
-- `./syncstart.sh` (it will have the sync node up).
+- `./syncstart.sh` (it will have the sync node up). [Note : pass network-id and client-id to start specific client sync process, else first network and client will be considered]
 - `./syncstop.sh`  (it will stop the sync node).
 
 - If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
