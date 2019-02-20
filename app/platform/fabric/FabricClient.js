@@ -52,6 +52,12 @@ class FabricClient {
 
     this.client_config = client_config;
 
+    // if disabled TLS, notify discovering component to use grpc protocol
+    // before initialising channel
+    if (this.client_config.client.tlsEnable === false) {
+      Fabric_Client.setConfigSetting('discovery-protocol', 'grpc');
+    }
+
     // Loading client from network configuration file
     logger.debug(
       'Loading client  [%s] from configuration ...',
@@ -500,7 +506,7 @@ class FabricClient {
             } else {
               logger.error(
                 'Peer configuration is not found in config.json for peer %s, so peer status not work for the peer',
-                peer.endpoint,
+                peer.endpoint
               );
               return;
             }
