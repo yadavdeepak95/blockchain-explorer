@@ -3,7 +3,9 @@
 */
 
 const chaincodeService = require('./service/chaincodeService.js');
+const UserService = require('./service/UserService.js');
 const helper = require('../../common/helper');
+const NetworkService = require('./service/NetworkService.js');
 
 const logger = helper.getLogger('Proxy');
 
@@ -19,6 +21,31 @@ class Proxy {
     this.broadcaster = platform.getBroadcaster();
   }
 
+  async authenticate(user) {
+    const userService = new UserService(this.platform);
+    let response = await userService.authenticate(user);
+    if (!response) {
+      response = {
+        status: false,
+        message: `Failed authentication for user: ${user} `
+      };
+    }
+    logger.debug('login >> %s', response);
+    return response;
+  }
+
+  async networkList() {
+    const networkService = new NetworkService(this.platform);
+    let response = await networkService.networkList();
+    if (!response) {
+      response = {
+        status: false,
+        message: `Failed to get network list `
+      };
+    }
+    logger.debug('networkList >> %s', response);
+    return response;
+  }
   async getCurrentChannel() {
     const client = await this.platform.getClient();
     const channel = client.getDefaultChannel();
@@ -57,11 +84,12 @@ class Proxy {
         );
       } catch (e) {}
     }
+
     const peers = [];
+
     for (const node of nodes) {
       if (node.peer_type === 'PEER') {
-        const res = await client.getPeerStatus(node);
-        node.status = res.status ? res.status : 'DOWN';
+        node.status = 'DOWN';
         if (discover_results && discover_results.peers_by_org) {
           const org = discover_results.peers_by_org[node.mspid];
           for (const peer of org.peers) {
@@ -75,7 +103,8 @@ class Proxy {
         peers.push(node);
       }
     }
-    logger.debug('getPeersStatus >> %j', peers);
+
+    logger.debug('getPeersStatus >> %j', peers.length);
     return peers;
   }
 
@@ -90,15 +119,15 @@ class Proxy {
     const client = this.platform.getClient();
     const channels = await this.persistence
       .getCrudService()
-      .getChannelsInfo(client.getDefaultPeer().getName());
+      .getChannelsInfo(client.getDefaultPeer());
     const currentchannels = [];
     for (const channel of channels) {
       const channel_genesis_hash = client.getChannelGenHash(
         channel.channelname
       );
       if (
-        channel_genesis_hash
-        && channel_genesis_hash === channel.channel_genesis_hash
+        channel_genesis_hash &&
+        channel_genesis_hash === channel.channel_genesis_hash
       ) {
         currentchannels.push(channel);
       }
@@ -133,7 +162,7 @@ class Proxy {
 
     const block = channel.queryBlock(
       parseInt(number),
-      client.getDefaultPeer().getName(),
+      client.getDefaultPeer(),
       true
     );
 
@@ -166,7 +195,7 @@ class Proxy {
     const client_channels = client.getChannelNames();
     const channels = await this.persistence
       .getCrudService()
-      .getChannelsInfo(client.getDefaultPeer().getName());
+      .getChannelsInfo(client.getDefaultPeer());
     const respose = [];
 
     for (let i = 0; i < channels.length; i++) {
@@ -184,6 +213,7 @@ class Proxy {
 
   processSyncMessage(msg) {
     // get message from child process
+    // console.debug('Message from child %j', msg);
     logger.debug('Message from child %j', msg);
     if (fabric_const.NOTITY_TYPE_NEWCHANNEL === msg.notify_type) {
       // initialize new channel instance in parent
@@ -204,8 +234,8 @@ class Proxy {
         );
       }
     } else if (
-      fabric_const.NOTITY_TYPE_UPDATECHANNEL === msg.notify_type
-      || fabric_const.NOTITY_TYPE_CHAINCODE === msg.notify_type
+      fabric_const.NOTITY_TYPE_UPDATECHANNEL === msg.notify_type ||
+      fabric_const.NOTITY_TYPE_CHAINCODE === msg.notify_type
     ) {
       // update channel details in parent
       if (msg.network_name && msg.client_name) {
