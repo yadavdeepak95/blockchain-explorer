@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "client": {
     "tlsEnable": true,
+    "adminUser": "admin",
+    "adminPassword": "adminpw",
+    "enableAuthentication": false,
     "organization": "Org1",
     "connection": {
       "timeout": {
@@ -11,10 +14,7 @@
         },
         "orderer": "300"
       }
-    },
-    "adminUser": "admin",
-    "adminPassword": "adminpw",
-    "enableAuthentication": false
+    }
   },
   "channels": {
     "mychannel": {
