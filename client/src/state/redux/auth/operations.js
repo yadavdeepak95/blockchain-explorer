@@ -1,19 +1,28 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-import { login as loginAction, logout as logoutAction } from './actions';
-import { post } from '../../../services/request';
 
-const login = user => dispatch =>
-  post('/api/login', user)
+import { post, get } from '../../../services/request';
+
+import {
+  login as loginAction,
+  logout as logoutAction,
+  network as networkAction,
+  error as errorAction
+} from './actions';
+
+import actions from '../charts/actions';
+
+const login = ({ user, password }, network) => dispatch =>
+  post('/api/login', { user, password, network })
     .then(resp => {
-      dispatch(loginAction({ name: user.name, ...resp }));
+      dispatch(errorAction(null));
+      dispatch(loginAction({ user, ...resp }));
     })
     .catch(error => {
-      // TODO: keeping till api service implemented
       // eslint-disable-next-line no-console
       console.error(error);
-      dispatch(loginAction({ name: user.name }));
+      dispatch(errorAction(error));
     });
 
 const logout = () => dispatch =>
@@ -28,7 +37,20 @@ const logout = () => dispatch =>
       dispatch(logoutAction());
     });
 
+const network = () => dispatch =>
+  get('/api/networklist', {})
+    .then(({ networkList }) => {
+      const networks = networkList.map(network => network[0]);
+      dispatch(networkAction({ networks }));
+    })
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      dispatch(actions.getErroMessage(error));
+    });
+
 export default {
   login,
-  logout
+  logout,
+  network
 };

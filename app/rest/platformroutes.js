@@ -27,13 +27,13 @@ const platformroutes = async function(app, platform) {
 
   /** *
      Login
-     GET /api/login -> /api/login
-     curl -i 'http://<host>:<port>/api/login/<user>/<password>/<network name>'
+     POST /api/login -> /api/login
+     curl curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' 'http://<host>:<port>/api/login'
      *
      */
-  app.get('/api/login/:user/:password/:network', async (req, res) => {
-    console.log('req.params', req.params);
-    const reqUser = await new User(req.params).asJson();
+  app.post('/api/login', async (req, res) => {
+    console.log('req.body', req.body);
+    const reqUser = await new User(req.body).asJson();
     proxy.authenticate(reqUser).then(userInfo => {
       res.send({
         status: 200,
