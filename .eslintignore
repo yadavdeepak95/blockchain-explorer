@@ -1,1 +1,6 @@
 **/node_modules/**
+**/client/build/**
+**/client/coverage/**
+**/client/src/services/__mocks__/**
+
+
