@@ -5,7 +5,7 @@
 import types from './types';
 
 /* Reducers for Dashboard Charts */
-const authReducer = (state = { name: '' }, action) => {
+const authReducer = (state = { user: '', error: '', networks: [] }, action) => {
   switch (action.type) {
     case types.LOGIN: {
       return {
@@ -16,7 +16,19 @@ const authReducer = (state = { name: '' }, action) => {
     case types.LOGOUT: {
       return {
         ...state,
-        name: ''
+        user: ''
+      };
+    }
+    case types.ERROR: {
+      return {
+        ...state,
+        ...action.payload
+      };
+    }
+    case types.NETWORK: {
+      return {
+        ...state,
+        ...action.payload
       };
     }
     default: {

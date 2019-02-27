@@ -17,7 +17,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
 
+import ListIcon from '@material-ui/icons/List';
 import PersonIcon from '@material-ui/icons/Person';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
@@ -71,8 +73,9 @@ export class Login extends Component {
 
   constructor(props) {
     super(props);
+    const { networks = [] } = props;
     this.state = {
-      name: {
+      user: {
         error: null,
         value: ''
       },
@@ -80,6 +83,12 @@ export class Login extends Component {
         error: null,
         value: ''
       },
+      network: {
+        error: null,
+        value: networks[0] || ''
+      },
+      error: '',
+      networks,
       isLoading: false
     };
   }
@@ -89,7 +98,7 @@ export class Login extends Component {
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const { name } = target;
     this.setState({
-      [name]: value
+      [name]: { value }
     });
   };
 
@@ -97,37 +106,71 @@ export class Login extends Component {
     e.preventDefault();
 
     const { login } = this.props;
-    const { name, password } = this.state;
-    await login({ name, password });
+    const { user, password, network } = this.state;
+
+    await login({ user: user.value, password: password.value }, network.value);
 
     const { history } = this.props;
-    history.push('/');
+    history.replace('/');
     return true;
   };
 
   render() {
-    const { name, password, isLoading } = this.state;
-    const { classes } = this.props;
+    const { user, password, network, networks, isLoading } = this.state;
+    const { classes, error } = this.props;
     return (
       <div className={classes.container}>
         <Paper className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h5" variant="h5">
+          <Typography component="h5" variant="headline">
             Sign in
           </Typography>
           <form className={classes.form} onSubmit={this.submitForm}>
             <FormControl margin="normal" required fullWidth>
               <TextField
-                error={!!name.error}
                 required
                 fullWidth
-                id="name"
-                name="name"
-                label="Name"
+                select
+                id="network"
+                name="network"
+                label="Network"
                 disabled={isLoading}
-                value={name.value}
+                value={network.value}
+                onChange={e => this.handleChange(e)}
+                margin="normal"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <ListIcon />
+                    </InputAdornment>
+                  ),
+                  shrink: 'true'
+                }}
+              >
+                {networks.map(item => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {network.error && (
+                <FormHelperText id="component-error-text" error>
+                  {network.error}
+                </FormHelperText>
+              )}
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <TextField
+                error={!!user.error}
+                required
+                fullWidth
+                id="user"
+                name="user"
+                label="User"
+                disabled={isLoading}
+                value={user.value}
                 onChange={e => this.handleChange(e)}
                 margin="normal"
                 InputProps={{
@@ -136,12 +179,12 @@ export class Login extends Component {
                       <PersonIcon />
                     </InputAdornment>
                   ),
-                  shrink: true
+                  shrink: 'true'
                 }}
               />
-              {name.error && (
+              {user.error && (
                 <FormHelperText id="component-error-text" error>
-                  {name.error}
+                  {user.error}
                 </FormHelperText>
               )}
             </FormControl>
@@ -164,7 +207,7 @@ export class Login extends Component {
                       <LockOutlinedIcon />
                     </InputAdornment>
                   ),
-                  shrink: true
+                  shrink: 'true'
                 }}
               />
               {password.error && (
@@ -173,6 +216,11 @@ export class Login extends Component {
                 </FormHelperText>
               )}
             </FormControl>
+            {error && (
+              <FormHelperText id="component-error-text" error>
+                {error}
+              </FormHelperText>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -189,13 +237,15 @@ export class Login extends Component {
   }
 }
 
-const { authSelector } = authSelectors;
+const { authSelector, errorSelector, networkSelector } = authSelectors;
 
 export default compose(
   withStyles(styles),
   connect(
     state => ({
-      auth: authSelector(state)
+      auth: authSelector(state),
+      error: errorSelector(state),
+      networks: networkSelector(state)
     }),
     {
       login: authOperations.login

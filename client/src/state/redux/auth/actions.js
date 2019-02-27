@@ -12,3 +12,13 @@ export const login = user => ({
 export const logout = () => ({
   type: types.LOGOUT
 });
+
+export const network = networks => ({
+  type: types.NETWORK,
+  payload: networks
+});
+
+export const error = error => ({
+  type: types.ERROR,
+  payload: error
+});
