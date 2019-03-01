@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import classnames from 'classnames';
 import Main from '../Main';
 import Header from '../Header';
@@ -15,6 +16,10 @@ import ErrorMesage from '../ErrorMesage';
 import { chartSelectors } from '../../state/redux/charts';
 import { themeSelectors, themeActions } from '../../state/redux/theme';
 import { authSelectors } from '../../state/redux/auth';
+
+import Login from '../Login';
+
+import Private from '../Route';
 
 const styles = theme => {
   const { type } = theme.palette;
@@ -51,17 +56,27 @@ export class App extends Component {
   };
 
   render() {
+    const { auth } = this.props;
     const { loading } = this.state;
-    if (loading) {
+    if (auth && loading) {
       return <LandingPage updateLoadStatus={this.updateLoadStatus} />;
     }
-    const { classes, mode, error, auth } = this.props;
+    const { classes, mode, error } = this.props;
     const className = classnames(mode === 'dark' && 'dark-theme', classes.app);
     return (
       <div className={className}>
         {auth && <Header refresh={this.refreshComponent} />}
         {error && <ErrorMesage message={error} />}
-        <Main />
+        <Router>
+          <Switch>
+            <Route
+              exact
+              path="/login"
+              render={routeprops => <Login {...routeprops} />}
+            />
+            <Private path="/" render={routeprops => <Main {...routeprops} />} />
+          </Switch>
+        </Router>
         {auth && <Footer />}
       </div>
     );

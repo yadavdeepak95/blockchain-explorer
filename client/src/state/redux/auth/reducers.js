@@ -4,8 +4,15 @@
 
 import types from './types';
 
+const initialState = {
+  user: '',
+  error: '',
+  networks: [],
+  registered: ''
+};
+
 /* Reducers for Dashboard Charts */
-const authReducer = (state = { user: '', error: '', networks: [] }, action) => {
+const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.LOGIN: {
       return {
@@ -26,6 +33,12 @@ const authReducer = (state = { user: '', error: '', networks: [] }, action) => {
       };
     }
     case types.NETWORK: {
+      return {
+        ...state,
+        ...action.payload
+      };
+    }
+    case types.REGISTER: {
       return {
         ...state,
         ...action.payload

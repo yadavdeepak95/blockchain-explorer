@@ -22,3 +22,8 @@ export const error = error => ({
   type: types.ERROR,
   payload: error
 });
+
+export const register = registered => ({
+  type: types.REGISTER,
+  payload: registered
+});

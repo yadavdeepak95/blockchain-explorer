@@ -26,6 +26,8 @@ import { themeSelectors } from '../../state/redux/theme';
 
 import { authOperations } from '../../state/redux/auth';
 
+import Register from '../Register';
+
 import {
   currentChannelType,
   channelsType,
@@ -181,6 +183,20 @@ const styles = theme => {
       marginTop: 14,
       cursor: 'pointer'
     },
+    register: {
+      marginRight: -3
+    },
+    registerIcon: {
+      color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
+      fontSize: '18pt',
+      float: 'none',
+      '&:hover': {
+        color: dark ? '#c1d7f0' : '#24272a'
+      },
+      marginLeft: 5,
+      marginTop: 14,
+      cursor: 'pointer'
+    },
     toggleIcon: {
       color: dark ? '#242136' : '#58c5c2',
       fontSize: '1.75em',
@@ -203,6 +219,7 @@ export class HeaderView extends Component {
       notifications: [],
       isLoading: true,
       modalOpen: false,
+      registerOpen: false,
       selectedChannel: {}
     };
   }
@@ -319,6 +336,19 @@ export class HeaderView extends Component {
     this.setState({ modalOpen: false });
   };
 
+  registerOpen = () => {
+    this.setState(() => ({ registerOpen: true }));
+  };
+
+  registerClose = () => {
+    this.setState(() => ({ registerOpen: false }));
+  };
+
+  onRegister = user => {
+    alert(JSON.stringify(user, null, 2));
+    this.registerClose();
+  };
+
   handleDrawOpen = drawer => {
     switch (drawer) {
       case 'notifyDrawer': {
@@ -424,6 +454,7 @@ export class HeaderView extends Component {
       notifyDrawer,
       adminDrawer,
       modalOpen,
+      registerOpen,
       notifications
     } = this.state;
 
@@ -522,6 +553,18 @@ export class HeaderView extends Component {
                     <FontAwesome name="moon-o" className={classes.moonIcon} />
                   </div>
                   <div
+                    className={classNames(
+                      classes.adminButton,
+                      classes.register
+                    )}
+                  >
+                    <FontAwesome
+                      name="user-plus"
+                      className={classes.registerIcon}
+                      onClick={() => this.registerOpen()}
+                    />
+                  </div>
+                  <div
                     className={classNames(classes.adminButton, classes.signout)}
                   >
                     <FontAwesome
@@ -551,6 +594,17 @@ export class HeaderView extends Component {
                 <AdminPanel />
               </div>
             </Drawer>
+            <Dialog
+              open={registerOpen}
+              onClose={this.registerClose}
+              fullWidth={false}
+              maxWidth="md"
+            >
+              <Register
+                onClose={this.registerClose}
+                onRegister={this.onRegister}
+              />
+            </Dialog>
             <Dialog
               open={modalOpen}
               onClose={this.handleClose}
