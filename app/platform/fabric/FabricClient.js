@@ -4,7 +4,6 @@
 
 const Fabric_Client = require('fabric-client');
 const helper = require('../../common/helper');
-const fs = require('fs');
 const path = require('path');
 const logger = helper.getLogger('FabricClient');
 const ExplorerError = require('../../common/ExplorerError');
@@ -15,8 +14,8 @@ const User = require('fabric-client/lib/User.js');
 const client_utils = require('fabric-client/lib/client-utils.js');
 const channelService = require('./service/channelService.js');
 const FabricUtils = require('./utils/FabricUtils.js');
-const explorer_config = require('../../explorerconfig.json');
-const explorer_const = require('../../common/ExplorerConst.js').explorer.const;
+//const explorer_config = require('../../explorerconfig.json');
+//const explorer_const = require('../../common/ExplorerConst.js').explorer.const;
 const FabricGateway = require('../../platform/fabric/gateway/FabricGateway');
 const FabricConfig = require('../fabric/FabricConfig');
 const _commonProto = grpc.load(
@@ -31,21 +30,21 @@ const explorer_mess = require('../../common/ExplorerMessage').explorer;
 class FabricClient {
   constructor(client_name) {
     this.client_name = client_name;
-    this.hfc_client;
-    this.fabricGateway;
+    this.hfc_client = null;
+    this.fabricGateway = null;
     this.defaultPeer = {};
-    this.defaultMspId;
+    this.defaultMspId = {};
     this.defaultChannel = {};
     this.defaultOrderer = null;
     this.channelsGenHash = new Map();
-    this.client_config;
-    this.config;
+    this.client_config = null;
+    this.config = null;
     this.adminpeers = new Map();
     this.adminusers = new Map();
     this.peerroles = {};
     this.status = false;
     this.tls = false;
-    this.asLocalhost;
+    this.asLocalhost = null;
     for (const role of ROLES) {
       this.peerroles[role] = role;
     }
@@ -67,7 +66,7 @@ class FabricClient {
       ' this.client_config ',
       this.client_config
     );
-    let name = this.client_config.name;
+    // let name = this.client_config.name;
     let profileConnection = this.client_config.profile;
     let configPath = path.resolve(__dirname, profileConnection);
     try {
@@ -204,7 +203,6 @@ class FabricClient {
       const nodes = await persistence
         .getMetricService()
         .getPeerList(channel.channel_genesis_hash);
-
       let newchannel;
       try {
         newchannel = this.hfc_client.getChannel(channel.channelname);
@@ -214,7 +212,6 @@ class FabricClient {
       if (newchannel === undefined) {
         newchannel = this.hfc_client.newChannel(channel.channelname);
       }
-
       for (const node of nodes) {
         const peer_config = peers[node.server_hostname];
         let pem;
@@ -227,8 +224,12 @@ class FabricClient {
               }
             };
           }
-        } catch (e) {}
+        } catch (e) {
+          logger.error(e);
+          console.error(e);
+        }
       }
+
       try {
         newchannel.getPeer(default_peer_name);
       } catch (e) {
@@ -236,7 +237,7 @@ class FabricClient {
           'Failed to connect to default peer: ',
           default_peer_name,
           ' \n',
-          error
+          e
         );
         /*
                 const url = 'grpc://localhost:7051';
@@ -534,48 +535,6 @@ class FabricClient {
 
       channel._discovery_results = discover_results;
       return discover_results;
-    }
-  }
-
-  newAdminPeer(channel, url, msp_id, host, msps) {
-    console.log(
-      `newAdminPeer(channel=${channel}, url=${url}, msp_id=${msp_id}, host=${host}, msps= ${msps}) `
-    );
-    if (!url) {
-      logger.debug('Client.newAdminPeer requesturl is required ');
-      return;
-    }
-
-    if (!host) {
-      logger.debug('Client.newAdminPeer host is required ');
-      return;
-    }
-
-    if (!this.adminpeers.get(url)) {
-      console.log(
-        'if (!this.adminpeers.get(url)) ',
-        channel,
-        url,
-        msp_id,
-        host,
-        msps
-      );
-      let newpeer = this.newPeer(channel, url, msp_id, host, msps);
-      if (
-        newpeer &&
-        newpeer.constructor &&
-        newpeer.constructor.name === 'ChannelPeer'
-      ) {
-        newpeer = newpeer.getPeer();
-      }
-      const adminpeer = new AdminPeer(msp_id, newpeer);
-      logger.debug(
-        'Successfully created Admin peer [%s] for client [%s]',
-        url,
-        this.client_name
-      );
-      this.adminpeers.set(url, adminpeer);
-      return adminpeer;
     }
   }
 

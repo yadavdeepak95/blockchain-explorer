@@ -7,12 +7,11 @@ const {
   Gateway,
   X509WalletMixin
 } = require('fabric-network');
-const Fabric_Client = require('fabric-client');
+
 const FabricCAServices = require('fabric-ca-client');
 const FabricConfig = require('../FabricConfig');
 const fs = require('fs');
 const path = require('path');
-const yaml = require('js-yaml');
 const helper = require('../../../common/helper');
 const logger = helper.getLogger('FabricGateway');
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;
@@ -46,6 +45,7 @@ class FabricGateway {
     this.fabricConfig = new FabricConfig();
     this.fabricConfig.initialize(configPath);
     this.config = this.fabricConfig.getConfig();
+    this.fabricCaEnabled = this.fabricConfig.isFabricCaEnabled();
     this.tlsEnable = this.fabricConfig.getTls();
     this.userName = this.fabricConfig.getAdminUser();
     this.enrollmentSecret = this.fabricConfig.getAdminPassword();
@@ -80,7 +80,11 @@ class FabricGateway {
 
     this.defaultChannelName = this.fabricConfig.getDefaultChannel();
     this.mspId = orgMsp[0];
-    let caURL = this.fabricConfig.getCAurl();
+    let caURL = [];
+    let serverCertPath = null;
+
+    ({ caURL, serverCertPath } = this.fabricConfig.getCertificateAuthorities());
+
     let identity;
     let enrollment;
 
@@ -90,34 +94,32 @@ class FabricGateway {
       this.wallet = new FileSystemWallet(walletPath);
       //TODO, when used after a different network is configured, fails to get the correct user, may need to use identity label, password, or other
       // Check to see if we've already enrolled the admin user.
-      //   const adminExists = await this.wallet.exists(this.userName);
-      /*   if (adminExists) {
-           console.debug(
-             `An identity for the admin user: ${
-             this.userName
-             } already exists in the wallet`
-           );
-           await this.wallet.export(this.userName);
-         } else {
-           */
-
-      if (this.fabricCaEnabled) {
-        //TODO best way to verify  if the network has fabric-ca server authorization
-        ({ enrollment, identity } = await this._enrollCaIdentity(
-          caURL,
-          enrollment,
-          identity
-        ));
-      } else {
-        // Identity to credentials to be stored in the wallet
-        // look for signedCert in first-network-connection.json
-        identity = await this._enrollUserIdentity(
-          signedCertPath,
-          adminPrivateKeyPath,
-          identity
+      const adminExists = await this.wallet.exists(this.userName);
+      if (adminExists) {
+        console.debug(
+          `An identity for the admin user: ${
+            this.userName
+          } already exists in the wallet`
         );
+        await this.wallet.export(this.userName);
+      } else {
+        if (this.fabricCaEnabled) {
+          //TODO best way to verify  if the network has fabric-ca server authorization
+          ({ enrollment, identity } = await this._enrollCaIdentity(
+            caURL,
+            enrollment,
+            identity
+          ));
+        } else {
+          // Identity credentials to be stored in the wallet
+          // look for signedCert in first-network-connection.json
+          identity = await this._enrollUserIdentity(
+            signedCertPath,
+            adminPrivateKeyPath,
+            identity
+          );
+        }
       }
-      //}
 
       // Set connection options; identity and wallet
       let connectionOptions = {
@@ -135,11 +137,8 @@ class FabricGateway {
         connectionOptions
       );
       this.client = this.gateway.getClient();
-
-      // TODO, testing only, tobe removed
-      // await this.gateWayInfoTest();
     } catch (error) {
-      ogger.error(` ${error}`);
+      logger.error(` ${error}`);
       console.debug(error);
       throw new ExplorerError(explorer_mess.error.ERROR_1010);
     }
@@ -184,9 +183,7 @@ class FabricGateway {
     const cert = fs.readFileSync(_signedCertPath, 'utf8');
     // see in first-network-connection.json adminPrivateKey key
     const key = fs.readFileSync(_adminPrivateKeyPath, 'utf8');
-    //console.log('key =========> \n\n\n\n ', key);
     identity = X509WalletMixin.createIdentity(this.mspId, cert, key);
-    // console.log(cert, key);
     logger.log('this.identityLabel ', this.identityLabel);
     await this.wallet.import(this.identityLabel, identity);
     return identity;
@@ -202,7 +199,7 @@ class FabricGateway {
         'this.fabricCaEnabled ',
         this.fabricCaEnabled,
         ' caURL[0] ',
-        caURL[0]
+        caURL
       );
       if (this.fabricCaEnabled) {
         let ca = new FabricCAServices(caURL[0]);
@@ -242,25 +239,6 @@ class FabricGateway {
       logger.error(error);
     }
     return identityInfo;
-  }
-
-  //TODO testing only, to be removed or a test needs to be created
-  async gateWayInfoTest() {
-    const client = this.gateway.getClient();
-    console.log('this.defaultPeer', this.defaultPeer);
-    let channels = await client.queryChannels(this.defaultPeer, true);
-    console.log(channels);
-    const channel = await client.getChannel(this.defaultChannelName, true);
-    await channel.initialize({
-      discover: true,
-      target: this.defaultPeer
-    });
-    let queryInfo = await channel.queryInfo(this.defaultPeer, true);
-    console.log('\n\n\n queryInfo', queryInfo, '\n\n');
-    console.log(channel.getChannelPeers());
-    console.log('getDiscoveryResults ', await channel.getDiscoveryResults());
-    let block = await channel.queryBlock(0, this.defaultPeer, true);
-    console.log('\n\n', block, '\n\n');
   }
 }
 

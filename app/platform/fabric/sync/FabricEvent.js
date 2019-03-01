@@ -37,6 +37,7 @@ class FabricEvent {
       },
       err => {
         logger.error('Block Event %s', err);
+        console.dir(err);
       }
     );
     this.connectChannelEventHub(channel.getName(), eventHub);

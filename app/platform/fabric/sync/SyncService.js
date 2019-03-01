@@ -187,16 +187,17 @@ class SyncServices {
 
   // insert new orderer and channel relation
   async insertNewOrderers(orderer, channel_genesis_hash, client) {
-    console.log('insertNewOrderers orderer ', orderer);
-    // console.dir(client)
-    let requesturl = `${orderer.host}:${orderer.port}`;
-    if (
-      client.client_config.orderers &&
-      client.client_config.orderers[orderer.host] &&
-      client.client_config.orderers[orderer.host].url
-    ) {
-      requesturl = client.client_config.orderers[orderer.host].url;
-    }
+    let discoveryProtocol = client.hfc_client.getConfigSetting(
+      'discovery-protocol'
+    );
+    let requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
+    console.log(
+      'insertNewOrderers discoveryProtocol ',
+      discoveryProtocol,
+      ' requesturl ',
+      requesturl
+    );
+
     const orderer_row = {
       mspid: orderer.org_name,
       requests: requesturl,

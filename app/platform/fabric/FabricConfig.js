@@ -14,6 +14,13 @@ class FabricConfig {
   getConfig() {
     return this.config;
   }
+
+  isFabricCaEnabled() {
+    if (this.config.certificateAuthorities) {
+      return true;
+    }
+    return false;
+  }
   getTls() {
     return this.config.client.tlsEnable;
   }
@@ -30,7 +37,7 @@ class FabricConfig {
     return this.config.name;
   }
   getAdminPassword() {
-    this.config.client.adminPassword;
+    return this.config.client.adminPassword;
   }
 
   getDefaultChannel() {
@@ -89,18 +96,38 @@ class FabricConfig {
     }
     return { orgMsp, adminPrivateKeyPath, signedCertPath };
   }
-  getCAurl() {
-    let caURL = [];
+
+  getServerCertPath() {
+    let serverCertPath = null;
     if (this.config.certificateAuthorities) {
-      this.fabricCaEnabled = true;
+      for (let x in this.config.certificateAuthorities) {
+        if (this.config.certificateAuthorities[x].tlsCACerts) {
+          serverCertPath = this.config.certificateAuthorities[x].tlsCACerts
+            .path;
+        }
+      }
+    }
+
+    return serverCertPath;
+  }
+
+  getCertificateAuthorities() {
+    let caURL = [];
+    let serverCertPath = null;
+    // let serverCert = fs.readFileSync(path.join(__dirname, 'somepath/msp/tlscacerts/example.com-cert.pem'));
+    if (this.config.certificateAuthorities) {
       for (let x in this.config.certificateAuthorities) {
         //TODO may need to handle multiple fabric-ca server ??
+        if (this.config.certificateAuthorities[x].tlsCACerts) {
+          serverCertPath = this.config.certificateAuthorities[x].tlsCACerts
+            .path;
+        }
         if (this.config.certificateAuthorities[x].url) {
           caURL.push(this.config.certificateAuthorities[x].url);
         }
       }
     }
-    return caURL;
+    return { caURL, serverCertPath };
   }
 
   getPeers() {

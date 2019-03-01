@@ -2,12 +2,8 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-const fs = require('fs');
-const path = require('path');
-const yaml = require('js-yaml');
 const helper = require('../../../common/helper');
 const logger = helper.getLogger('FabricGateway');
-const FabricCAServices = require('fabric-ca-client');
 
 //TODO identify roles we need to support?
 const ROLES = ['admin', 'operator'];
@@ -20,7 +16,7 @@ class User {
     Object.keys(user).forEach(key => {
       let value = user[key];
       this.userJson[key] = value;
-      console.log('User.constructor ', key, '= ', value);
+      logger.log('User.constructor ', key, '= ', value);
     });
   }
 
