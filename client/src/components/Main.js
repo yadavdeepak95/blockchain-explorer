@@ -30,8 +30,6 @@ import {
 } from './types';
 import PageNotFound from './View/PageNotFound';
 
-import Login from './Login';
-
 import Private from './Route';
 
 const {
@@ -128,11 +126,6 @@ export const Main = props => {
     <Router>
       <div className={classes.main}>
         <Switch>
-          <Route
-            exact
-            path="/login"
-            render={routeprops => <Login {...routeprops} />}
-          />
           <Private
             exact
             path="/"

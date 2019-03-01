@@ -6,7 +6,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import createStore from './state/store';
-import chartsOperations from './state/redux/charts/operations';
 import authOperations from './state/redux/auth/operations';
 import Theme from './components/Theme';
 import App from './components/App';
@@ -28,8 +27,6 @@ function themeSideEffect(store) {
   };
 }
 
-store.dispatch(chartsOperations.channel());
-store.dispatch(chartsOperations.channelList());
 store.dispatch(authOperations.network());
 
 unregister();

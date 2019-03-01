@@ -93,6 +93,17 @@ export class Login extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { networks = [] } = nextProps;
+    this.setState(() => ({
+      networks,
+      network: {
+        error: null,
+        value: networks[0] || ''
+      }
+    }));
+  }
+
   handleChange = event => {
     const { target } = event;
     const value = target.type === 'checkbox' ? target.checked : target.value;

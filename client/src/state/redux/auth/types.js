@@ -12,9 +12,12 @@ const NETWORK = `${namespaces}/NETWORK`;
 
 const ERROR = `${namespaces}/ERROR`;
 
+const REGISTER = `${namespaces}/REGISTER`;
+
 export default {
   LOGIN,
   LOGOUT,
   ERROR,
-  NETWORK
+  NETWORK,
+  REGISTER
 };

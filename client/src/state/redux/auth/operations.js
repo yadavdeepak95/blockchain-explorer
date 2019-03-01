@@ -8,6 +8,7 @@ import {
   login as loginAction,
   logout as logoutAction,
   network as networkAction,
+  register as registerAction,
   error as errorAction
 } from './actions';
 
@@ -49,8 +50,21 @@ const network = () => dispatch =>
       dispatch(actions.getErroMessage(error));
     });
 
+const register = user => dispatch =>
+  post('/api/register', { ...user })
+    .then(resp => {
+      dispatch(registerAction({ ...user, ...resp }));
+    })
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      // dispatch(errorAction(error));
+      dispatch(registerAction({ ...user }));
+    });
+
 export default {
   login,
   logout,
-  network
+  network,
+  register
 };
