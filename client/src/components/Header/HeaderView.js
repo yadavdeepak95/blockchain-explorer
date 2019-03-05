@@ -28,6 +28,8 @@ import { authOperations } from '../../state/redux/auth';
 
 import Register from '../Register';
 
+import Enroll from '../Enroll';
+
 import {
   currentChannelType,
   channelsType,
@@ -183,10 +185,10 @@ const styles = theme => {
       marginTop: 14,
       cursor: 'pointer'
     },
-    register: {
+    user: {
       marginRight: -3
     },
-    registerIcon: {
+    userIcon: {
       color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
       fontSize: '18pt',
       float: 'none',
@@ -220,6 +222,7 @@ export class HeaderView extends Component {
       isLoading: true,
       modalOpen: false,
       registerOpen: false,
+      enrollOpen: false,
       selectedChannel: {}
     };
   }
@@ -349,6 +352,19 @@ export class HeaderView extends Component {
     this.registerClose();
   };
 
+  enrollOpen = () => {
+    this.setState(() => ({ enrollOpen: true }));
+  };
+
+  enrollClose = () => {
+    this.setState(() => ({ enrollOpen: false }));
+  };
+
+  onEnroll = user => {
+    alert(JSON.stringify(user, null, 2));
+    this.enrollClose();
+  };
+
   handleDrawOpen = drawer => {
     switch (drawer) {
       case 'notifyDrawer': {
@@ -455,6 +471,7 @@ export class HeaderView extends Component {
       adminDrawer,
       modalOpen,
       registerOpen,
+      enrollOpen,
       notifications
     } = this.state;
 
@@ -553,15 +570,21 @@ export class HeaderView extends Component {
                     <FontAwesome name="moon-o" className={classes.moonIcon} />
                   </div>
                   <div
-                    className={classNames(
-                      classes.adminButton,
-                      classes.register
-                    )}
+                    className={classNames(classes.adminButton, classes.user)}
                   >
                     <FontAwesome
                       name="user-plus"
-                      className={classes.registerIcon}
+                      className={classes.userIcon}
                       onClick={() => this.registerOpen()}
+                    />
+                  </div>
+                  <div
+                    className={classNames(classes.adminButton, classes.user)}
+                  >
+                    <FontAwesome
+                      name="user-plus"
+                      className={classes.userIcon}
+                      onClick={() => this.enrollOpen()}
                     />
                   </div>
                   <div
@@ -604,6 +627,14 @@ export class HeaderView extends Component {
                 onClose={this.registerClose}
                 onRegister={this.onRegister}
               />
+            </Dialog>
+            <Dialog
+              open={enrollOpen}
+              onClose={this.enrollClose}
+              fullWidth={false}
+              maxWidth="md"
+            >
+              <Enroll onClose={this.enrollClose} onEnroll={this.onEnroll} />
             </Dialog>
             <Dialog
               open={modalOpen}
