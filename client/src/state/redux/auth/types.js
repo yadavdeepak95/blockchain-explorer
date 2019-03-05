@@ -14,10 +14,13 @@ const ERROR = `${namespaces}/ERROR`;
 
 const REGISTER = `${namespaces}/REGISTER`;
 
+const ENROLL = `${namespaces}/ENROLL`;
+
 export default {
   LOGIN,
   LOGOUT,
   ERROR,
   NETWORK,
-  REGISTER
+  REGISTER,
+  ENROLL
 };

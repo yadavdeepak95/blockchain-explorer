@@ -8,7 +8,8 @@ const initialState = {
   user: '',
   error: '',
   networks: [],
-  registered: ''
+  registered: '',
+  enrolled: ''
 };
 
 /* Reducers for Dashboard Charts */
@@ -39,6 +40,12 @@ const authReducer = (state = initialState, action) => {
       };
     }
     case types.REGISTER: {
+      return {
+        ...state,
+        ...action.payload
+      };
+    }
+    case types.ENROLL: {
       return {
         ...state,
         ...action.payload
