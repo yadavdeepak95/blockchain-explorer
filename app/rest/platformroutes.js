@@ -7,14 +7,77 @@ const User = require('../platform/fabric/models/User');
 
 const platformroutes = async function(app, platform) {
   const proxy = platform.getProxy();
-  const statusMetrics = platform.getPersistence().getMetricService();
-  const crudService = platform.getPersistence().getCrudService();
+
+  /**
+  Transactions by Organization(s)
+  GET /api/txByOrg
+  curl -i 'http://<host>:<port>/api/txByOrg/<channel_genesis_hash>'
+  Response:
+  {'rows':[{'count':'4','creator_msp_id':'Org1'}]}
+  */
+  app.get('/api/txByOrg/:channel_genesis_hash', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
+
+    if (channel_genesis_hash) {
+      proxy
+        .getTxByOrgs(channel_genesis_hash)
+        .then(rows => res.send({ status: 200, rows }));
+    } else {
+      return requtil.invalidRequest(req, res);
+    }
+  });
+
+  /**
+  Channels
+  GET /channels -> /api/channels/info
+  curl -i 'http://<host>:<port>/api/channels/<info>'
+  Response:
+  [
+    {
+      'channelName': 'mychannel',
+      'channel_hash': '',
+      'craetedat': '1/1/2018'
+    }
+  ]
+  */
+  app.get('/api/channels/info', (req, res) => {
+    proxy
+      .getChannelsInfo()
+      .then(data => {
+        data.forEach(element => {
+          element.createdat = new Date(element.createdat).toISOString();
+        });
+        res.send({ status: 200, channels: data });
+      })
+      .catch(err => res.send({ status: 500 }));
+  });
+
+  /** *Peer Status List
+  GET /peerlist -> /api/peersStatus
+  curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
+  Response:
+  [
+    {
+      'requests': 'grpcs://127.0.0.1:7051',
+      'server_hostname': 'peer0.org1.example.com'
+    }
+  ]
+  */
+  app.get('/api/peersStatus/:channel', (req, res) => {
+    const channelName = req.params.channel;
+    if (channelName) {
+      proxy.getPeersStatus(channelName).then(data => {
+        res.send({ status: 200, peers: data });
+      });
+    } else {
+      return requtil.invalidRequest(req, res);
+    }
+  });
 
   /** *
    Network list
    GET /api/networklist -> /api/login
    curl -i 'http://<host>:<port>/api/networklist'
-   *
    */
   app.get('/api/networklist', async (req, res) => {
     proxy.networkList(req).then(list => {
@@ -26,11 +89,10 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *
-     Login
-     POST /api/login -> /api/login
-     curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/api/login'
-     *
-     */
+  Login
+  POST /api/login -> /api/login
+  curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/api/login'
+  */
   app.post('/api/login', async (req, res) => {
     console.log('req.body', req.body);
     const reqUser = await new User(req.body).asJson();
@@ -42,11 +104,10 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *
-    Register
-    POST /api/register -> /api/register
-    curl -X POST -H 'Content-Type: application/json' -d '{ 'attrs': '<attrs>', 'affiliation': '<affiliation>', 'enrollmentID': '<enrollmentID>', 'enrollmentSecret': '<enrollmentSecret>', 'maxEnrollments': '<maxEnrollments>', 'role': '<role>' }'  -i 'http://<host>:<port>/api/register'
-    *
-    */
+  Register
+  POST /api/register -> /api/register
+  curl -X POST -H 'Content-Type: application/json' -d '{ 'attrs': '<attrs>', 'affiliation': '<affiliation>', 'enrollmentID': '<enrollmentID>', 'enrollmentSecret': '<enrollmentSecret>', 'maxEnrollments': '<maxEnrollments>', 'role': '<role>' }'  -i 'http://<host>:<port>/api/register'
+  */
   app.post('/api/register', async (req, res) => {
     console.log('/api/register');
     console.log('req.body', req.body);
@@ -60,11 +121,10 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *
-    Enroll
-    POST /api/enroll -> /api/enroll
-    curl -X POST -H 'Content-Type: application/json' -d '{ 'attr_reqs': '<attr_reqs>', 'csr': '<csr>', 'enrollmentID': '<enrollmentID>', 'enrollmentSecret': '<enrollmentSecret>', 'profile': '<profile>' }' -i 'http://<host>:<port>/api/enroll'
-    *
-    */
+  Enroll
+  POST /api/enroll -> /api/enroll
+  curl -X POST -H 'Content-Type: application/json' -d '{ 'attr_reqs': '<attr_reqs>', 'csr': '<csr>', 'enrollmentID': '<enrollmentID>', 'enrollmentSecret': '<enrollmentSecret>', 'profile': '<profile>' }' -i 'http://<host>:<port>/api/enroll'
+  */
   app.post('/api/enroll', async (req, res) => {
     console.log('/api/enroll');
     console.log('req.body', req.body);
@@ -78,11 +138,10 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *
-      Block by number
-      GET /api/block/getinfo -> /api/block
-      curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
-      *
-      */
+  Block by number
+  GET /api/block/getinfo -> /api/block
+  curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
+  */
   app.get('/api/block/:channel_genesis_hash/:number', (req, res) => {
     const number = parseInt(req.params.number);
     const channel_genesis_hash = req.params.channel_genesis_hash;
@@ -102,19 +161,18 @@ const platformroutes = async function(app, platform) {
   });
 
   /**
-      Return list of channels
-      GET /channellist -> /api/channels
-      curl -i http://<host>:<port>/api/channels
-      Response:
+  Return list of channels
+  GET /channellist -> /api/channels
+  curl -i http://<host>:<port>/api/channels
+  Response:
+  {
+    'channels': [
       {
-      'channels': [
-          {
-          'channel_id': 'mychannel'
-          }
-      ]
+        'channel_id': 'mychannel'
       }
-      */
-
+    ]
+  }
+  */
   app.get('/api/channels', (req, res) => {
     proxy.getChannels().then(channels => {
       const response = {
@@ -151,13 +209,13 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *
-     Read 'blockchain-explorer/app/config/CREATE-CHANNEL.md' on 'how to create a channel'
+  Read 'blockchain-explorer/app/config/CREATE-CHANNEL.md' on 'how to create a channel'
 
-      The values of the profile and genesisBlock are taken fron the configtx.yaml file that
-      is used by the configtxgen tool
-      Example values from the defualt first network:
-      profile = 'TwoOrgsChannel';
-      genesisBlock = 'TwoOrgsOrdererGenesis';
+  The values of the profile and genesisBlock are taken fron the configtx.yaml file that
+  is used by the configtxgen tool
+  Example values from the defualt first network:
+  profile = 'TwoOrgsChannel';
+  genesisBlock = 'TwoOrgsOrdererGenesis';
   */
 
   /*
@@ -172,7 +230,6 @@ const platformroutes = async function(app, platform) {
   <input type='file' name='channelArtifacts' multiple />
   Response: {  success: true, message: 'Successfully created channel '   }
   */
-
   app.post('/api/channel', async (req, res) => {
     try {
       // upload channel config, and org config
@@ -193,15 +250,14 @@ const platformroutes = async function(app, platform) {
     }
   });
 
-  /** *
-      An API to join channel
+  /**
+  An API to join channel
   POST /api/joinChannel
 
   curl -X POST -H 'Content-Type: application/json' -d '{ 'orgName':'Org1','channelName':'newchannel'}' http://localhost:8080/api/joinChannel
 
   Response: {  success: true, message: 'Successfully joined peer to the channel '   }
   */
-
   app.post('/api/joinChannel', (req, res) => {
     const channelName = req.body.channelName;
     const peers = req.body.peers;
@@ -210,36 +266,6 @@ const platformroutes = async function(app, platform) {
       proxy
         .joinChannel(channelName, peers, orgName)
         .then(resp => res.send(resp));
-    } else {
-      return requtil.invalidRequest(req, res);
-    }
-  });
-
-  /**
-      Chaincode list
-      GET /chaincodelist -> /api/chaincode
-      curl -i 'http://<host>:<port>/api/chaincode/<channel>'
-      Response:
-      [
-        {
-          'channelName': 'mychannel',
-          'chaincodename': 'mycc',
-          'path': 'github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02',
-          'version': '1.0',
-          'txCount': 0
-        }
-      ]
-    */
-
-  app.get('/api/chaincode/:channel', (req, res) => {
-    const channelName = req.params.channel;
-    if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, async data => {
-        res.send({
-          status: 200,
-          chaincode: data
-        });
-      });
     } else {
       return requtil.invalidRequest(req, res);
     }
@@ -256,7 +282,6 @@ const platformroutes = async function(app, platform) {
     }
   ]
   */
-
   app.get('/api/peersStatus/:channel', (req, res) => {
     const channelName = req.params.channel;
     if (channelName) {
@@ -267,6 +292,6 @@ const platformroutes = async function(app, platform) {
       return requtil.invalidRequest(req, res);
     }
   });
-};
+}; //end platformroutes()
 
 module.exports = platformroutes;
