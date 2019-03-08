@@ -303,7 +303,7 @@ From new terminal.
 From new terminal(If Sync Process in Standalone).
 
 - `cd blockchain-explorer/`
-- `./syncstart.sh` (it will have the sync node up). [Note : pass network-id and client-id to start specific client sync process, else first network and client will be considered]
+- `./syncstart.sh` (it will have the sync node up).
 - `./syncstop.sh`  (it will stop the sync node).
 
 - If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
