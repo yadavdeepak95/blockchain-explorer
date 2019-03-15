@@ -4,11 +4,11 @@
 
 const requtil = require('./requestutils.js');
 
-const dbroutes = (app, platform) => {
+const dbroutes = (router, platform) => {
   const dbStatusMetrics = platform.getPersistence().getMetricService();
   const dbCrudService = platform.getPersistence().getCrudService();
 
-  app.get('/api/status/:channel_genesis_hash', (req, res) => {
+  router.get('/status/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
       dbStatusMetrics.getStatus(channel_genesis_hash, data => {
@@ -24,16 +24,16 @@ const dbroutes = (app, platform) => {
 
   /**
   Transaction count
-  GET /api/block/get -> /api/block/transactions/
-  curl -i 'http://<host>:<port>/api/block/transactions/<channel_genesis_hash>/<number>'
+  GET /block/get -> /block/transactions/
+  curl -i 'http://<host>:<port>/block/transactions/<channel_genesis_hash>/<number>'
   Response:
   {
     'number': 2,
     'txCount': 1
   }
   */
-  app.get(
-    '/api/block/transactions/:channel_genesis_hash/:number',
+  router.get(
+    '/block/transactions/:channel_genesis_hash/:number',
     async (req, res) => {
       const number = parseInt(req.params.number);
       const channel_genesis_hash = req.params.channel_genesis_hash;
@@ -57,8 +57,8 @@ const dbroutes = (app, platform) => {
 
   /** *
   Transaction Information
-  GET /api/tx/getinfo -> /api/transaction/<txid>
-  curl -i 'http://<host>:<port>/api/transaction/<channel_genesis_hash>/<txid>'
+  GET /tx/getinfo -> /transaction/<txid>
+  curl -i 'http://<host>:<port>/transaction/<channel_genesis_hash>/<txid>'
   Response:
   {
     'tx_id': 'header.channel_header.tx_id',
@@ -67,7 +67,7 @@ const dbroutes = (app, platform) => {
     'type': 'header.channel_header.type'
   }
   */
-  app.get('/api/transaction/:channel_genesis_hash/:txid', (req, res) => {
+  router.get('/transaction/:channel_genesis_hash/:txid', (req, res) => {
     const txid = req.params.txid;
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (txid && txid != '0' && channel_genesis_hash) {
@@ -82,7 +82,7 @@ const dbroutes = (app, platform) => {
     }
   });
 
-  app.get('/api/blockActivity/:channel_genesis_hash', (req, res) => {
+  router.get('/blockActivity/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
       dbCrudService.getBlockActivityList(channel_genesis_hash).then(row => {
@@ -97,15 +97,15 @@ const dbroutes = (app, platform) => {
 
   /** *
   Transaction list
-  GET /api/txList/
-  curl -i 'http://<host>:<port>/api/txList/<channel_genesis_hash>/<blocknum>/<txid>/<limitrows>/<offset>'
+  GET /txList/
+  curl -i 'http://<host>:<port>/txList/<channel_genesis_hash>/<blocknum>/<txid>/<limitrows>/<offset>'
   Response:
   {'rows':[{'id':56,'channelname':'mychannel','blockid':24,
   'txhash':'c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8',
   'createdt':'2018-03-09T19:40:59.000Z','chaincodename':'mycc'}]}
   */
-  app.get(
-    '/api/txList/:channel_genesis_hash/:blocknum/:txid',
+  router.get(
+    '/txList/:channel_genesis_hash/:blocknum/:txid',
     async (req, res) => {
       const channel_genesis_hash = req.params.channel_genesis_hash;
       const blockNum = parseInt(req.params.blocknum);
@@ -134,8 +134,8 @@ const dbroutes = (app, platform) => {
 
   /**
       Chaincode list
-      GET /chaincodelist -> /api/chaincode
-      curl -i 'http://<host>:<port>/api/chaincode/<channel>'
+      GET /chaincodelist -> /chaincode
+      curl -i 'http://<host>:<port>/chaincode/<channel>'
       Response:
       [
         {
@@ -147,7 +147,7 @@ const dbroutes = (app, platform) => {
         }
       ]
     */
-  app.get('/api/chaincode/:channel', (req, res) => {
+  router.get('/chaincode/:channel', (req, res) => {
     const channelName = req.params.channel;
     if (channelName) {
       dbStatusMetrics.getTxPerChaincode(channelName, async data => {
@@ -162,8 +162,8 @@ const dbroutes = (app, platform) => {
   });
 
   /** *Peer List
-  GET /peerlist -> /api/peers
-  curl -i 'http://<host>:<port>/api/peers/<channel_genesis_hash>'
+  GET /peerlist -> /peers
+  curl -i 'http://<host>:<port>/peers/<channel_genesis_hash>'
   Response:
   [
     {
@@ -172,7 +172,7 @@ const dbroutes = (app, platform) => {
     }
   ]
   */
-  app.get('/api/peers/:channel_genesis_hash', (req, res) => {
+  router.get('/peers/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
       dbStatusMetrics.getPeerList(channel_genesis_hash, data => {
@@ -185,15 +185,15 @@ const dbroutes = (app, platform) => {
 
   /** *
    List of blocks and transaction list per block
-  GET /api/blockAndTxList
-  curl -i 'http://<host>:<port>/api/blockAndTxList/channel_genesis_hash/<blockNum>/<limitrows>/<offset>'
+  GET /blockAndTxList
+  curl -i 'http://<host>:<port>/blockAndTxList/channel_genesis_hash/<blockNum>/<limitrows>/<offset>'
   Response:
   {'rows':[{'id':51,'blocknum':50,'datahash':'374cceda1c795e95fc31af8f137feec8ab6527b5d6c85017dd8088a456a68dee',
   'prehash':'16e76ca38975df7a44d2668091e0d3f05758d6fbd0aab76af39f45ad48a9c295','channelname':'mychannel','txcount':1,
   'createdt':'2018-03-13T15:58:45.000Z','txhash':['6740fb70ed58d5f9c851550e092d08b5e7319b526b5980a984b16bd4934b87ac']}]}
   */
-  app.get(
-    '/api/blockAndTxList/:channel_genesis_hash/:blocknum',
+  router.get(
+    '/blockAndTxList/:channel_genesis_hash/:blocknum',
     async (req, res) => {
       const channel_genesis_hash = req.params.channel_genesis_hash;
       const blockNum = parseInt(req.params.blocknum);
@@ -219,13 +219,13 @@ const dbroutes = (app, platform) => {
 
   /** *
    Transactions per minute with hour interval
-  GET /api/txByMinute
-  curl -i 'http://<host>:<port>/api/txByMinute/<channel_genesis_hash>/<hours>'
+  GET /txByMinute
+  curl -i 'http://<host>:<port>/txByMinute/<channel_genesis_hash>/<hours>'
   Response:
   {'rows':[{'datetime':'2018-03-13T17:46:00.000Z','count':'0'},{'datetime':'2018-03-13T17:47:00.000Z','count':'0'},{'datetime':'2018-03-13T17:48:00.000Z','count':'0'},{'datetime':'2018-03-13T17:49:00.000Z','count':'0'},{'datetime':'2018-03-13T17:50:00.000Z','count':'0'},{'datetime':'2018-03-13T17:51:00.000Z','count':'0'},
   {'datetime':'2018-03-13T17:52:00.000Z','count':'0'},{'datetime':'2018-03-13T17:53:00.000Z','count':'0'}]}
   */
-  app.get('/api/txByMinute/:channel_genesis_hash/:hours', (req, res) => {
+  router.get('/txByMinute/:channel_genesis_hash/:hours', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     const hours = parseInt(req.params.hours);
 
@@ -243,13 +243,13 @@ const dbroutes = (app, platform) => {
 
   /** *
    Transactions per hour(s) with day interval
-  GET /api/txByHour
-  curl -i 'http://<host>:<port>/api/txByHour/<channel_genesis_hash>/<days>'
+  GET /txByHour
+  curl -i 'http://<host>:<port>/txByHour/<channel_genesis_hash>/<days>'
   Response:
   {'rows':[{'datetime':'2018-03-12T19:00:00.000Z','count':'0'},
   {'datetime':'2018-03-12T20:00:00.000Z','count':'0'}]}
   */
-  app.get('/api/txByHour/:channel_genesis_hash/:days', (req, res) => {
+  router.get('/txByHour/:channel_genesis_hash/:days', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     const days = parseInt(req.params.days);
 
@@ -267,12 +267,12 @@ const dbroutes = (app, platform) => {
 
   /** *
    Blocks per minute with hour interval
-  GET /api/blocksByMinute
-  curl -i 'http://<host>:<port>/api/blocksByMinute/<channel_genesis_hash>/<hours>'
+  GET /blocksByMinute
+  curl -i 'http://<host>:<port>/blocksByMinute/<channel_genesis_hash>/<hours>'
   Response:
   {'rows':[{'datetime':'2018-03-13T19:59:00.000Z','count':'0'}]}
   */
-  app.get('/api/blocksByMinute/:channel_genesis_hash/:hours', (req, res) => {
+  router.get('/blocksByMinute/:channel_genesis_hash/:hours', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     const hours = parseInt(req.params.hours);
 
@@ -292,12 +292,12 @@ const dbroutes = (app, platform) => {
 
   /** *
    Blocks per hour(s) with day interval
-  GET /api/blocksByHour
-  curl -i 'http://<host>:<port>/api/blocksByHour/<channel_genesis_hash>/<days>'
+  GET /blocksByHour
+  curl -i 'http://<host>:<port>/blocksByHour/<channel_genesis_hash>/<days>'
   Response:
   {'rows':[{'datetime':'2018-03-13T20:00:00.000Z','count':'0'}]}
   */
-  app.get('/api/blocksByHour/:channel_genesis_hash/:days', (req, res) => {
+  router.get('/blocksByHour/:channel_genesis_hash/:days', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     const days = parseInt(req.params.days);
 

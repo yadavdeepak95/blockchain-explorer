@@ -12,5 +12,6 @@
     "type": "local",
     "platform": "fabric",
     "blocksSyncTime": "1"
-  }
+  },
+  "jwtSecret": "a secret phrase!!"
 }

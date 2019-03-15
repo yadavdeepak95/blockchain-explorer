@@ -11,8 +11,15 @@ const explorerconfig = require('./explorerconfig.json');
 const PersistenceFactory = require('./persistence/PersistenceFactory');
 const ExplorerError = require('./common/ExplorerError');
 
+const passport = require('passport');
+
+const localLoginStrategy = require('./passport/local-login');
+
+const authroutes = require('./rest/authroutes');
 const dbroutes = require('./rest/dbroutes');
 const platformroutes = require('./rest/platformroutes');
+
+const authCheckMiddleware = require('./middleware/auth-check');
 
 const swaggerDocument = require('../swagger.json');
 
@@ -24,13 +31,14 @@ class Explorer {
     this.app = new Express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(passport.initialize());
     this.app.use(
       '/api-docs',
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument)
     );
     this.app.use(compression());
-    this.persistence;
+    this.persistence = null;
     this.platforms = [];
   }
 
@@ -61,12 +69,27 @@ class Explorer {
       );
 
       platform.setPersistenceService();
+
+      passport.use('local-login', localLoginStrategy(platform));
+
       // // initializing the platfrom
       await platform.initialize();
 
+      this.app.use('/api', authCheckMiddleware);
+
+      const authrouter = new Express.Router();
+
       // initializing the rest app services
-      await dbroutes(this.app, platform);
-      await platformroutes(this.app, platform);
+      await authroutes(authrouter, platform);
+
+      const apirouter = new Express.Router();
+
+      // initializing the rest app services
+      await dbroutes(apirouter, platform);
+      await platformroutes(apirouter, platform);
+
+      this.app.use('/auth', authrouter);
+      this.app.use('/api', apirouter);
 
       // initializing sync listener
       platform.initializeListener(explorerconfig.sync);

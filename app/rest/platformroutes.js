@@ -3,19 +3,18 @@
  */
 
 const requtil = require('./requestutils');
-const User = require('../platform/fabric/models/User');
 
-const platformroutes = async function(app, platform) {
+const platformroutes = async function(router, platform) {
   const proxy = platform.getProxy();
 
   /**
   Transactions by Organization(s)
-  GET /api/txByOrg
-  curl -i 'http://<host>:<port>/api/txByOrg/<channel_genesis_hash>'
+  GET /txByOrg
+  curl -i 'http://<host>:<port>/txByOrg/<channel_genesis_hash>'
   Response:
   {'rows':[{'count':'4','creator_msp_id':'Org1'}]}
   */
-  app.get('/api/txByOrg/:channel_genesis_hash', (req, res) => {
+  router.get('/txByOrg/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
 
     if (channel_genesis_hash) {
@@ -29,8 +28,8 @@ const platformroutes = async function(app, platform) {
 
   /**
   Channels
-  GET /channels -> /api/channels/info
-  curl -i 'http://<host>:<port>/api/channels/<info>'
+  GET /channels -> /channels/info
+  curl -i 'http://<host>:<port>/channels/<info>'
   Response:
   [
     {
@@ -40,7 +39,7 @@ const platformroutes = async function(app, platform) {
     }
   ]
   */
-  app.get('/api/channels/info', (req, res) => {
+  router.get('/channels/info', (req, res) => {
     proxy
       .getChannelsInfo()
       .then(data => {
@@ -53,8 +52,8 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *Peer Status List
-  GET /peerlist -> /api/peersStatus
-  curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
+  GET /peerlist -> /peersStatus
+  curl -i 'http://<host>:<port>/peersStatus/<channel>'
   Response:
   [
     {
@@ -63,7 +62,7 @@ const platformroutes = async function(app, platform) {
     }
   ]
   */
-  app.get('/api/peersStatus/:channel', (req, res) => {
+  router.get('/peersStatus/:channel', (req, res) => {
     const channelName = req.params.channel;
     if (channelName) {
       proxy.getPeersStatus(channelName).then(data => {
@@ -75,85 +74,11 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *
-   Network list
-   GET /api/networklist -> /api/login
-   curl -i 'http://<host>:<port>/api/networklist'
-   */
-  app.get('/api/networklist', async (req, res) => {
-    proxy.networkList(req).then(list => {
-      res.send({
-        status: 200,
-        networkList: list
-      });
-    });
-  });
-
-  /** *
-  Login
-  POST /api/login -> /api/login
-  curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/api/login'
-  */
-  app.post('/api/login', async (req, res) => {
-    console.log('req.body', req.body);
-    const reqUser = await new User(req.body).asJson();
-    const userInfo = await proxy.authenticate(reqUser);
-    res.send({
-      status: 200,
-      userInfo: userInfo
-    });
-  });
-
-  /** *
-    Register
-    POST /api/register -> /api/register
-    curl -i 'http://<host>:<port>/api/register/<user>/<password>/<affiliation>/<roles>'
-    *
-    */
-  app.post(
-    '/api/register/:user/:password/:affiliation/:roles',
-    async (req, res) => {
-      try {
-        const reqUser = await new User(req.params).asJson();
-        proxy.register(reqUser).then(userInfo => {
-          res.send(userInfo);
-        });
-      } catch (err) {
-        logger.error(err);
-        return res.send({
-          status: 400,
-          message: err.toString()
-        });
-      }
-    }
-  );
-
-  /** *
-    Enroll
-    POST /api/enroll -> /api/enroll
-    curl -i 'http://<host>:<port>/api/enroll/<user>/<password>/<affiliation>/<roles>'
-    *
-    */
-  app.post('/api/enroll/:user/:password', async (req, res) => {
-    try {
-      const reqUser = await new User(req.params).asJson();
-      proxy.enroll(reqUser).then(userInfo => {
-        res.send(userInfo);
-      });
-    } catch (err) {
-      logger.error(err);
-      return res.send({
-        status: 400,
-        message: err.toString()
-      });
-    }
-  });
-
-  /** *
   Block by number
-  GET /api/block/getinfo -> /api/block
-  curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
+  GET /block/getinfo -> /block
+  curl -i 'http://<host>:<port>/block/<channel>/<number>'
   */
-  app.get('/api/block/:channel_genesis_hash/:number', (req, res) => {
+  router.get('/block/:channel_genesis_hash/:number', (req, res) => {
     const number = parseInt(req.params.number);
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (!isNaN(number) && channel_genesis_hash) {
@@ -173,8 +98,8 @@ const platformroutes = async function(app, platform) {
 
   /**
   Return list of channels
-  GET /channellist -> /api/channels
-  curl -i http://<host>:<port>/api/channels
+  GET /channellist -> /channels
+  curl -i http://<host>:<port>/channels
   Response:
   {
     'channels': [
@@ -184,7 +109,7 @@ const platformroutes = async function(app, platform) {
     ]
   }
   */
-  app.get('/api/channels', (req, res) => {
+  router.get('/channels', (req, res) => {
     proxy.getChannels().then(channels => {
       const response = {
         status: 200
@@ -196,10 +121,10 @@ const platformroutes = async function(app, platform) {
 
   /**
   Return current channel
-  GET /api/curChannel
-  curl -i 'http://<host>:<port>/api/curChannel'
+  GET /curChannel
+  curl -i 'http://<host>:<port>/curChannel'
   */
-  app.get('/api/curChannel', (req, res) => {
+  router.get('/curChannel', (req, res) => {
     proxy.getCurrentChannel().then(data => {
       res.send(data);
     });
@@ -207,10 +132,10 @@ const platformroutes = async function(app, platform) {
 
   /**
   Return change channel
-  POST /api/changeChannel
-  curl -i 'http://<host>:<port>/api/curChannel'
+  POST /changeChannel
+  curl -i 'http://<host>:<port>/curChannel'
   */
-  app.get('/api/changeChannel/:channel_genesis_hash', (req, res) => {
+  router.get('/changeChannel/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     proxy.changeChannel(channel_genesis_hash).then(data => {
       res.send({
@@ -231,7 +156,7 @@ const platformroutes = async function(app, platform) {
 
   /*
   Create new channel
-  POST /api/channel
+  POST /channel
   Content-Type : application/x-www-form-urlencoded
   {channelName:'newchannel02'
   genesisBlock:'TwoOrgsOrdererGenesis'
@@ -241,7 +166,7 @@ const platformroutes = async function(app, platform) {
   <input type='file' name='channelArtifacts' multiple />
   Response: {  success: true, message: 'Successfully created channel '   }
   */
-  app.post('/api/channel', async (req, res) => {
+  router.post('/channel', async (req, res) => {
     try {
       // upload channel config, and org config
       const artifacts = await requtil.aSyncUpload(req, res);
@@ -263,13 +188,13 @@ const platformroutes = async function(app, platform) {
 
   /**
   An API to join channel
-  POST /api/joinChannel
+  POST /joinChannel
 
-  curl -X POST -H 'Content-Type: application/json' -d '{ 'orgName':'Org1','channelName':'newchannel'}' http://localhost:8080/api/joinChannel
+  curl -X POST -H 'Content-Type: application/json' -d '{ 'orgName':'Org1','channelName':'newchannel'}' http://localhost:8080/joinChannel
 
   Response: {  success: true, message: 'Successfully joined peer to the channel '   }
   */
-  app.post('/api/joinChannel', (req, res) => {
+  router.post('/joinChannel', (req, res) => {
     const channelName = req.body.channelName;
     const peers = req.body.peers;
     const orgName = req.body.orgName;
@@ -283,8 +208,8 @@ const platformroutes = async function(app, platform) {
   });
 
   /** *Peer Status List
-  GET /peerlist -> /api/peersStatus
-  curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
+  GET /peerlist -> /peersStatus
+  curl -i 'http://<host>:<port>/peersStatus/<channel>'
   Response:
   [
     {
@@ -293,7 +218,7 @@ const platformroutes = async function(app, platform) {
     }
   ]
   */
-  app.get('/api/peersStatus/:channel', (req, res) => {
+  router.get('/peersStatus/:channel', (req, res) => {
     const channelName = req.params.channel;
     if (channelName) {
       proxy.getPeersStatus(channelName).then(data => {
