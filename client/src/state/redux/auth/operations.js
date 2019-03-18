@@ -15,9 +15,12 @@ import {
 
 import actions from '../charts/actions';
 
+import Auth from '../../Auth';
+
 const login = ({ user, password }, network) => dispatch =>
-  post('/api/login', { user, password, network })
+  post('/auth/login', { user, password, network })
     .then(resp => {
+      Auth.authenticateUser(resp.token);
       dispatch(errorAction(null));
       dispatch(loginAction({ user, ...resp }));
     })
@@ -28,8 +31,9 @@ const login = ({ user, password }, network) => dispatch =>
     });
 
 const logout = () => dispatch =>
-  post('/api/logout', {})
+  post('/auth/logout', {})
     .then(() => {
+      Auth.deauthenticateUser();
       dispatch(logoutAction());
     })
     .catch(error => {
@@ -40,7 +44,7 @@ const logout = () => dispatch =>
     });
 
 const network = () => dispatch =>
-  get('/api/networklist', {})
+  get('/auth/networklist', {})
     .then(({ networkList }) => {
       const networks = networkList.map(network => network[0]);
       dispatch(networkAction({ networks }));
@@ -52,7 +56,7 @@ const network = () => dispatch =>
     });
 
 const register = user => dispatch =>
-  post('/api/register', { ...user })
+  post('/auth/register', { ...user })
     .then(resp => {
       dispatch(registerAction({ ...user, ...resp }));
     })
@@ -63,7 +67,7 @@ const register = user => dispatch =>
     });
 
 const enroll = user => dispatch =>
-  post('/api/enroll', { ...user })
+  post('/auth/enroll', { ...user })
     .then(resp => {
       dispatch(enrollAction({ ...user, ...resp }));
     })
