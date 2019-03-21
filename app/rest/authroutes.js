@@ -6,6 +6,8 @@ const passport = require('passport');
 
 const User = require('../platform/fabric/models/User');
 
+const { responder } = require('./requestutils');
+
 const authroutes = async function(router, platform) {
   const proxy = platform.getProxy();
 
@@ -14,14 +16,13 @@ const authroutes = async function(router, platform) {
    GET /networklist -> /login
    curl -i 'http://<host>:<port>/networklist'
    */
-  router.get('/networklist', async (req, res) => {
-    proxy.networkList(req).then(list => {
-      res.send({
-        status: 200,
-        networkList: list
-      });
-    });
-  });
+  router.get(
+    '/networklist',
+    responder(async req => {
+      const networkList = await proxy.networkList(req);
+      return { networkList };
+    })
+  );
 
   /** *
   Login
@@ -66,47 +67,30 @@ const authroutes = async function(router, platform) {
   /** *
     Register
     POST /register -> /register
-    curl -i 'http://<host>:<port>/register/<user>/<password>/<affiliation>/<roles>'
+    curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'affiliation': '<affiliation>', 'roles': '<roles>' }' -i 'http://<host>:<port>/api/register'
     *
     */
   router.post(
-    '/register/:user/:password/:affiliation/:roles',
-    async (req, res) => {
-      try {
-        const reqUser = await new User(req.params).asJson();
-        proxy.register(reqUser).then(userInfo => {
-          res.send(userInfo);
-        });
-      } catch (err) {
-        logger.error(err);
-        return res.send({
-          status: 400,
-          message: err.toString()
-        });
-      }
-    }
+    '/register',
+    responder(async req => {
+      //:user/:password/:affiliation/:roles
+      const reqUser = await new User(req.body).asJson();
+      return await proxy.register(reqUser);
+    })
   );
 
   /** *
     Enroll
     POST /enroll -> /enroll
-    curl -i 'http://<host>:<port>/enroll/<user>/<password>/<affiliation>/<roles>'
+    curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'affiliation': '<affiliation>', 'roles': '<roles>' }' -i 'http://<host>:<port>/api/enroll'
     *
     */
-  router.post('/enroll/:user/:password', async (req, res) => {
-    try {
-      const reqUser = await new User(req.params).asJson();
-      proxy.enroll(reqUser).then(userInfo => {
-        res.send(userInfo);
-      });
-    } catch (err) {
-      logger.error(err);
-      return res.send({
-        status: 400,
-        message: err.toString()
-      });
-    }
-  });
+  router.post(
+    '/enroll',
+    responder(async req => {
+      const reqUser = await new User(req.body).asJson();
+      return await proxy.enroll(reqUser);
+    })
+  );
 }; //end authroutes()
-
 module.exports = authroutes;
