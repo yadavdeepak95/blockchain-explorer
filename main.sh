@@ -10,8 +10,8 @@ function print_help() {
 	echo "            - 'install' - install all dependencies of the project"
 	echo "            - 'test' - run unit tests of the application and client code"
 	echo "            - 'clean' - clean the project directory of installed dependencies"
-	echo "        -v,   --verbose - enable verbose output)"
-	echo "    main.sh -h, --help (print this message)"
+	echo "        -v - enable verbose output"
+	echo "        -h - print this message"
 }
 
 function do_install() {
@@ -46,41 +46,17 @@ case $SUBCOMMAND in
 esac
 
 OPTIONS="hv"
-LONGOPTIONS="help,verbose"
-
-# TODO: Can pass the same option (short or long) multiple times - last one is committed
-PARSED_OPTS=$(getopt --options=$OPTIONS --longoptions=$LONGOPTIONS --name "$0" -- "$@")
-if [[ $? -ne 0 ]]; then
-	exit 1
-fi
-
-eval set -- "$PARSED_OPTS"
-
-echo $@
-
 VERBOSE=
-while true; do
-	case $1 in
-		-v | --verbose)
-			VERBOSE=true
-			shift
-			;;
-		-h | --help)
+while getopts "$OPTIONS" opt; do
+	case "$opt" in
+		v) VERBOSE=true ;;
+		h)
 			print_help
 			exit 1
 			;;
-		--)
-			shift
-			if [[ $1 = "" ]]; then
-				break
-			else
-				echo "Unrecognized option: $1"
-				exit 2
-			fi
-			;;
 		*)
-			echo "Logic Error"
-			exit 3
+			echo "Unrecognized option: $opt"
+			exit 2
 			;;
 	esac
 done
