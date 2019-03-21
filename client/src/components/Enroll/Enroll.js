@@ -15,6 +15,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { shape, string } from 'prop-types';
 
@@ -66,26 +67,23 @@ export class Enroll extends Component {
     super(props);
     const { enrolled } = props;
     this.state = {
-      enrollmentID: {
+      user: {
         error: null,
         value: ''
       },
-      enrollmentSecret: {
+      password: {
         error: null,
         value: ''
       },
-      csr: {
+      affiliation: {
         error: null,
         value: ''
       },
-      profile: {
+      roles: {
         error: null,
         value: ''
       },
-      attr_reqs: {
-        error: null,
-        value: ''
-      },
+      rolesList: ['admin', 'reader', 'user'],
       error: '',
       enrolled,
       isLoading: false
@@ -113,36 +111,29 @@ export class Enroll extends Component {
     e.preventDefault();
 
     const { enroll, onEnroll } = this.props;
-    const {
-      enrollmentID,
-      enrollmentSecret,
-      csr,
-      profile,
-      attr_reqs
-    } = this.state;
+    const { user, password, affiliation, roles } = this.state;
 
-    const user = {
-      enrollmentID: enrollmentID.value,
-      enrollmentSecret: enrollmentSecret.value,
-      csr: csr.value,
-      profile: profile.value,
-      attr_reqs: attr_reqs.value
+    const userInfo = {
+      user: user.value,
+      password: password.value,
+      affiliation: affiliation.value,
+      roles: roles.value
     };
 
-    await enroll(user);
+    await enroll(userInfo);
 
-    onEnroll(user);
+    onEnroll(userInfo);
 
     return true;
   };
 
   render() {
     const {
-      enrollmentID,
-      enrollmentSecret,
-      csr,
-      profile,
-      attr_reqs,
+      user,
+      password,
+      affiliation,
+      roles,
+      rolesList,
       isLoading
     } = this.state;
     const { classes, error, onClose } = this.props;
@@ -161,17 +152,17 @@ export class Enroll extends Component {
               <TextField
                 required
                 fullWidth
-                id="enrollmentID"
-                name="enrollmentID"
-                label="Enrollment ID"
+                id="user"
+                name="user"
+                label="User"
                 disabled={isLoading}
-                value={enrollmentID.value}
+                value={user.value}
                 onChange={e => this.handleChange(e)}
                 margin="normal"
               />
-              {enrollmentID.error && (
+              {user.error && (
                 <FormHelperText id="component-error-text" error>
-                  {enrollmentID.error}
+                  {user.error}
                 </FormHelperText>
               )}
             </FormControl>
@@ -179,58 +170,38 @@ export class Enroll extends Component {
               <TextField
                 required
                 fullWidth
-                error={!!enrollmentSecret.error}
-                id="enrollmentSecret"
-                type="enrollmentSecret"
-                name="enrollmentSecret"
-                label="Enrollment Secret"
+                error={!!password.error}
+                id="password"
+                type="password"
+                name="password"
+                label="Password"
                 disabled={isLoading}
-                value={enrollmentSecret.value}
+                value={password.value}
                 onChange={e => this.handleChange(e)}
                 margin="normal"
               />
-              {enrollmentSecret.error && (
+              {password.error && (
                 <FormHelperText id="component-error-text" error>
-                  {enrollmentSecret.error}
+                  {password.error}
                 </FormHelperText>
               )}
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <TextField
-                error={!!csr.error}
+                error={!!affiliation.error}
                 required
                 fullWidth
-                id="csr"
-                name="csr"
-                label="CSR"
+                id="affiliation"
+                name="affiliation"
+                label="Affiliation"
                 disabled={isLoading}
-                value={csr.value}
+                value={affiliation.value}
                 onChange={e => this.handleChange(e)}
                 margin="normal"
               />
-              {csr.error && (
+              {affiliation.error && (
                 <FormHelperText id="component-error-text" error>
-                  {csr.error}
-                </FormHelperText>
-              )}
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <TextField
-                required
-                fullWidth
-                error={!!profile.error}
-                id="profile"
-                type="profile"
-                name="profile"
-                label="Profile"
-                disabled={isLoading}
-                value={profile.value}
-                onChange={e => this.handleChange(e)}
-                margin="normal"
-              />
-              {profile.error && (
-                <FormHelperText id="component-error-text" error>
-                  {profile.error}
+                  {affiliation.error}
                 </FormHelperText>
               )}
             </FormControl>
@@ -238,19 +209,26 @@ export class Enroll extends Component {
               <TextField
                 required
                 fullWidth
-                error={!!attr_reqs.error}
-                id="attr_reqs"
-                type="attr_reqs"
-                name="attr_reqs"
-                label="Attr Reqs"
+                select
+                error={!!roles.error}
+                id="roles"
+                type="roles"
+                name="roles"
+                label="Roles"
                 disabled={isLoading}
-                value={attr_reqs.value}
+                value={roles.value}
                 onChange={e => this.handleChange(e)}
                 margin="normal"
-              />
-              {attr_reqs.error && (
+              >
+                {rolesList.map(item => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {roles.error && (
                 <FormHelperText id="component-error-text" error>
-                  {attr_reqs.error}
+                  {roles.error}
                 </FormHelperText>
               )}
             </FormControl>

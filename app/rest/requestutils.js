@@ -3,6 +3,24 @@
 */
 const multer = require('multer');
 
+async function respond(action, req, res, next) {
+  try {
+    const value = await action(req, res, next);
+    res.status(200).send(value);
+  } catch (error) {
+    res.send({
+      status: 400,
+      message: err.toString()
+    });
+  }
+}
+
+function responder(action) {
+  return async function(req, res, next) {
+    return await respond(action, req, res, next);
+  };
+}
+
 function invalidRequest(req, res) {
   const payload = reqPayload(req);
   res.send({
@@ -59,7 +77,7 @@ const upload = multer({
 
 function aSyncUpload(req, res) {
   return new Promise((resolve, reject) => {
-    upload(req, res, (err) => {
+    upload(req, res, err => {
       const channelTxPath = null;
       const blockPath = null;
       const channelName = req.body.channelName;
@@ -111,7 +129,7 @@ function aSyncUpload(req, res) {
   });
 }
 
-const orgsArrayToString = function (orgs) {
+const orgsArrayToString = function(orgs) {
   let temp = '';
   if (typeof orgs === 'array' || typeof orgs === 'object') {
     orgs.forEach((element, i) => {
@@ -125,7 +143,7 @@ const orgsArrayToString = function (orgs) {
   }
   return temp;
 };
-const queryDatevalidator = function (from, to) {
+const queryDatevalidator = function(from, to) {
   const today = new Date().toISOString();
   if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
     from = new Date(from).toISOString();
@@ -138,6 +156,8 @@ const queryDatevalidator = function (from, to) {
 };
 
 module.exports = {
+  respond,
+  responder,
   invalidRequest,
   notFound,
   reqPayload,
