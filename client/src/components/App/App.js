@@ -12,7 +12,7 @@ import Main from '../Main';
 import Header from '../Header';
 import Footer from '../Footer';
 import LandingPage from '../View/LandingPage';
-import ErrorMesage from '../ErrorMesage';
+import ErrorMessage from '../ErrorMessage';
 import { chartSelectors } from '../../state/redux/charts';
 import { themeSelectors, themeActions } from '../../state/redux/theme';
 import { authSelectors } from '../../state/redux/auth';
@@ -66,7 +66,7 @@ export class App extends Component {
     return (
       <div className={className}>
         {auth && <Header refresh={this.refreshComponent} />}
-        {error && <ErrorMesage message={error} />}
+        {error && <ErrorMessage message={error} />}
         <Router>
           <Switch>
             <Route
