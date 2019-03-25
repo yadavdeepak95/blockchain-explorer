@@ -105,7 +105,10 @@
           "cartesian",
           "chai",
           "sql",
-          "postgres"
+          "postgres",
+          "jsonwebtoken",
+          "explorerconfig",
+          "middleware"
         ],
         "skipIfMatch": ["http://[^s]*"],
         "skipWordIfMatch": ["^foobar.*$"],
