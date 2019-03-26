@@ -9,7 +9,7 @@ EXPLORER_PROCESS_ID=$(ps aux  |  grep -v "awk"  |  awk '/name - hyperledger-expl
 if [ $EXPLORER_PROCESS_ID > 0 ]
 then
     echo 'Stopping node process hyperledger-explorer, id ' $EXPLORER_PROCESS_ID
-    kill -9 $EXPLORER_PROCESS_ID
+    kill -SIGTERM $EXPLORER_PROCESS_ID
 else
     echo 'No process name hyperledger-explorer found'
 fi
