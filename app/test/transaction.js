@@ -4,18 +4,13 @@ const chai = require('chai');
 
 const should = chai.should();
 const { spy, stub } = require('sinon');
-const config = require('../../app/platform/fabric/config');
-const appconfig = require('../../appconfig.json');
-
-const host = process.env.HOST || appconfig.host;
-const port = process.env.PORT || appconfig.port;
 const sinon = require('sinon');
 const request = require('request');
 
 const base = 'http://localhost:1337';
 const transaction = require('./fixtures/transaction.json');
 
-describe('GET /api/transaction/:channel/:id', () => {
+describe('GET /api/transaction/:channel_genesis_hash/:txid', () => {
   before(() => {
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -29,12 +24,12 @@ describe('GET /api/transaction/:channel/:id', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return currentchannel ', (done) => {
+  it('should return transaction ', done => {
     const obj = transaction;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${base}`
-        + '/api/transaction/mychannel/1752ce850935e0547e78b5396f64162a09c595f9ecc514f25afe48b52fa4d840',
+      `${base}` +
+        '/api/transaction/mychannel/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'row');

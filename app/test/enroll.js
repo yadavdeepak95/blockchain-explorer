@@ -4,11 +4,6 @@ const chai = require('chai');
 
 const should = chai.should();
 const { spy, stub } = require('sinon');
-const config = require('../../app/platform/fabric/config');
-const appconfig = require('../../appconfig.json');
-
-const host = process.env.HOST || appconfig.host;
-const port = process.env.PORT || appconfig.port;
 const sinon = require('sinon');
 const request = require('request');
 

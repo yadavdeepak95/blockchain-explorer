@@ -4,18 +4,13 @@ const chai = require('chai');
 
 const should = chai.should();
 const { spy, stub } = require('sinon');
-const config = require('../../app/platform/fabric/config');
-const appconfig = require('../../appconfig.json');
-
-const host = process.env.HOST || appconfig.host;
-const port = process.env.PORT || appconfig.port;
 const sinon = require('sinon');
 const request = require('request');
 
 const base = 'http://localhost:1337';
 const blocktrans = require('./fixtures/blocktransaction.json');
 
-describe('GET /api/block/transactions/:channel/:number', () => {
+describe('GET /api/block/transactions/:channel_genesis_hash/:number', () => {
   before(() => {
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -29,11 +24,12 @@ describe('GET /api/block/transactions/:channel/:number', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return currentchannel ', (done) => {
+  it('should return blocktransaction ', done => {
     const obj = blocktrans;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${`${base}` + '/api/block/transactions/'}${config.channel}/0`,
+      `${base}` +
+        '/api/block/transactions/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d/0',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'number', 'txCount');

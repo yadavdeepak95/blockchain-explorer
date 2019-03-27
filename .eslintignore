@@ -2,5 +2,6 @@
 **/client/build/**
 **/client/coverage/**
 **/client/src/services/__mocks__/**
+**/app/test/**
 
 

@@ -29,11 +29,12 @@ describe('GET /api/peer/channel', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return peers ', (done) => {
+  it('should return peers ', done => {
     const obj = peers;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${`${base}` + '/api/peers/'}${config.channel}`,
+      `${base}` +
+        '/api/peers/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'peers');

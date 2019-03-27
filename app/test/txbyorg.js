@@ -4,18 +4,13 @@ const chai = require('chai');
 
 const should = chai.should();
 const { spy, stub } = require('sinon');
-const config = require('../../app/platform/fabric/config');
-const appconfig = require('../../appconfig.json');
-
-const host = process.env.HOST || appconfig.host;
-const port = process.env.PORT || appconfig.port;
 const sinon = require('sinon');
 const request = require('request');
 
 const base = 'http://localhost:1337';
 const txbyorg = require('./fixtures/txbyorg.json');
 
-describe('GET /api/txByOrg/:channe', () => {
+describe('GET /api/txByOrg/:channel', () => {
   before(() => {
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -29,11 +24,12 @@ describe('GET /api/txByOrg/:channe', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return blockandtx ', (done) => {
+  it('should return txbyorg ', done => {
     const obj = txbyorg;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${`${base}` + '/api/txByMinute/'}${config.channel}`,
+      `${base}` +
+        '/api/txByMinute/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'rows');

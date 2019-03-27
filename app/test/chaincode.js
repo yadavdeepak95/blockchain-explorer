@@ -4,11 +4,6 @@ const chai = require('chai');
 
 const should = chai.should();
 const { spy, stub } = require('sinon');
-const config = require('../../app/platform/fabric/config');
-const appconfig = require('../../appconfig.json');
-
-const host = process.env.HOST || appconfig.host;
-const port = process.env.PORT || appconfig.port;
 const sinon = require('sinon');
 const request = require('request');
 
@@ -29,11 +24,12 @@ describe('GET /api/chaincode/:channel', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return chaincode ', (done) => {
+  it('should return chaincode ', done => {
     const obj = chaincode;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${`${base}` + '/api/chaincode/'}${config.channel}`,
+      `${base}` +
+        '/api/chaincode/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'chaincode');

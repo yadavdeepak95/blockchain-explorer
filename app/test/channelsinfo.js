@@ -4,11 +4,6 @@ const chai = require('chai');
 
 const should = chai.should();
 const { spy, stub } = require('sinon');
-const config = require('../../app/platform/fabric/config');
-const appconfig = require('../../appconfig.json');
-
-const host = process.env.HOST || appconfig.host;
-const port = process.env.PORT || appconfig.port;
 const sinon = require('sinon');
 const request = require('request');
 
@@ -29,7 +24,7 @@ describe('GET /api/channels/info', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return channelsinfo ', (done) => {
+  it('should return channelsinfo ', done => {
     const obj = channelsinfo;
     this.get.yields(null, JSON.stringify(obj));
     request.get(`${base}` + '/api/channels/info', (err, body) => {

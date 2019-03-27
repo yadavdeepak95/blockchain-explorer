@@ -4,18 +4,13 @@ const chai = require('chai');
 
 const should = chai.should();
 const { spy, stub } = require('sinon');
-const config = require('../../app/platform/fabric/config');
-const appconfig = require('../../appconfig.json');
-
-const host = process.env.HOST || appconfig.host;
-const port = process.env.PORT || appconfig.port;
 const sinon = require('sinon');
 const request = require('request');
 
 const base = 'http://localhost:1337';
 const blocksbyminute = require('./fixtures/blocksbyminute.json');
 
-describe('GET /api/blocksByMinute/:channel/:hour', () => {
+describe('GET /api/blocksByMinute/:channel_genesis_hash/:hour', () => {
   before(() => {
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -29,11 +24,12 @@ describe('GET /api/blocksByMinute/:channel/:hour', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return blockbyminute ', (done) => {
+  it('should return blockbyminute ', done => {
     const obj = blocksbyminute;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${`${base}` + '/api/blocksByMinute/'}${config.channel}/1`,
+      `${base}` +
+        '/api/blocksByMinute/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d/1',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'rows');
