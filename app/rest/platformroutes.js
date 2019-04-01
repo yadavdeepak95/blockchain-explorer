@@ -48,7 +48,7 @@ const platformroutes = async function(router, platform) {
         });
         res.send({ status: 200, channels: data });
       })
-      .catch(err => res.send({ status: 500 }));
+      .catch(err => res.send({ status: 500, error: err }));
   });
 
   /** *Peer Status List
@@ -142,69 +142,6 @@ const platformroutes = async function(router, platform) {
         currentChannel: data
       });
     });
-  });
-
-  /** *
-  Read 'blockchain-explorer/app/config/CREATE-CHANNEL.md' on 'how to create a channel'
-
-  The values of the profile and genesisBlock are taken fron the configtx.yaml file that
-  is used by the configtxgen tool
-  Example values from the defualt first network:
-  profile = 'TwoOrgsChannel';
-  genesisBlock = 'TwoOrgsOrdererGenesis';
-  */
-
-  /*
-  Create new channel
-  POST /channel
-  Content-Type : application/x-www-form-urlencoded
-  {channelName:'newchannel02'
-  genesisBlock:'TwoOrgsOrdererGenesis'
-  orgName:'Org1'
-  profile:'TwoOrgsChannel'}
-  {fieldname: 'channelArtifacts', fieldname: 'channelArtifacts'}
-  <input type='file' name='channelArtifacts' multiple />
-  Response: {  success: true, message: 'Successfully created channel '   }
-  */
-  router.post('/channel', async (req, res) => {
-    try {
-      // upload channel config, and org config
-      const artifacts = await requtil.aSyncUpload(req, res);
-      const chCreate = await proxy.createChannel(artifacts);
-      const channelResponse = {
-        success: chCreate.success,
-        message: chCreate.message
-      };
-      return res.send(channelResponse);
-    } catch (err) {
-      logger.error(err);
-      const channelError = {
-        success: false,
-        message: 'Invalid request, payload'
-      };
-      return res.send(channelError);
-    }
-  });
-
-  /**
-  An API to join channel
-  POST /joinChannel
-
-  curl -X POST -H 'Content-Type: application/json' -d '{ 'orgName':'Org1','channelName':'newchannel'}' http://localhost:8080/joinChannel
-
-  Response: {  success: true, message: 'Successfully joined peer to the channel '   }
-  */
-  router.post('/joinChannel', (req, res) => {
-    const channelName = req.body.channelName;
-    const peers = req.body.peers;
-    const orgName = req.body.orgName;
-    if (channelName && peers && orgName) {
-      proxy
-        .joinChannel(channelName, peers, orgName)
-        .then(resp => res.send(resp));
-    } else {
-      return requtil.invalidRequest(req, res);
-    }
   });
 
   /** *Peer Status List
