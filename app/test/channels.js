@@ -8,9 +8,9 @@ const sinon = require('sinon');
 const request = require('request');
 
 const base = 'http://localhost:1337';
-const channelsinfo = require('./fixtures/channelsinfo.json');
+const channels = require('./fixtures/channels.json');
 
-describe('GET /api/channels/info', () => {
+describe('GET /api/channels/', () => {
   before(() => {
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -24,24 +24,13 @@ describe('GET /api/channels/info', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return channelsinfo ', done => {
-    const obj = channelsinfo;
+  it('should return channels ', done => {
+    const obj = channels;
     this.get.yields(null, JSON.stringify(obj));
-    request.get(`${base}` + '/api/channels/info', (err, body) => {
+    request.get(`${base}` + '/api/channels', (err, body) => {
       body = JSON.parse(body);
       body.should.include.keys('status', 'channels');
       body.status.should.eql(200);
-      for (let i = 0; i < body.channels.length; i++) {
-        body.channels[i].should.include.keys(
-          'id',
-          'channelname',
-          'blocks',
-          'channel_genesis_hash',
-          'transactions',
-          'channel_hash',
-          'createdat'
-        );
-      }
       done();
     });
   });

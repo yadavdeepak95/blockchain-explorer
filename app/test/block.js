@@ -8,9 +8,9 @@ const sinon = require('sinon');
 const request = require('request');
 
 const base = 'http://localhost:1337';
-const txbyorg = require('./fixtures/txbyorg.json');
+const block = require('./fixtures/block.json');
 
-describe('GET /api/txByOrg/:channel', () => {
+describe('GET /api/block/:channel_genesis_hash/:number', () => {
   before(() => {
     this.get = sinon.stub(request, 'get');
     this.post = sinon.stub(request, 'post');
@@ -24,19 +24,28 @@ describe('GET /api/txByOrg/:channel', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return txbyorg ', done => {
-    const obj = txbyorg;
+
+  it('should return block ', done => {
+    const obj = block;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
       `${base}` +
-        '/api/txByOrg/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d',
+        '/api/block/6571ce3234a8808327849841eb9ed43a717f7f5bf430e1fb42f922f70185404d/1',
       (err, body) => {
         body = JSON.parse(body);
-        body.should.include.keys('status', 'rows');
+        body.should.include.keys(
+          'status',
+          'number',
+          'previous_hash',
+          'data_hash',
+          'transactions'
+        );
         body.status.should.eql(200);
-        for (let i = 0; i < body.rows.length; i++) {
-          body.rows[i].should.include.keys('creator_msp_id', 'count');
-        }
+        body.number.should.eql('0');
+        body.previous_hash.should.eql('');
+        body.data_hash.should.eql(
+          '2aca6a13e625a3a409461c1a849a42956adefb79f72f555cff3df4586afe7760'
+        );
         done();
       }
     );
