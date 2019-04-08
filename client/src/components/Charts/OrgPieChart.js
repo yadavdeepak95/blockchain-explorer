@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { PieChart, Pie, Tooltip, Legend } from 'recharts';
 import { transactionByOrgType } from '../types';
-import { sha256, sha224 } from 'js-sha256';
+import { sha256 } from 'js-sha256';
 
 const styles = theme => {
   const { type } = theme.palette;

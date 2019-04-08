@@ -137,7 +137,10 @@
           "jwt",
           "networklist",
           "req",
-          "adminroutes"
+          "adminroutes",
+          "5bc5c2",
+          "sha256",
+          "ffc145"
         ],
         "skipIfMatch": ["http://[^s]*"],
         "skipWordIfMatch": ["^foobar.*$"],
