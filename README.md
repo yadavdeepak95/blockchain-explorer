@@ -24,18 +24,14 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 - [10.0 Build Hyperledger Explorer](#Build-Hyperledger-Explorer)
 - [11.0 Run Hyperledger Explorer](#Run-Hyperledger-Explorer)
 - [12.0 Optional: Run Hyperledger Explorer Using Docker](#Run-Hyperledger-Explorer-using-Docker)
-    - [12.1 Non Interactive Deployment Assumptions](#Docker-Non-Interactive-Deployment-Assumptions)
-    - [12.2 Docker Repository](#Docker-Docker-Repository)
-    - [12.3 Deploy Explorer Using Docker](#Docker-Deploy-Explorer-Using-Docker)
-    - [12.4 Join Existing Docker Network](#Docker-Join-Existing-Docker-Network)
-    - [12.5 Stopping Docker Containers](#Docker-Stopping-Docker-Containers)
-    - [12.6 Removing Docker Containers and Clean Images](#Docker-Removing-Docker-Containers-and-Clean-Images)
+    - [12.1 Docker Repository](#Docker-Docker-Repository)
+    - [12.2 Run Hyperledger Explorer Using Docker Compose](#Run-Hyperledger-Explorer-Using-Docker-Compose)
+    - [12.3 Docker Troubleshooting](#Run-Hyperledger-Explorer-Using-Docker-Compose-Troubleshooting)
 - [13.0 NPM Utility Scripts to Dockerise Application](#NPM-Utility-Scripts-to-Dockerize-Application)
-- [14.0 Run Hyperledger Explorer Using Docker Compose](#Run-Hyperledger-Explorer-Using-Docker-Compose)
-- [15.0 Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
-- [16.0 Logs](#Logs)
-- [17.0 Troubleshooting](#Troubleshooting)
-- [18.0 License](#License)
+- [14.0 Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
+- [15.0 Logs](#Logs)
+- [16.0 Troubleshooting](#Troubleshooting)
+- [17.0 License](#License)
 
 
 
@@ -380,71 +376,109 @@ There is also an automated deployment of the **Hyperledger Explorer** available 
 
 * **BASH** installed
 * **Docker** is installed on deployment machine.
-
-
-
-<a name="Docker-Non-Interactive-Deployment-Assumptions" />
-
-## 12.1 Non Interactive Deployment Assumptions    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-* By default, the deployment script uses the **192.168.10.0/24** virtual network, and needs to be available with no overlapping IPs (this means you can't have physical computers on that network nor other docker containers running). In case of overlappings, edit the script and change target network and container targets IPs.
-* By default both services (frontend and database) will run on same machine, but script modifications is allowed to run on separate machines just changing target DB IP on frontend container.
-* Crypto material is correctly loaded under `examples/$network/crypto`
-* Fabric network configuration is correctly set under `examples/$network/config.json`
-
-
+* **Docker Compose** is installed on deployment machine.
 
 <a name="Docker-Docker-Repository" />
 
-## 12.2 Docker Repository   <!-- do not remove this comment, ensure there is a blank line before each heading -->
+## 12.1 Docker Repository   <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 * Hyperledger Explorer docker repository `https://hub.docker.com/r/hyperledger/explorer/`
 * Hyperledger Explorer PostgreSQL docker repository `https://hub.docker.com/r/hyperledger/explorer-db`
 
 
+<a name="Run-Hyperledger-Explorer-Using-Docker-Compose" />
 
-<a name="Docker-Deploy-Explorer-Using-Docker" />
+## 12.2 Run Hyperledger Explorer Using Docker Compose    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
-## 12.3 Deploy Explorer Using Docker    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+* Modify an example of docker-compose.yaml to align with your environment
+    * networks > mynetwork.com > external > name
+    ```yaml
+    networks:
+        mynetwork.com:
+            external:
+                name: net_byfn
+    ```
+    * services > explorer.mynetwork.com > volumes
+      * Connection profile path (ex. ./examples/net1/config.json)
+      * Connection profile directory path (ex. ./examples/net1/connection-profile, which is referred from config.json)
+      * Directory path for crypto artifacts of fabric network (ex. ./examples/net1/crypto)
+    ```yaml
+        volumes:
+          - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
+          - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+          - ./examples/net1/crypto:/tmp/crypto
+    ```
+    * When you connect the explorer to your fabric network through bridge network, you need to set `DISCOVERY_AS_LOCALHOST` to `false` for disabling hostname mapping into `localhost`.
+    ```yaml
+        explorer.mynetwork.com:
+            ...
+            environment:
+            ...
+            - DISCOVERY_AS_LOCALHOST=false
+    ```
 
-From a new terminal:
+* Run the following to start up explore and explorer-db services after starting your fabric network:
+    ```
+    cd /blockchain-explorer
+    docker-compose up -d
+    ```
 
-- `cd blockchain-explorer/`
-- Create a new folder (lets call it `dockerConfig`) to store your hyperledger network configuration under `examples` (`mkdir -p ./examples/dockerConfig`)
-- Save your hyperledger network configuration under `examples/dockerConfig/config.json`
-- Save your hyperledger network certs data under `examples/dockerConfig/crypto`
-- Run the explorer pointing to previously created folder.
+* To stop services without removing persistent data, run the following:
+    ```
+    docker-compose down
+    ```
 
-From a new terminal:
-
-- `cd blockchain-explorer/`
-- `./deploy_explorer.sh dockerConfig`  (it will automatically deploy both database and frontend apps using Hyperledger Fabric network configuration stored under `examples/dockerConfig` folder)
-
-Note: the example with additional information can be found at [examples/net1](./examples/net1) folder.
-
-
-
-<a name="Docker-Join-Existing-Docker-Network" />
-
-## 12.4 Joining Existing Docker Network    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-If the Blockchain network is deployed in the Docker, you may pass network name as second parameter to join that network
-(docker_network in the example below):
-- `./deploy_explorer.sh dockerConfig docker_network`
+* In this docker-compose.yaml, two named volumes are allocated for persistent data (for Postgres data and user wallet), if you would like to clear these named volumes, run the following:
+    ```
+    docker-compose down -v
+    ```
 
 
+<a name="Run-Hyperledger-Explorer-Using-Docker-Compose-Troubleshooting" />
 
-<a name="Docker-Stopping-Docker-Containers" />
+## 12.3 Docker Troubleshooting       <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
-## 12.5 Stopping Docker Containers    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-- `./deploy_explorer.sh --down`
+* If you have an error on Explorer container as below, the initialisation of database might fail in some reasons.
+    ```
+    postgres://hppoc:password@192.168.10.11:5432/fabricexplorer
+    error when connecting to db: { error: role "hppoc" does not exist
+    ```
+    In such a case, you need to clear the persistent data by running the following command.
+    ```
+    docker-compose down -v
+    docker-compose up -d
+    ```
 
+* If you have an error on Explorer container as below, the Explorer might not have connected the network which your fabric network is belonging.
+    ```
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+    Error : [ 'Default client peer is down and no channel details available database' ]
+    ```
+    In such a case, you need to check whether the explorer container has belonged to the same network with your fabric network or not, with the following command.
+    ```
+    docker network inspect net_byfn  | jq ".[].Containers[].Name" | sort
+    "cli"
+    "dev-peer0.org1.example.com-mycc-1.0"
+    "dev-peer0.org2.example.com-mycc-1.0"
+    "dev-peer1.org2.example.com-mycc-1.0"
+    "explorerdb.mynetwork.com"              <<---
+    "explorer.mynetwork.com"                <<---
+    "orderer.example.com"
+    "peer0.org1.example.com"
+    "peer0.org2.example.com"
+    "peer1.org1.example.com"
+    "peer1.org2.example.com"
+    ```
+    Or you need to check whether the explorer can ping to each peer on your fabric network or not, with the following command.
+    ```
+    docker exec explorer.mynetwork.com ping -c 1 peer0.org1.example.com
+    PING peer0.org1.example.com (172.18.0.3): 56 data bytes
+    64 bytes from 172.18.0.3: seq=0 ttl=64 time=0.064 ms
 
-
-<a name="Docker-Removing-Docker-Containers-and-Clean-Images" />
-
-## 12.6 Removing Docker Containers and Clean Images    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-- `./deploy_explorer.sh --clean`
-
-
+    --- peer0.org1.example.com ping statistics ---
+    1 packets transmitted, 1 packets received, 0% packet loss
+    round-trip min/avg/max = 0.064/0.064/0.064 ms
+    ```
 
 <a name="NPM-Utility-Scripts-to-Dockerize-Application" />
 
@@ -467,39 +501,9 @@ To push the container to your registry, run:
     npm run docker_push
     ```
 
-
-
-<a name="Run-Hyperledger-Explorer-Using-Docker-Compose" />
-
-# 14.0 Run Hyperledger Explorer Using Docker Compose    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-* Modify docker-compose.yaml to align with your environment
-    * networks > mynetwork.com > external > name
-    * services > explorer.mynetwork.com > volumes
-      * Connection profile path (ex. ./examples/net1/config.json)
-      * Directory path for crypto artifacts of fabric network (ex. ./examples/net1/crypto)
-
-* Run the following to start up explore and explorer-db services:
-    ```
-    cd /blockchain-explorer
-    docker-compose up -d
-    ```
-
-* To stop services without removing persistent data, run the following:
-    ```
-    docker-compose down
-    ```
-
-* In this docker-compose.yaml, two named volumes are allocated for persistent data (for Postgres data and user credential provided by fabric-ca), if you would like to clear these named volumes, run the following:
-    ```
-    docker-compose down -v
-    ```
-
-
-
 <a name="Hyperledger-Explorer-Swagger" />
 
-# 15.0 Hyperledger Explorer Swagger    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# 14.0 Hyperledger Explorer Swagger    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 - Once the Hyperledger Explorer has been launched go to http://localhost:8080/api-docs to view the Rust API description
 
@@ -507,7 +511,7 @@ To push the container to your registry, run:
 
 <a name="Logs" />
 
-# 16.0 Logs    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# 15.0 Logs    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 - Please visit the `./logs/console` folder to view the logs relating to console and `./logs/app` to view the application logs and visit the `./logs/db` to view the database logs.
 - Logs rotate every 7 days.
@@ -516,7 +520,7 @@ To push the container to your registry, run:
 
 <a name="Troubleshooting" />
 
-# 17.0 Troubleshooting    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# 16.0 Troubleshooting    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 - Please visit the [TROUBLESHOOT.md](TROUBLESHOOT.md) to view the Troubleshooting TechNotes for Hyperledger Explorer.
 
@@ -524,6 +528,6 @@ To push the container to your registry, run:
 
 <a name="License" />
 
-# 18.0 License    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# 17.0 License    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 Hyperledger Explorer Project source code is released under the Apache 2.0 license. The README.md, CONTRIBUTING.md files, and files in the "images", "__snapshots__" folders are licensed under the Creative Commons Attribution 4.0 International License. You may obtain a copy of the license, titled CC-BY-4.0, at http://creativecommons.org/licenses/by/4.0/.
