@@ -9,17 +9,26 @@ class FabricEvent {
   constructor(client, fabricServices) {
     this.client = client;
     this.fabricServices = fabricServices;
-    this.channelEventHubs = new Map();
   }
 
   async initialize() {
     // creating channel event hub
     const channels = this.client.getChannels();
-    //console.log('FabricEvent. initialize ', channels);
+
     for (const [channel_name, channel] of channels.entries()) {
+      const eventHub = FabricEvent.channelEventHubs.get(channel_name);
+
+      if (eventHub) {
+        logger.debug(
+          'initialize() - Channel event hub already exists for [%s]',
+          channel_name
+        );
+        continue;
+      }
+
       this.createChannelEventHub(channel);
       logger.debug(
-        'Successfully created channel event hub for  [%s]',
+        'initialize() - Successfully created channel event hub for [%s]',
         channel_name
       );
     }
@@ -37,12 +46,12 @@ class FabricEvent {
       },
       err => {
         logger.error('Block Event %s', err);
-        console.dir(err);
+        console.error(err);
       }
     );
     this.connectChannelEventHub(channel.getName(), eventHub);
     // set channel event hub to map
-    this.channelEventHubs.set(channel.getName(), eventHub);
+    FabricEvent.channelEventHubs.set(channel.getName(), eventHub);
   }
 
   connectChannelEventHub(channel_name, eventHub) {
@@ -65,7 +74,7 @@ class FabricEvent {
   }
 
   isChannelEventHubConnected(channel_name) {
-    const eventHub = this.channelEventHubs.get(channel_name);
+    const eventHub = FabricEvent.channelEventHubs.get(channel_name);
     if (eventHub) {
       return eventHub.isconnected();
     }
@@ -73,21 +82,28 @@ class FabricEvent {
   }
 
   disconnectChannelEventHub(channel_name) {
-    const eventHub = this.channelEventHubs.get(channel_name);
+    logger.debug('disconnectChannelEventHub(' + channel_name + ')');
+
+    const eventHub = FabricEvent.channelEventHubs.get(channel_name);
     return eventHub.disconnec();
   }
 
   disconnectEventHubs() {
+    logger.debug('disconnectEventHubs()');
+
     // disconnect all event hubs
-    for (const [channel_name, eventHub] of this.channelEventHubs.entries()) {
-      const status = this.isChannelEventHubConnected();
+    for (const [
+      channel_name,
+      eventHub
+    ] of FabricEvent.channelEventHubs.entries()) {
+      const status = this.isChannelEventHubConnected(channel_name);
       if (status) {
         this.disconnectChannelEventHub(channel_name);
       }
     }
   }
 
-  // channel event hub used to synch the blocks
+  // channel event hub used to sync the blocks
   async synchChannelBlocks(channel_name) {
     if (this.isChannelEventHubConnected(channel_name)) {
       const channel = this.client.hfc_client.getChannel(channel_name);
@@ -95,7 +111,7 @@ class FabricEvent {
     }
   }
 
-  // Interval and peer event hub used to synch the blocks
+  // Interval and peer event hub used to sync the blocks
   async synchBlocks() {
     // getting all channels list from client ledger
     const channels = await this.client
@@ -114,11 +130,11 @@ class FabricEvent {
       const channel_name = channel.channel_id;
       // check channel event is connected
       if (this.isChannelEventHubConnected(channel_name)) {
-        // call synch blocks
+        // call sync blocks
         const channel = this.client.hfc_client.getChannel(channel_name);
         await this.fabricServices.synchBlocks(this.client, channel);
       } else {
-        const eventHub = this.channelEventHubs.get(channel_name);
+        const eventHub = FabricEvent.channelEventHubs.get(channel_name);
         if (eventHub) {
           // connect channel event hub
           this.connectChannelEventHub(channel_name, eventHub);
@@ -137,5 +153,8 @@ class FabricEvent {
     }
   }
 }
+
+//static class variable
+FabricEvent.channelEventHubs = new Map();
 
 module.exports = FabricEvent;
