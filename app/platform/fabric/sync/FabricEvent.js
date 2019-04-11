@@ -85,7 +85,7 @@ class FabricEvent {
     logger.debug('disconnectChannelEventHub(' + channel_name + ')');
 
     const eventHub = FabricEvent.channelEventHubs.get(channel_name);
-    return eventHub.disconnec();
+    return eventHub.disconnect();
   }
 
   disconnectEventHubs() {
