@@ -139,3 +139,16 @@ def request_to_the_path_described_on_table(context, request_verb):
     log_full(context.r)
 
     return context.r
+
+@then(u'the explorer app logs contains "{data}" {count:d} time(s) within {timeout:d} seconds')
+def step_impl(context, data, count, timeout):
+    time.sleep(float(timeout))
+    data_count = is_in_log("explorer.mynetwork.com", data)
+    assert data_count == count, "The log didn't appear the expected number of times({0}).".format(data_count)
+
+
+def is_in_log(container, keyText):
+    output = subprocess.check_output(
+        "docker exec  " + container + " cat logs/app/app.log | grep " + "\"" + keyText + "\"" + " | wc -l",
+        shell=True)
+    return int(output)

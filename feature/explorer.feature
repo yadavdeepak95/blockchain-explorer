@@ -198,3 +198,24 @@ Scenario: [first-network] Not supported to register a new user and enroll
     Then the response parameter "status" should equal 400
     # TODO need to fix this error message 'TypeError: Parameter \"url\" must be a string, not undefined'
     # Then the response parameter "message" should equal "Failed to get registered user: test2 with error: Error: Not supported user registration without CA"
+
+@bugfix
+# @doNotDecompose
+Scenario: [BE-583] Memory Leak : Channel Event Hub shoud be created just once
+    Given I start first-network
+    Given the NETWORK_PROFILE environment variable is first-network
+    When I start explorer
+    Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+    Then the explorer app logs contains "Successfully created channel event hub for" 1 time(s) within 60 seconds
+
+@bugfix
+# @doNotDecompose
+Scenario: [BE-603] Create a channel with long channel name
+    Given I have a bootstrapped fabric network of type solo without tls
+    Given the NETWORK_PROFILE environment variable is solo-tls-disabled
+    When an admin sets up a channel named "mychannel"
+    When I start explorer
+    Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+
+    When an admin sets up a channel named "channel24924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924"
+    Then the explorer app logs contains "Successfully created channel event hub for \[channel24924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924924\]" 1 time(s) within 60 seconds

@@ -34,7 +34,7 @@
   },
   "organizations": {
     "Org1MSP": {
-      "mspid": "Org1MSP",
+      "mspid": "org1.example.com",
       "fullpath": true,
       "adminPrivateKey": {
         "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/sk"
