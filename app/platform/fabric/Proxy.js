@@ -33,18 +33,12 @@ class Proxy {
     return response;
   }
 
-  async getOperationsServiceConfig(networkName) {
+  async getOperationsService(network, checkType) {
     const operationsService = new OperationsService(this.platform);
-    let response = await operationsService.getOperationsServiceConfig(
-      networkName
+    let response = await operationsService.getOperationsService(
+      network,
+      checkType
     );
-    if (!response) {
-      response = {
-        status: false,
-        message: `Failed to get getOperationsServiceConfig`
-      };
-    }
-    logger.debug('getOperationsServiceConfig >> %s', response);
     return response;
   }
 

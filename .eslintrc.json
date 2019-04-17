@@ -153,7 +153,8 @@
           "der",
           "shouhewu",
           "pem",
-          "privatekey"
+          "privatekey",
+          "postgre"
         ],
         "skipIfMatch": ["http://[^s]*"],
         "skipWordIfMatch": ["^foobar.*$"],

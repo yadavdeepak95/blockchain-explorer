@@ -1,4 +1,12 @@
-# Hyperledger Explorer
+
+# Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url]
+
+[rocketchat-url]:https://chat.hyperledger.org/channel/hyperledger-explorer
+[rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
+[![Build Status](https://jenkins.hyperledger.org/buildStatus/icon?job=blockchain-explorer-merge-x86_64)](https://jenkins.hyperledger.org/view/fabric/job/blockchain-explorer-merge-x86_64)
+[![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
+
+<!-- badges -->
 
 Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open source utility to browse activity on the underlying blockchain network. Users have the ability to configure and build Hyperledger Explorer on MacOS and Ubuntu.
 
