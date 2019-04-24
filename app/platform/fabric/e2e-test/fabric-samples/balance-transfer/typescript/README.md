@@ -1,3 +1,4 @@
+[](SPDX-License-Identifier: CC-BY-4.0)
 ## Balance transfer
 
 This is a sample Node.js application written using typescript which demonstrates

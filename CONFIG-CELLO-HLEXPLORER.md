@@ -1,3 +1,4 @@
+[](SPDX-License-Identifier: CC-BY-4.0)
 #Fabric Cluster started using Hyperledger Cello and configure to Explorer
 
 ##Verify docker is running from Master Node

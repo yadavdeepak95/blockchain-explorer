@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 Feature: Bootstrapping Hyperledger Explorer
     As a user I want to be able to bootstrap Hyperledger Explorer
 

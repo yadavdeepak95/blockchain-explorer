@@ -1,3 +1,5 @@
+[](SPDX-License-Identifier: CC-BY-4.0)
+
 ## Configure to Hyperledger Explorer
 
 Before Configure the Explorer blockchain-explorer/app/platform/fabric/config.json

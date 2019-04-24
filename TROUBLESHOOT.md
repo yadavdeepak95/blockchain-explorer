@@ -1,4 +1,6 @@
-﻿## Troubleshooting TechNotes - Hyperledger Explorer
+﻿[](SPDX-License-Identifier: CC-BY-4.0)
+
+## Troubleshooting TechNotes - Hyperledger Explorer
 
 ### Problem Description: Hyperledger explorer application fails to start
 

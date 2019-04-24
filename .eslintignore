@@ -1,3 +1,4 @@
+#SPDX-License-Identifier: Apache-2.0
 **/node_modules/**
 **/client/build/**
 **/client/coverage/**
@@ -5,4 +6,5 @@
 **/app/test/**
 **/app/persistence/fabric/postgreSQL/db/**
 **/app/platform/fabric/e2e-test/**
+*.css
 

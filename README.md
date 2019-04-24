@@ -1,4 +1,6 @@
 
+[](SPDX-License-Identifier: CC-BY-4.0)
+
 # Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url]
 
 [rocketchat-url]:https://chat.hyperledger.org/channel/hyperledger-explorer

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 export default class Auth {
   /**
    * Authenticate a user. Save a token string in Local Storage

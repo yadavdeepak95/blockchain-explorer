@@ -55,7 +55,9 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peerOrg1/tls/ca.crt, /etc/hyperledger/crypto/peerOrg2/tls/ca.crt]
-      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8443  # operation RESTful API
+      - ORDERER_OPERATIONS_TLS_ENABLED=false  # enable TLS for operations
+      #- ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8443  # operation RESTful API
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.example.com:8443  # operation RESTful API
       - ORDERER_METRICS_PROVIDER=prometheus  # prometheus will pull metrics from orderer via /metrics RESTful API
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
     command: orderer
@@ -79,7 +81,9 @@ services:
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
-      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9443  # operation RESTful API
+      - CORE_OPERATIONS_TLS_ENABLED=false # enable TLS for operations
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9443  # operation RESTful API
+      #- CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9443  # operation RESTful API
       - CORE_METRICS_PROVIDER=prometheus  # prometheus will pull metrics from orderer via /metrics RESTful API
     ports:
       - 7051:7051
@@ -101,7 +105,9 @@ services:
       - CORE_PEER_ADDRESS=peer1.org1.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:7051
-      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9444  # operation RESTful API
+      - CORE_OPERATIONS_TLS_ENABLED=false # enable TLS for operations
+      - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9444  # operation RESTful API
+      #- CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9444  # operation RESTful API
       - CORE_METRICS_PROVIDER=prometheus  # prometheus will pull metrics from orderer via /metrics RESTful API
     ports:
       - 7056:7051
@@ -123,7 +129,9 @@ services:
       - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
-      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9445  # operation RESTful API
+      - CORE_OPERATIONS_TLS_ENABLED=false # enable TLS for operations
+      #- CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9445  # operation RESTful API
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org2.example.com:9445  # operation RESTful API
       - CORE_METRICS_PROVIDER=prometheus  # prometheus will pull metrics from orderer via /metrics RESTful API
     ports:
       - 8051:7051
@@ -145,7 +153,9 @@ services:
       - CORE_PEER_ADDRESS=peer1.org2.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:7051
-      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9446  # operation RESTful API
+      - CORE_OPERATIONS_TLS_ENABLED=false # enable TLS for operations
+      - CORE_OPERATIONS_LISTENADDRESS=peer1.org2.example.com:9446  # operation RESTful API
+      #- CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9446  # operation RESTful API
       - CORE_METRICS_PROVIDER=prometheus  # prometheus will pull metrics from orderer via /metrics RESTful API
     ports:
       - 8056:7051

@@ -154,7 +154,11 @@
           "shouhewu",
           "pem",
           "privatekey",
-          "postgre"
+          "postgre",
+          "param",
+          "Deauthenticate",
+          "30px",
+          "accessor"
         ],
         "skipIfMatch": ["http://[^s]*"],
         "skipWordIfMatch": ["^foobar.*$"],

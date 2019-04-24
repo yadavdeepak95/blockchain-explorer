@@ -1,6 +1,7 @@
 {
   "name": "first-network",
   "version": "1.0.0",
+  "license": "Apache-2.0",
   "client": {
     "tlsEnable": true,
     "adminUser": "admin",
@@ -37,7 +38,7 @@
       "mspid": "Org1MSP",
       "fullpath": true,
       "adminPrivateKey": {
-        "path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/868edff66b8eb4bcbc3bde0682cd6932ea2164bd22c63477eef686d70f8bd2b8_sk"
+        "path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/955443f3286143c24aebe1e28c6601e145fe8a9c15d41beb2ab9b21d948327da_sk"
       },
       "signedCert": {
         "path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"

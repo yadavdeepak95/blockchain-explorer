@@ -105,6 +105,13 @@ class OperationsService {
     );
     let healthStatus = {};
     let optionSet = new Set();
+    let headerType = '# TYPE';
+    let headerHelp = '# HELP';
+    let tempHeaderHelp = '';
+    let tempHeaderType = '';
+    let metricsData = [];
+    let metricsRow = [];
+    let tempOptionName = '';
     try {
       const response = await axios.get(targetUrl);
       let data = null;
@@ -127,14 +134,14 @@ class OperationsService {
                 line  ledger_statedb_commit_time_bucket{channel="mychannel",le="0.05"} 5
                  *
                  */
-        let headerType = '# TYPE';
-        let headerHelp = '# HELP';
+
         // process response from the HLFabric Operations Service
         const lines = response.data.split(/\n|\r/);
-        let tempHeaderHelp = '';
-        let tempHeaderType = '';
-        let metricsData = [];
-        let metricsRow = [];
+        console.debug(
+          `Received ${
+            lines.length
+          } lines from ${targetUrl}, ${targetName} operations service `
+        );
         for (let i in lines) {
           if (lines[i]) {
             let line = lines[i].toString().trim();
@@ -144,14 +151,16 @@ class OperationsService {
                 metricsData.push({
                   HELP: tempHeaderHelp,
                   TYPE: tempHeaderType,
-                  optionData: metricsRow
+                  optionData: metricsRow,
+                  optionName: tempOptionName
                 });
                 // reset metrics row
                 metricsRow = [];
               }
               tempHeaderHelp = line.replace(headerHelp, '');
               let opt = tempHeaderHelp.trim().split(' ');
-              optionSet.add(opt[0]);
+              tempOptionName = opt[0];
+              optionSet.add(tempOptionName);
               tempHeaderHelp = JSON.stringify(tempHeaderHelp);
             } else if (line.startsWith(headerType)) {
               tempHeaderType = JSON.stringify(line.replace(headerType, ''));
@@ -159,6 +168,16 @@ class OperationsService {
               metricsRow.push(JSON.stringify(line));
             }
           }
+        }
+
+        // add last option
+        if (metricsRow.length > 0) {
+          metricsData.push({
+            HELP: tempHeaderHelp,
+            TYPE: tempHeaderType,
+            optionData: metricsRow,
+            optionName: tempOptionName
+          });
         }
 
         healthStatus = {

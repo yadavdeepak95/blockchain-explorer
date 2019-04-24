@@ -4,19 +4,22 @@
 
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Badge } from 'reactstrap';
 import ReactTable from '../Styled/Table';
 import { peerStatusType } from '../types';
+
+/* eslint-disable */
 
 const styles = theme => ({
   table: {
     height: 335,
-    overflowY: 'scroll',
+    overflowY: 'scroll'
   },
   center: {
-    textAlign: 'center',
-  },
+    textAlign: 'left'
+  }
 });
+
+/* eslint-enable */
 
 const PeersHealth = ({ peerStatus, classes }) => {
   const columnHeaders = [
@@ -24,8 +27,8 @@ const PeersHealth = ({ peerStatus, classes }) => {
       Header: 'Peer Name',
       accessor: 'server_hostname',
       filterAll: false,
-      className: classes.center,
-    },
+      className: classes.center
+    } /*
     {
       Header: 'Status',
       accessor: 'status',
@@ -36,7 +39,7 @@ const PeersHealth = ({ peerStatus, classes }) => {
           {row.value}
         </Badge>
       ),
-    },
+    },*/
   ];
   return (
     <div>
@@ -52,7 +55,7 @@ const PeersHealth = ({ peerStatus, classes }) => {
 };
 
 PeersHealth.propTypes = {
-  peerStatus: peerStatusType.isRequired,
+  peerStatus: peerStatusType.isRequired
 };
 
 export default withStyles(styles)(PeersHealth);

@@ -1,3 +1,4 @@
+[](SPDX-License-Identifier: CC-BY-4.0)
 # ESLint Documentation
 
 ## ESLint Extension in VS Code

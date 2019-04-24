@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 var util = require('util');
 var path = require('path');
 var hfc = require('fabric-client');

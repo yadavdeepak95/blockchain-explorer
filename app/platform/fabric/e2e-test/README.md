@@ -1,3 +1,5 @@
+[](SPDX-License-Identifier: CC-BY-4.0)
+
 # Test example for behave (BDD, Gherkin syntax)
 
 ```behave
@@ -185,7 +187,7 @@ app/platform/fabric/e2e-test/
 +-- fabric-samples/         // Cloned from fabric-samples repo with tag:v1.4.0
                             // Some docker-compose files and scripts are modified a little bit for this BDD env
 
-    +-- balance-transfer/   
+    +-- balance-transfer/
 
     +-- first-network/
 

@@ -1,5 +1,7 @@
+/* SPDX-License-Identifier: Apache-2.0 */
 /* Media Queries*/
 /*Resizing the dashboard buttons when browser resized*/
+
 @media (max-width: 1415px) and (min-width: 990px) {
   .navbar-brand {
     width: 50%;

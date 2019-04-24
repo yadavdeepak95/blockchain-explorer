@@ -1,3 +1,4 @@
+[](SPDX-License-Identifier: CC-BY-4.0)
 **How to install Composer on a Ubuntu 16.04**
 
 **Create Another User**

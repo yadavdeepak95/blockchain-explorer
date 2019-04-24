@@ -1,3 +1,5 @@
+[](SPDX-License-Identifier: CC-BY-4.0)
+
 # Contributing to Hyperledger Explorer
 
 We welcome contributions to the Hyperledger Explorer Project in many forms like bug reports, feature requests,  documentation updates, code.

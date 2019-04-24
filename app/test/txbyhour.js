@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 const expect = require('chai').expect;
 const assert = require('assert');
 const chai = require('chai');

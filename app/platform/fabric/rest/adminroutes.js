@@ -32,7 +32,7 @@ const adminroutes = async function(router, platform) {
     POST /enroll -> /enroll
     curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'affiliation': '<affiliation>', 'roles': '<roles>' }' -i 'http://<host>:<port>/api/enroll'
     *
-    */
+
   router.post(
     '/enroll',
     responder(async req => {
@@ -40,6 +40,8 @@ const adminroutes = async function(router, platform) {
       return await proxy.enroll(reqUser);
     })
   );
+
+  */
 };
 
 module.exports = adminroutes;

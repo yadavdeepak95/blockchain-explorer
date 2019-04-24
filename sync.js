@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 const Synchronizer = require('./app/Synchronizer');
 const helper = require('./app/common/helper');
 
@@ -22,7 +26,7 @@ start();
 
 // this function is called when you want the server to die gracefully
 // i.e. wait for existing connections
-const shutDown = function () {
+const shutDown = function() {
   console.log(
     '<<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>'
   );
@@ -43,7 +47,7 @@ const shutDown = function () {
   }, 2000);
 };
 
-process.on('unhandledRejection', (up) => {
+process.on('unhandledRejection', up => {
   console.log(
     '<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>'
   );
@@ -54,7 +58,7 @@ process.on('unhandledRejection', (up) => {
   }
   shutDown();
 });
-process.on('uncaughtException', (up) => {
+process.on('uncaughtException', up => {
   console.log(
     '<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>'
   );
