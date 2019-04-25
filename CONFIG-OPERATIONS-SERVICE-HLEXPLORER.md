@@ -1,4 +1,5 @@
-[](SPDX-License-Identifier: CC-BY-4.0)
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
 ## Configure Operations Service to Hyperledger Explorer
 
@@ -61,5 +62,3 @@
   #### Sample configuration for 'fabric-samples/blalance-transfer'
 
   - Similar configuration as for 'fabric-samples/first-network'.
-
-

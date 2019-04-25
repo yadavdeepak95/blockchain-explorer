@@ -1,4 +1,5 @@
-﻿[](SPDX-License-Identifier: CC-BY-4.0)
+﻿
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
 ## Troubleshooting TechNotes - Hyperledger Explorer
 
@@ -568,9 +569,3 @@ Related Information:
     Example:
     $curl http://localhost:8080/api/channels
     Example response: {"status":200,"channels":["dockerchannel","mychannel"]
-
-
-
-
-
-

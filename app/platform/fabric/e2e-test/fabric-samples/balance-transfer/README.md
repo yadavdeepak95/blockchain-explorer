@@ -1,4 +1,6 @@
-[](SPDX-License-Identifier: CC-BY-4.0)
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
+
 ## Balance transfer
 
 A sample Node.js app to demonstrate **__fabric-client__** & **__fabric-ca-client__** Node.js SDK APIs
