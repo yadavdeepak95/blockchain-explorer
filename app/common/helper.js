@@ -36,7 +36,7 @@ function readAllFiles(dir) {
 }
 
 /*
-Please assign the logger with the file name for the application logging and assign the logger with "pgservice" 
+Please assign the logger with the file name for the application logging and assign the logger with "pgservice"
 for database logging for any file name. Please find an example below.
 
 To stacktrace, please pass the error.stack object to the logger. If there is no error.stack object pass in a

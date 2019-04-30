@@ -18,7 +18,6 @@ const localLoginStrategy = require('./passport/local-login');
 const authroutes = require('./rest/authroutes');
 const dbroutes = require('./rest/dbroutes');
 const platformroutes = require('./rest/platformroutes');
-const opsserviceroutes = require('./platform/fabric/rest/opsserviceroutes');
 const adminroutes = require('./platform/fabric/rest/adminroutes');
 
 const authCheckMiddleware = require('./middleware/auth-check');
@@ -93,7 +92,6 @@ class Explorer {
       // initializing the rest app services
       await dbroutes(apirouter, platform);
       await platformroutes(apirouter, platform);
-      await opsserviceroutes(apirouter, platform);
       await adminroutes(apirouter, platform);
 
       this.app.use('/auth', authrouter);

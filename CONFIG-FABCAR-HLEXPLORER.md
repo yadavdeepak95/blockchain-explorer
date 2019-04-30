@@ -33,4 +33,4 @@ Before Configure the Explorer blockchain-explorer/app/platform/fabric/config.jso
 
 **./start.sh (It will have the backend up)**
 
-Launch the Blockchain explorer URL
+Launch the Hyperledger explorer URL

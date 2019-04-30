@@ -28,37 +28,16 @@
 
     **Note that each peer, and orderer need to have a different port, and it available  within your environment.
 
-  - Modify blockchain-explorer/app/platform/fabric/connection-profile/first-network.json to add operations service to fabric-samples/first-network connection profile, list all the targeted orderers, and peers you need to get metrics, and other info.
+  #### Setup Prometheus server locally, and configure
 
-    **Note that this is a non TLS configuration for the operations service
+  - Follow up instaructions how to setup Prometheus server [getting started](https://prometheus.io/docs/prometheus/latest/getting_started)
+  - Use sample [prometheus.yml](blockchain-explorer/app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml) to start prometheus. locally,
+  - To see if configuration is correct, start prometheus, and open http://localhost:9090 in a browser.
 
-    ```
-    "operationsservice": {
-    "targets": {
-      "orderers": [{
-        "name": "orderer.example.com",
-        "url": "http://localhost:8443"
-      }],
-      "peers": [{
-          "name": "peer0.org1.example.com",
-          "url": "http://localhost:9443"
-        },
-        {
-          "name": "peer1.org1.example.com",
-          "url": "http://localhost:9444"
-        },
-        {
-          "name": "peer0.org2.example.com",
-          "url": "http://localhost:9445"
-        }, {
-          "name": "peer1.org2.example.com",
-          "url": "http://localhost:9446"
-        }
-      ]
-     }
-    }
-    ```
+  #### Setup Grafana
 
-  #### Sample configuration for 'fabric-samples/blalance-transfer'
+ - Get start with [Grafana](https://grafana.com/grafana)
+ - Login to grafana http://localhost:3000/login , default credentials admin/admin
+ - Navigate to http://localhost:3000/dashboard/import
+ - Click "Upload .json File" button, and select [sample](blockchain-explorer/app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json) file.
 
-  - Similar configuration as for 'fabric-samples/first-network'.

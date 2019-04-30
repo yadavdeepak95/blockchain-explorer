@@ -4,7 +4,6 @@
 const UserService = require('./service/UserService.js');
 const helper = require('../../common/helper');
 const NetworkService = require('./service/NetworkService.js');
-const OperationsService = require('./service/OperationsService.js');
 
 const logger = helper.getLogger('Proxy');
 
@@ -30,15 +29,6 @@ class Proxy {
       };
     }
     logger.debug('login >> %s', response);
-    return response;
-  }
-
-  async getOperationsService(network, checkType) {
-    const operationsService = new OperationsService(this.platform);
-    let response = await operationsService.getOperationsService(
-      network,
-      checkType
-    );
     return response;
   }
 

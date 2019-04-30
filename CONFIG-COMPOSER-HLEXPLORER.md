@@ -21,4 +21,4 @@ based on that above file configuration we need to configure in Hyperledger Explo
 
 **./start.sh (It will have the backend up)**
 
-Launch the Blockchain explorer URL
+Launch the Hyperledger explorer URL

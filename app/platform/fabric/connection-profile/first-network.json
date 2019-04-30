@@ -56,34 +56,5 @@
         "ssl-target-name-override": "peer0.org1.example.com"
       }
     }
-  },
-
-  "operationsservice": {
-    "targets": {
-      "orderers": [
-        {
-          "name": "orderer.example.com",
-          "url": "http://localhost:8443"
-        }
-      ],
-      "peers": [
-        {
-          "name": "peer0.org1.example.com",
-          "url": "http://localhost:9443"
-        },
-        {
-          "name": "peer1.org1.example.com",
-          "url": "http://localhost:9444"
-        },
-        {
-          "name": "peer0.org2.example.com",
-          "url": "http://localhost:9445"
-        },
-        {
-          "name": "peer1.org2.example.com",
-          "url": "http://localhost:9446"
-        }
-      ]
-    }
   }
 }

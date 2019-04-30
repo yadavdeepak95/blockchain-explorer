@@ -541,6 +541,50 @@ Related Information:
 #### Related Information:
     HL Explorer support for HL Fabric 1.4
 
+### Problem Description:  [Channel.js]: Channel:mychannel received discovery error:access denied
+
+#### Background Information:
+  2019-04-30T14:01:11.375Z - error: [Channel.js]: Channel:mychannel received discovery error:access denied
+2019-04-30T14:01:11.376Z - error: [Channel.js]: Error: Channel:mychannel Discovery error:access denied
+2019-04-30T14:01:11.396Z - error: [Channel.js]: Channel:mychannel received discovery error:access denied
+2019-04-30T14:01:11.396Z - error: [Channel.js]: Error: Channel:mychannel Discovery error:access denied
+2019-04-30T14:01:11.396Z - error: [Channel.js]: refresh - failed:Error: Failed to discover ::Error: Channel:mychannel Discovery error:access denied
+<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+Error :  [ 'Invalid platform configuration, Please check the log' ]
+Received kill signal, shutting down gracefully
+Closed out connections
+
+logs from app.log file
+
+[2019-04-30 10:01:11.108] [INFO] FabricGateway - peer0.org1.example.com
+[2019-04-30 10:01:11.108] [INFO] FabricGateway - peer0.org1.example.com
+[2019-04-30 10:01:11.108] [INFO] FabricGateway - /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8_sk
+[2019-04-30 10:01:11.108] [INFO] FabricGateway - /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8_sk
+[2019-04-30 10:01:11.336] [DEBUG] FabricClient - Set client [balance-transfer] default channel as  >> mychannel
+[2019-04-30 10:01:11.376] [ERROR] FabricClient - Error: Failed to discover ::Error: Channel:mychannel Discovery error:access denied
+    at Channel._initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:347:11)
+    at <anonymous>
+[2019-04-30 10:01:11.377] [DEBUG] FabricClient - this.defaultPeer  peer0.org1.example.com
+[2019-04-30 10:01:11.391] [DEBUG] FabricClient - Client channels >> []
+[2019-04-30 10:01:11.396] [DEBUG] FabricClient - Channel Discovery >>  [object Object]
+
+
+
+#### Possible cause:
+    This error was reported when running balance transfer sample provided by HLFabric, version 1.4
+#### Possible solution:
+    -- $cd <path to project>blockchain-explorer/app/persistence/fabric/postgreSQL/db/
+    -- Run ./createDB.sh
+    -- Delete all under "wallet" folder, and make sure balance transfer is running, two steps required:
+    -- run from <fabric-samples path>fabric-samples/balance-transfer
+    -- $./runApp.sh
+    -- from a new terminal run $./testAPIs.sh
+
+#### Related Information:
+    HL Explorer support for HL Fabric 1.4
+
 
 
 ### Docker Troubleshooting commands

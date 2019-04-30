@@ -20,24 +20,24 @@ const ExplorerError = require('../../../common/ExplorerError');
 class FabricGateway {
   constructor(networkConfig) {
     this.networkConfig = networkConfig;
-    this.config;
-    this.gateway;
-    this.userName; // admin
-    this.enrollmentSecret; // adminpw
-    this.identityLabel;
-    this.mspId;
-    this.wallet;
-    this.tlsEnable;
-    this.defaultChannelName;
-    this.defaultPeer;
-    this.defaultPeerUrl;
+    this.config = null;
+    this.gateway = null;
+    this.userName = null;
+    this.enrollmentSecret = null;
+    this.identityLabel = null;
+    this.mspId = null;
+    this.wallet = null;
+    this.tlsEnable = false;
+    this.defaultChannelName = null;
+    this.defaultPeer = null;
+    this.defaultPeerUrl = null;
     this.gateway = new Gateway();
     this.fabricConfig = new FabricConfig();
     this.fabricCaEnabled = false;
-    this.networkName;
-    this.client;
-    this.FSWALLET;
-    this.enableAuthentication;
+    this.networkName = null;
+    this.client = null;
+    this.FSWALLET = null;
+    this.enableAuthentication = false;
   }
 
   async initialize() {
@@ -54,7 +54,7 @@ class FabricGateway {
     this.identityLabel = this.userName;
     this.FSWALLET = 'wallet/' + this.networkName;
 
-    const info = `\n\Loading configuration  ${this.config} \n`;
+    const info = `\nLoading configuration  ${this.config} \n`;
     logger.debug(info.toUpperCase());
 
     let peers = this.fabricConfig.getPeers();
@@ -65,7 +65,6 @@ class FabricGateway {
     let adminPrivateKeyPath;
     logger.log('========== > defaultPeer ', this.defaultPeer);
 
-    // getting ors masp, and certtificates
     ({
       orgMsp,
       adminPrivateKeyPath,
@@ -81,10 +80,11 @@ class FabricGateway {
     this.defaultChannelName = this.fabricConfig.getDefaultChannel();
     this.mspId = orgMsp[0];
     let caURL = [];
+    /* eslint-disable */
     let serverCertPath = null;
 
     ({ caURL, serverCertPath } = this.fabricConfig.getCertificateAuthorities());
-
+    /* eslint-enable */
     let identity;
     let enrollment;
 
@@ -126,9 +126,13 @@ class FabricGateway {
         identity: this.userName,
         mspId: this.mspId,
         wallet: this.wallet,
-        discovery: { enabled: true },
+        discovery: {
+          enabled: true
+        },
         clientTlsIdentity: this.userName,
-        eventHandlerOptions: { commitTimeout: 100 }
+        eventHandlerOptions: {
+          commitTimeout: 100
+        }
       };
 
       // connect to gateway
@@ -224,7 +228,10 @@ class FabricGateway {
       console.dir('Error instantiating FabricCAServices ', error);
       //TODO decide how to proceed if error
     }
-    return { enrollment, identity };
+    return {
+      enrollment,
+      identity
+    };
   }
 
   async getIdentityInfo(label) {

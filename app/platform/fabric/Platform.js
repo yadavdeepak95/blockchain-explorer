@@ -27,15 +27,17 @@ class Platform {
     this.broadcaster = broadcaster;
     this.networks = new Map();
     this.proxy = new Proxy(this);
-    this.defaultNetwork;
-    this.defaultClient;
-    this.network_configs;
-    this.syncType;
+    this.defaultNetwork = null;
+    this.defaultClient = null;
+    this.network_configs = null;
+    this.syncType = null;
     this.explorerListeners = [];
   }
 
   async initialize() {
+    /* eslint-disable */
     const _self = this;
+    /* eslint-enable */
 
     // loading the config.json
     const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
@@ -64,7 +66,9 @@ class Platform {
   }
 
   async buildClients(network_configs) {
+    /* eslint-disable */
     const _self = this;
+    /* eslint-enable */
     let clientstatus = true;
 
     // setting organization enrolment files
@@ -104,7 +108,7 @@ class Platform {
       }
 
       // create client instance
-      logger.debug('Creatinging client [%s] >> ', client_configs, client_name);
+      logger.debug('Creating client [%s] >> ', client_configs, client_name);
 
       let client;
 
@@ -135,6 +139,7 @@ class Platform {
   }
 
   initializeListener(syncconfig) {
+    /* eslint-disable */
     for (const [network_name, clients] of this.networks.entries()) {
       for (const [client_name, client] of clients.entries()) {
         if (this.getClient(network_name, client_name).getStatus()) {
@@ -145,10 +150,11 @@ class Platform {
         }
       }
     }
+    /* eslint-enable */
   }
 
   setPersistenceService() {
-    // setting platfrom specific CRUDService and MetricService
+    // setting platform specific CRUDService and MetricService
     this.persistence.setMetricService(
       new MetricService(this.persistence.getPGService())
     );
