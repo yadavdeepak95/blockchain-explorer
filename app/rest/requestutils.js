@@ -9,7 +9,7 @@ async function respond(action, req, res, next) {
   } catch (error) {
     res.send({
       status: 400,
-      message: err.toString()
+      message: error.toString()
     });
   }
 }

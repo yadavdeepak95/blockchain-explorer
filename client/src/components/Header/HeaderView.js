@@ -1,6 +1,7 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+/* eslint-disable */
 
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
@@ -28,7 +29,7 @@ import { authOperations } from '../../state/redux/auth';
 
 import Register from '../Register';
 
-import Enroll from '../Enroll';
+// import Enroll from '../Enroll';
 
 import {
   currentChannelType,
@@ -222,7 +223,6 @@ export class HeaderView extends Component {
       isLoading: true,
       modalOpen: false,
       registerOpen: false,
-      enrollOpen: false,
       selectedChannel: {}
     };
   }
@@ -347,12 +347,11 @@ export class HeaderView extends Component {
     this.setState(() => ({ registerOpen: false }));
   };
 
-  onRegister = user => {
-    alert(JSON.stringify(user, null, 2));
+  onRegister = () => {
     this.registerClose();
   };
 
-  enrollOpen = () => {
+  /**enrollOpen = () => {
     this.setState(() => ({ enrollOpen: true }));
   };
 
@@ -363,7 +362,7 @@ export class HeaderView extends Component {
   onEnroll = user => {
     alert(JSON.stringify(user, null, 2));
     this.enrollClose();
-  };
+  }; */
 
   handleDrawOpen = drawer => {
     switch (drawer) {
@@ -471,7 +470,6 @@ export class HeaderView extends Component {
       adminDrawer,
       modalOpen,
       registerOpen,
-      enrollOpen,
       notifications
     } = this.state;
 
@@ -579,15 +577,6 @@ export class HeaderView extends Component {
                     />
                   </div>
                   <div
-                    className={classNames(classes.adminButton, classes.user)}
-                  >
-                    <FontAwesome
-                      name="user-plus"
-                      className={classes.userIcon}
-                      onClick={() => this.enrollOpen()}
-                    />
-                  </div>
-                  <div
                     className={classNames(classes.adminButton, classes.signout)}
                   >
                     <FontAwesome
@@ -627,14 +616,6 @@ export class HeaderView extends Component {
                 onClose={this.registerClose}
                 onRegister={this.onRegister}
               />
-            </Dialog>
-            <Dialog
-              open={enrollOpen}
-              onClose={this.enrollClose}
-              fullWidth={false}
-              maxWidth="md"
-            >
-              <Enroll onClose={this.enrollClose} onEnroll={this.onEnroll} />
             </Dialog>
             <Dialog
               open={modalOpen}

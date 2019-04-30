@@ -16,6 +16,9 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
 
 import { shape, string } from 'prop-types';
 
@@ -50,6 +53,17 @@ const styles = theme => ({
   },
   actions: {
     marginTop: theme.spacing.unit * 3
+  },
+  errortext: {
+    fontSize: 16,
+    font: 'bold',
+    color: 'red'
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing.unit,
+    top: theme.spacing.unit,
+    color: theme.palette.grey[500]
   }
 });
 
@@ -67,6 +81,7 @@ export class Register extends Component {
     super(props);
     const { registered } = props;
     this.state = {
+      info: null,
       user: {
         error: null,
         value: ''
@@ -110,7 +125,8 @@ export class Register extends Component {
   submitForm = async e => {
     e.preventDefault();
 
-    const { register, onRegister } = this.props;
+    //const { register, onRegister } = this.props;
+    const { register } = this.props;
     const { user, password, affiliation, roles } = this.state;
 
     const userInfo = {
@@ -120,15 +136,20 @@ export class Register extends Component {
       roles: roles.value
     };
 
-    await register(userInfo);
+    const info = await register(userInfo);
 
-    onRegister(userInfo);
+    this.setState(() => ({ info }));
+
+    console.log(info);
+
+    // onRegister(userInfo);
 
     return true;
   };
 
   render() {
     const {
+      info,
       user,
       password,
       affiliation,
@@ -147,6 +168,17 @@ export class Register extends Component {
           >
             Register User
           </Typography>
+          <MuiDialogTitle>
+            {onClose ? (
+              <IconButton
+                aria-label="Close"
+                className={classes.closeButton}
+                onClick={onClose}
+              >
+                <CloseIcon />
+              </IconButton>
+            ) : null}
+          </MuiDialogTitle>
           <form className={classes.form} onSubmit={this.submitForm}>
             <FormControl margin="normal" required fullWidth>
               <TextField
@@ -235,6 +267,14 @@ export class Register extends Component {
             {error && (
               <FormHelperText id="component-error-text" error>
                 {error}
+              </FormHelperText>
+            )}
+            {info && (
+              <FormHelperText
+                id="component-error-text"
+                className={classes.errortext}
+              >
+                {info}
               </FormHelperText>
             )}
             <Grid

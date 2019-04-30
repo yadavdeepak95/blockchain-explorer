@@ -1,6 +1,7 @@
 /*
     SPDX-License-Identifier: Apache-2.0
 */
+/* eslint-disable */
 
 const User = require('../models/User');
 const helper = require('../../../common/helper');
@@ -14,11 +15,11 @@ class UserService {
     this.platform = platform;
   }
   // 1. If config file for a network contains  "enableAuthentication": true|false, based on this flag authenticate
-  // platform gives an access to the nettwork configuration, and the client that is derived from the FabricGateway
-  /*TODO do an authentication, get the user from the wallet, if it's not in the wallet
-   then return null user info object, otherwise return userinfo.
+  // platform gives an access to the network configuration, and the client that is derived from the FabricGateway
+  /* TODO do an authentication, get the user from the wallet, if it's not in the wallet
+   then return null user info object, otherwise return user info.
    The wallet is saving user under the wallet<network name>/<user name> directory,
-   see variable this.FSWALLET in  blockchain-explorer/app/platform/fabric/gateway/FabricGateway.js
+   see variable this.FSWALLET in  block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
     */
 
   async authenticate(user) {
@@ -71,7 +72,6 @@ class UserService {
       var fabricGw = fabricClient.fabricGateway;
       var userOrg = fabricClient.config.client.organization;
       var isExist = await fabricGw.wallet.exists(username);
-      var identity;
 
       if (isExist) {
         throw new Error('Failed to register : Already exist, ' + username);
@@ -109,14 +109,7 @@ class UserService {
         await this.reconnectGw(user, identity);
       }
     } catch (error) {
-      return {
-        status: 400,
-        message:
-          'Failed to get registered user: ' +
-          username +
-          ' with error: ' +
-          error.toString()
-      };
+      throw new Error(error.toString());
     }
 
     return { status: 200 };
@@ -142,12 +135,12 @@ class UserService {
 
   async enrollUserIdentity(user) {
     /*TODO should have the same logic as the method in _enrollUserIdentity of
-    blockchain-explorer/app/platform/fabric/gateway/FabricGateway.js
+    block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
     FabricGateway enrolls an  user that is defined in the config.json, but we may need an entry form to enroll a user */
   }
   async enrollCaIdentity(user) {
     /*TODO should have the same logic as the method in _enrollCaIdentity of
-      blockchain-explorer/app/platform/fabric/gateway/FabricGateway.js
+      block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
       FabricGateway enrolls a CA ( Certificate Authority) Identity that is defined in the config.json,
       but we may need enroll a CA entry form to enroll a CA
     */
@@ -165,7 +158,6 @@ class UserService {
       try {
         var caURL;
         var serverCertPath;
-
         ({
           caURL,
           serverCertPath
@@ -187,7 +179,6 @@ class UserService {
           'Successfully get user enrolled and imported to wallet, ',
           username
         );
-
         return identity;
       } catch (err) {
         logger.error('Failed to enroll %s', username);

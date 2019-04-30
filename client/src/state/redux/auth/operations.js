@@ -9,7 +9,6 @@ import {
   logout as logoutAction,
   network as networkAction,
   register as registerAction,
-  enroll as enrollAction,
   error as errorAction
 } from './actions';
 
@@ -56,23 +55,22 @@ const network = () => dispatch =>
     });
 
 const register = user => dispatch =>
-  post('/auth/register', { ...user })
+  post('/api/register', { ...user })
     .then(resp => {
-      dispatch(registerAction({ ...user, ...resp }));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internal Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        return resp.message;
+      } else {
+        dispatch(registerAction({ ...user, ...resp }));
+        return resp.message;
+      }
     })
     .catch(error => {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      dispatch(errorAction(error));
-    });
-
-const enroll = user => dispatch =>
-  post('/auth/enroll', { ...user })
-    .then(resp => {
-      dispatch(enrollAction({ ...user, ...resp }));
-    })
-    .catch(error => {
-      // eslint-disable-next-line no-console
       console.error(error);
       dispatch(errorAction(error));
     });
@@ -81,6 +79,5 @@ export default {
   login,
   logout,
   network,
-  register,
-  enroll
+  register
 };
