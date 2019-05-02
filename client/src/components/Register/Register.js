@@ -125,7 +125,6 @@ export class Register extends Component {
   submitForm = async e => {
     e.preventDefault();
 
-    //const { register, onRegister } = this.props;
     const { register } = this.props;
     const { user, password, affiliation, roles } = this.state;
 
@@ -139,10 +138,6 @@ export class Register extends Component {
     const info = await register(userInfo);
 
     this.setState(() => ({ info }));
-
-    console.log(info);
-
-    // onRegister(userInfo);
 
     return true;
   };
@@ -269,12 +264,12 @@ export class Register extends Component {
                 {error}
               </FormHelperText>
             )}
-            {info && (
+            {info && user.value && (
               <FormHelperText
                 id="component-error-text"
                 className={classes.errortext}
               >
-                {info}
+                User with userId {user.value} {info}
               </FormHelperText>
             )}
             <Grid

@@ -74,7 +74,7 @@ class UserService {
       var isExist = await fabricGw.wallet.exists(username);
 
       if (isExist) {
-        throw new Error('Failed to register : Already exist, ' + username);
+        throw new Error('Username already exist');
       } else {
         if (fabricGw.fabricCaEnabled) {
           var caURL;
@@ -109,9 +109,11 @@ class UserService {
         await this.reconnectGw(user, identity);
       }
     } catch (error) {
-      throw new Error(error.toString());
+      return {
+        status: 400,
+        message: 'failed to register with ' + error.toString()
+      };
     }
-
     return { status: 200 };
   }
 
@@ -133,11 +135,6 @@ class UserService {
     return { status: 200 };
   }
 
-  async enrollUserIdentity(user) {
-    /*TODO should have the same logic as the method in _enrollUserIdentity of
-    block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
-    FabricGateway enrolls an  user that is defined in the config.json, but we may need an entry form to enroll a user */
-  }
   async enrollCaIdentity(user) {
     /*TODO should have the same logic as the method in _enrollCaIdentity of
       block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
