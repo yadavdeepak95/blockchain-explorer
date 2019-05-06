@@ -109,7 +109,7 @@ Scenario Outline: [<network-type>] Bring up explorer with fabric-samples/<networ
 
 @basic
 # @doNotDecompose
-Scenario: [balance-transfer] Register a new user and enroll successfully
+Scenario: [balance-transfer] Register a new user successfully
     Given I start balance-transfer
     Given the NETWORK_PROFILE environment variable is balance-transfer
     When I start explorer
@@ -144,26 +144,11 @@ Scenario: [balance-transfer] Register a new user and enroll successfully
     Then the response status code should equal 200
     Then the response structure should equal "registerResp"
     Then the response parameter "status" should equal 400
-    Then the response parameter "message" should equal "Failed to get registered user: test2 with error: Error: Failed to register : Already exist, test2"
-
-    When I make a POST request to "api/enroll" with parameters
-    |user   |password   |affiliation |role   |
-    |test2  |test2      |department1 |admin  |
-    Then the response status code should equal 200
-    Then the response structure should equal "enrollResp"
-    Then the response parameter "status" should equal 200
-
-    # duplicate call : api/enroll (succeed)
-    When I make a POST request to "api/enroll" with parameters
-    |user   |password   |affiliation |role   |
-    |test2  |test2      |department1 |admin  |
-    Then the response status code should equal 200
-    Then the response structure should equal "enrollResp"
-    Then the response parameter "status" should equal 200
+    Then the response parameter "message" should equal "failed to register with Error: Username already exist"
 
 @basic
 # @doNotDecompose
-Scenario: [first-network] Not supported to register a new user and enroll
+Scenario: [first-network] Not supported to register a new user
     Given I start first-network
     Given the NETWORK_PROFILE environment variable is first-network
     When I start explorer
@@ -190,16 +175,7 @@ Scenario: [first-network] Not supported to register a new user and enroll
     Then the response status code should equal 200
     Then the response structure should equal "registerResp"
     Then the response parameter "status" should equal 400
-    Then the response parameter "message" should equal "Failed to get registered user: test2 with error: Error: Not supported user registration without CA"
-
-    When I make a POST request to "api/enroll" with parameters
-    |user   |password   |affiliation |role   |
-    |test2  |test2      |department1 |admin  |
-    Then the response status code should equal 200
-    Then the response structure should equal "enrollResp"
-    Then the response parameter "status" should equal 400
-    # TODO need to fix this error message 'TypeError: Parameter \"url\" must be a string, not undefined'
-    # Then the response parameter "message" should equal "Failed to get registered user: test2 with error: Error: Not supported user registration without CA"
+    Then the response parameter "message" should equal "failed to register with Error: Not supported user registration without CA"
 
 @bugfix
 # @doNotDecompose
