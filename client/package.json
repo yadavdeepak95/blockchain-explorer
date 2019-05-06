@@ -37,7 +37,7 @@
     "react-refetch": "^1.0.4",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^2.1.8",
+    "react-scripts": "3.0.0",
     "react-select": "^1.2.1",
     "react-slick": "^0.18.1",
     "react-swipeable-views": "^0.12.12",
@@ -59,11 +59,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "test:ci": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint"
   },
   "proxy": "http://localhost:8080/",
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "jest-enzyme": "^4.2.0",
