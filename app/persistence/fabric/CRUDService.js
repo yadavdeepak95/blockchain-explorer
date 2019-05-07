@@ -2,10 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-const fs = require('fs');
-const path = require('path');
 const helper = require('../../common/helper');
-
 const logger = helper.getLogger('CRUDService');
 
 class CRUDService {
@@ -36,25 +33,25 @@ class CRUDService {
   }
 
   getTxList(channel_genesis_hash, blockNum, txid, from, to, orgs) {
-    let orgsSql = '';
-    if (orgs && orgs != '') {
-      orgsSql = `and t.creator_msp_id in (${orgs})`;
+    let txListSql = '';
+    if (orgs && orgs !== '') {
+      txListSql = `and t.creator_msp_id in (${orgs})`;
     }
     const sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
-       inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} ${orgsSql} and
+       inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} ${txListSql} and
        t.channel_genesis_hash = '${channel_genesis_hash}'  and t.createdt between '${from}' and '${to}'  order by  t.id desc`;
     return this.sql.getRowsBySQlQuery(sqlTxList);
   }
 
   getBlockAndTxList(channel_genesis_hash, blockNum, from, to, orgs) {
-    let orgsSql = '';
-    if (orgs && orgs != '') {
-      orgsSql = `and creator_msp_id in (${orgs})`;
+    let blockTxListSql = '';
+    if (orgs && orgs !== '') {
+      blockTxListSql = `and creator_msp_id in (${orgs})`;
     }
     const sqlBlockTxList = `select a.* from  (
       select (select c.name from channel c where c.channel_genesis_hash =
          '${channel_genesis_hash}' ) as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
-        SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${orgsSql} and
+        SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${blockTxListSql} and
          channel_genesis_hash = '${channel_genesis_hash}' and createdt between '${from}' and '${to}') from blocks where
          blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= 0 and blocks.createdt between '${from}' and '${to}'
          order by blocks.blocknum desc)  a where  a.txhash IS NOT NULL`;
@@ -82,42 +79,16 @@ class CRUDService {
     return channel;
   }
 
-  async saveChannelRow(artifacts) {
-    const channelTxArtifacts = fs.readFileSync(artifacts.channelTxPath);
-    const channelConfig = fs.readFileSync(artifacts.channelConfigPath);
-    try {
-      const insert = await this.sql.saveRow('channel', {
-        name: artifacts.channelName,
-        channel_hash: artifacts.channelHash,
-        channel_config: channelConfig,
-        channel_tx: channelTxArtifacts,
-        createdt: new Date()
-      });
-
-      const resp = {
-        success: true,
-        message: `Channel ${artifacts.channelName} saved`
-      };
-
-      return resp;
-    } catch (err) {
-      const resp = {
-        success: false,
-        message: `Faile to save channel ${artifacts.channelName} in database `
-      };
-      return resp;
-    }
-  }
-
   async saveBlock(block) {
     const c = await this.sql
       .getRowByPkOne(`select count(1) as c from blocks where blocknum='${
-        block.blocknum
-      }' and txcount='${block.txcount}'
+      block.blocknum
+    }' and txcount='${block.txcount}'
         and channel_genesis_hash='${block.channel_genesis_hash}' and prehash='${
-  block.prehash
-}' and datahash='${block.datahash}' `);
-    if (c.c == 0) {
+      block.prehash
+    }' and datahash='${block.datahash}' `);
+
+    if (isValidRow(c)) {
       await this.sql.saveRow('blocks', block);
       await this.sql.updateBySql(
         `update channel set blocks =blocks+1 where channel_genesis_hash='${
@@ -139,7 +110,7 @@ class CRUDService {
       }'`
     );
 
-    if (c.c == 0) {
+    if (isValidRow(c)) {
       await this.sql.saveRow('transactions', transaction);
       await this.sql.updateBySql(
         `update chaincodes set txcount =txcount+1 where channel_genesis_hash='${
@@ -158,36 +129,36 @@ class CRUDService {
   }
 
   async getCurBlockNum(channel_genesis_hash) {
+    let curBlockNum;
     try {
-      var row = await this.sql.getRowsBySQlCase(
+      const row = await this.sql.getRowsBySQlCase(
         `select max(blocknum) as blocknum from blocks  where channel_genesis_hash='${channel_genesis_hash}'`
       );
+
+      if (row && row.blocknum) {
+        curBlockNum = parseInt(row.blocknum);
+      } else {
+        curBlockNum = -1;
+      }
     } catch (err) {
       logger.error(err);
       return -1;
     }
 
-    let curBlockNum;
-
-    if (row == null || row.blocknum == null) {
-      curBlockNum = -1;
-    } else {
-      curBlockNum = parseInt(row.blocknum);
-    }
-
     return curBlockNum;
   }
 
-  // ====================chaincodes=====================================
+  // chaincodes //
   async saveChaincode(chaincode) {
     const c = await this.sql
       .getRowByPkOne(`select count(1) as c from chaincodes where name='${
-        chaincode.name
-      }' and
+      chaincode.name
+    }' and
         channel_genesis_hash='${chaincode.channel_genesis_hash}' and version='${
-  chaincode.version
-}' and path='${chaincode.path}'`);
-    if (c.c == 0) {
+      chaincode.version
+    }' and path='${chaincode.path}'`);
+
+    if (isValidRow(c)) {
       await this.sql.saveRow('chaincodes', chaincode);
     }
   }
@@ -208,7 +179,8 @@ class CRUDService {
         peers_ref_chaincode.channelid
       }'`
     );
-    if (c.c == 0) {
+
+    if (isValidRow(c)) {
       await this.sql.saveRow('peer_ref_chaincode', peers_ref_chaincode);
     }
   }
@@ -219,7 +191,8 @@ class CRUDService {
         channel.name
       }' and channel_genesis_hash='${channel.channel_genesis_hash}'`
     );
-    if (c.c == 0) {
+
+    if (isValidRow(c)) {
       await this.sql.saveRow('channel', {
         name: channel.name,
         createdt: channel.createdt,
@@ -245,7 +218,8 @@ class CRUDService {
         peer.channel_genesis_hash
       }' and server_hostname='${peer.server_hostname}' `
     );
-    if (c.c == 0) {
+
+    if (isValidRow(c)) {
       await this.sql.saveRow('peer', peer);
     }
   }
@@ -256,30 +230,39 @@ class CRUDService {
         peers_ref_Channel.peerid
       }' and prc.channelid='${peers_ref_Channel.channelid}' `
     );
-    if (c.c == 0) {
+
+    if (isValidRow(c)) {
       await this.sql.saveRow('peer_ref_channel', peers_ref_Channel);
     }
   }
 
   async getChannelsInfo(peerid) {
     const channels = await this.sql
-      .getRowsBySQlNoCondtion(` select c.id as id,c.name as channelName,c.blocks as blocks ,c.channel_genesis_hash as channel_genesis_hash,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c,
+      .getRowsBySQlNoCondition(` select c.id as id,c.name as channelName,c.blocks as blocks ,c.channel_genesis_hash as channel_genesis_hash,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c,
         peer_ref_channel pc where c.channel_genesis_hash = pc.channelid and pc.peerid='${peerid}' group by c.id ,c.name ,c.blocks  ,c.trans ,c.createdt ,c.channel_hash,c.channel_genesis_hash order by c.name `);
 
     return channels;
   }
 
-  // ====================Orderer BE-303=====================================
+  // Orderer BE-303
   async saveOrderer(orderer) {
     const c = await this.sql.getRowByPkOne(
       `select count(1) as c from orderer where requests='${orderer.requests}' `
     );
-    if (c.c == 0) {
+    if (isValidRow(c)) {
       await this.sql.saveRow('orderer', orderer);
     }
   }
-
-  // ====================Orderer BE-303=====================================
+  // Orderer BE-303
 }
-
 module.exports = CRUDService;
+
+function isValidRow(rowResult) {
+  if (rowResult) {
+    const val = rowResult.c;
+    if (val === 0 || val === '0') {
+      return true;
+    }
+  }
+  return false;
+}

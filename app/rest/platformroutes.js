@@ -165,6 +165,6 @@ const platformroutes = async function(router, platform) {
       return requtil.invalidRequest(req, res);
     }
   });
-}; //end platformroutes()
+}; // end platformroutes()
 
 module.exports = platformroutes;

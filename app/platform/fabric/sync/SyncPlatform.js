@@ -52,11 +52,11 @@ class SyncPlatform {
     const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
-    if (args.length == 0) {
+    if (args.length === 0) {
       // get the first network and first client
       this.network_name = Object.keys(network_configs)[0];
       this.client_name = network_configs[this.network_name].name;
-    } else if (args.length == 1) {
+    } else if (args.length === 1) {
       // get the first client with respect to the passed network name
       this.network_name = args[0];
       this.client_name = Object.keys(
@@ -138,7 +138,7 @@ class SyncPlatform {
   }
 
   setPersistenceService() {
-    // setting platfrom specific CRUDService and MetricService
+    // setting platform specific CRUDService and MetricService
     this.persistence.setMetricService(
       new MetricService(this.persistence.getPGService())
     );

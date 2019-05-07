@@ -7,7 +7,7 @@ const explorer_const = require('../../common/ExplorerConst').explorer.const;
 class ExplorerSender {
   constructor(syncconfig) {
     this.syncType = syncconfig.type;
-    this.syncSenderHandler;
+    this.syncSenderHandler = null;
   }
 
   async initialize() {
@@ -23,11 +23,6 @@ class ExplorerSender {
   send(message) {
     if (this.syncSenderHandler) {
       this.syncSenderHandler.send(message);
-    }
-  }
-
-  close() {
-    if (this.syncSenderHandler) {
     }
   }
 }

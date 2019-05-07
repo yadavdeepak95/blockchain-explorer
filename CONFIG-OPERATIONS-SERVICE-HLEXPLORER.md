@@ -31,7 +31,7 @@
   #### Setup Prometheus server locally, and configure
 
   - Follow up instaructions how to setup Prometheus server [getting started](https://prometheus.io/docs/prometheus/latest/getting_started)
-  - Use sample [prometheus.yml](blockchain-explorer/app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml) to start prometheus. locally,
+  - Use sample [prometheus.yml](/app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml) to start prometheus. locally,
   - To see if configuration is correct, start prometheus, and open http://localhost:9090 in a browser.
 
   #### Setup Grafana
@@ -39,5 +39,5 @@
  - Get start with [Grafana](https://grafana.com/grafana)
  - Login to grafana http://localhost:3000/login , default credentials admin/admin
  - Navigate to http://localhost:3000/dashboard/import
- - Click "Upload .json File" button, and select [sample](blockchain-explorer/app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json) file.
+ - Click "Upload .json File" button, and select [sample](/app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json) file.
 

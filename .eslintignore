@@ -5,7 +5,7 @@
 **/client/src/services/__mocks__/**
 **/app/test//node_modules/**
 **/app/persistence/fabric/postgreSQL/db/**
-**/app/test/postgrespgtest.js
+**/app/test/**
 **/app/platform/fabric/e2e-test/**
 *.css
 **/client/src/components/View/*.spec.js

@@ -7,7 +7,7 @@ class ExplorerListener {
   constructor(platform, syncconfig) {
     this.platform = platform;
     this.syncType = syncconfig.type;
-    this.syncListenerHandler;
+    this.syncListenerHandler = null;
   }
 
   async initialize(args) {

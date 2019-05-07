@@ -39,21 +39,21 @@ function notFound(req, res) {
 }
 
 function reqPayload(req) {
-  const reqPayload = [];
+  const requestPayload = [];
   const { params, query, body } = req;
 
-  reqPayload.push({
+  requestPayload.push({
     params
   });
 
-  reqPayload.push({
+  requestPayload.push({
     query
   });
 
-  reqPayload.push({
+  requestPayload.push({
     body
   });
-  return reqPayload;
+  return requestPayload;
 }
 
 const orgsArrayToString = function(orgs) {
@@ -61,7 +61,7 @@ const orgsArrayToString = function(orgs) {
   if (Array.isArray(orgs) || typeof orgs === 'object') {
     orgs.forEach((element, i) => {
       temp += `'${element}'`;
-      if (orgs.length - 1 != i) {
+      if (orgs.length - 1 !== i) {
         temp += ',';
       }
     });

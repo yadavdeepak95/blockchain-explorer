@@ -57,7 +57,7 @@ let explorer;
 async function startExplorer() {
   explorer = new Explorer();
 
-  //= =========== web socket ==============//
+  // = =========== web socket ==============//
   const sslPath = path.join(__dirname, sslCertsPath);
   console.debug(sslEnabled, sslCertsPath, sslPath);
 

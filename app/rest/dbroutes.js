@@ -70,7 +70,7 @@ const dbroutes = (router, platform) => {
   router.get('/transaction/:channel_genesis_hash/:txid', (req, res) => {
     const txid = req.params.txid;
     const channel_genesis_hash = req.params.channel_genesis_hash;
-    if (txid && txid != '0' && channel_genesis_hash) {
+    if (txid && txid !== '0' && channel_genesis_hash) {
       dbCrudService.getTransactionByID(channel_genesis_hash, txid).then(row => {
         if (row) {
           row.createdt = new Date(row.createdt).toISOString();
@@ -222,7 +222,9 @@ const dbroutes = (router, platform) => {
   GET /txByMinute
   curl -i 'http://<host>:<port>/txByMinute/<channel_genesis_hash>/<hours>'
   Response:
-  {'rows':[{'datetime':'2018-03-13T17:46:00.000Z','count':'0'},{'datetime':'2018-03-13T17:47:00.000Z','count':'0'},{'datetime':'2018-03-13T17:48:00.000Z','count':'0'},{'datetime':'2018-03-13T17:49:00.000Z','count':'0'},{'datetime':'2018-03-13T17:50:00.000Z','count':'0'},{'datetime':'2018-03-13T17:51:00.000Z','count':'0'},
+  {'rows':[{'datetime':'2018-03-13T17:46:00.000Z','count':'0'},{'datetime':'2018-03-13T17:47:00.000Z','count':'0'},
+  {'datetime':'2018-03-13T17:48:00.000Z','count':'0'},{'datetime':'2018-03-13T17:49:00.000Z','count':'0'},
+  {'datetime':'2018-03-13T17:50:00.000Z','count':'0'},{'datetime':'2018-03-13T17:51:00.000Z','count':'0'},
   {'datetime':'2018-03-13T17:52:00.000Z','count':'0'},{'datetime':'2018-03-13T17:53:00.000Z','count':'0'}]}
   */
   router.get('/txByMinute/:channel_genesis_hash/:hours', (req, res) => {

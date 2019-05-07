@@ -56,18 +56,20 @@ class FabricClient {
       this.client_config
     );
     // let name = this.client_config.name;
-    let profileConnection = this.client_config.profile;
-    let configPath = path.resolve(__dirname, profileConnection);
+    const profileConnection = this.client_config.profile;
+    const configPath = path.resolve(__dirname, profileConnection);
     try {
       // Use Gateway to connect to fabric network
       this.fabricGateway = new FabricGateway(configPath);
       await this.fabricGateway.initialize();
       this.hfc_client = await this.fabricGateway.getClient();
       this.hfc_client.setConfigSetting('initialize-with-discovery', true);
+      /* eslint-disable */
       this.asLocalhost =
         String(
           this.hfc_client.getConfigSetting('discovery-as-localhost', 'true')
         ) === 'true';
+      /* eslint-enable */
       const channel_name = this.fabricGateway.getDefaultChannelName();
       this.defaultPeer = this.fabricGateway.getDefaultPeer();
       this.defaultMspId = this.fabricGateway.getDefaultMspId();
@@ -90,7 +92,7 @@ class FabricClient {
         asLocalhost: this.asLocalhost
       });
     } catch (error) {
-      //TODO in case of the failure, should terminate explorer?
+      // TODO in case of the failure, should terminate explorer?
       logger.error(error);
     }
 
@@ -168,7 +170,7 @@ class FabricClient {
     );
     const profileConnection = client_config.profile;
     const configPath = path.resolve(__dirname, profileConnection);
-    let fabricConfig = new FabricConfig();
+    const fabricConfig = new FabricConfig();
     fabricConfig.initialize(configPath);
     const config = fabricConfig.getConfig();
     this.userName = fabricConfig.getAdminUser();
@@ -191,7 +193,7 @@ class FabricClient {
 
     const default_channel_name = fabricConfig.getDefaultChannel();
 
-    if (channels.length == 0) {
+    if (channels.length === 0) {
       throw new ExplorerError(explorer_mess.error.ERROR_2003);
     }
 
@@ -262,19 +264,18 @@ class FabricClient {
     }
   }
 
-  //TODO move, or reuse this method to register a user
   async getRegisteredUser(client_config) {
     try {
-      var username = Fabric_Client.getConfigSetting(
+      const username = Fabric_Client.getConfigSetting(
         'enroll-id',
         'dflt_hlbeuser'
       );
-      var userOrg = client_config.client.organization;
-      //    var client = await this.LoadClientFromConfig(client_config);
+      const userOrg = client_config.client.organization;
+
       logger.debug('Successfully initialized the credential stores');
       // client can now act as an agent for the specified organization
       // first check to see if the user is already enrolled
-      var user = await this.hfc_client.getUserContext(username, true);
+      let user = await this.hfc_client.getUserContext(username, true);
       if (user && user.isEnrolled()) {
         logger.info(
           'Successfully loaded member from persistence [%s]',
@@ -287,12 +288,12 @@ class FabricClient {
           username
         );
 
-        let adminUserObj = await this.hfc_client.setUserContext({
+        const adminUserObj = await this.hfc_client.setUserContext({
           username: Fabric_Client.getConfigSetting('admin-username', 'admin'),
           password: Fabric_Client.getConfigSetting('admin-secret', 'adminpw')
         });
-        let caClient = this.hfc_client.getCertificateAuthority();
-        let secret = await caClient.register(
+        const caClient = this.hfc_client.getCertificateAuthority();
+        const secret = await caClient.register(
           {
             enrollmentID: username,
             affiliation:
@@ -422,10 +423,10 @@ class FabricClient {
           const endpoints = discover_results.orderers[msp_id].endpoints;
           for (const endpoint of endpoints) {
             console.log(' FabricClient.discover_results  endpoint ', endpoint);
-            let discoveryProtocol = this.hfc_client.getConfigSetting(
+            const discoveryProtocol = this.hfc_client.getConfigSetting(
               'discovery-protocol'
             );
-            let requesturl =
+            const requesturl =
               `${discoveryProtocol}://${endpoint.host}:` + endpoint.port;
             console.log(
               '\ninitializeChannelFromDiscover.discoveryProtocol ',
@@ -441,8 +442,7 @@ class FabricClient {
               requesturl,
               '\n'
             );
-            //     if (this.client_config.orderers && this.client_config.orderers[requesturl] && this.client_config.orderers[requesturl].url) {
-            //  requesturl = this.client_config.orderers[requesturl].url;
+
             this.newOrderer(
               channel,
               requesturl,
@@ -533,9 +533,6 @@ class FabricClient {
   }
 
   async newUser(msp_name, username, msp_admin_cert) {
-    //console.log('newUser(msp_name, username, msp_admin_cert) ', msp_name, username, msp_admin_cert);
-    //console.log('his.hfc_client._network_config', this.hfc_client._network_config);
-
     const organization = await this.hfc_client._network_config.getOrganization(
       msp_name,
       true

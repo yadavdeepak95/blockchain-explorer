@@ -45,7 +45,6 @@ class pgservice {
   }
 
   async handleDisconnect() {
-    const port = this.pgconfig.port ? this.pgconfig.port : '5432';
     try {
       this.client.on('error', err => {
         console.log('db error', err);
@@ -135,25 +134,17 @@ class pgservice {
     return new Promise((resolve, reject) => {
       const addSqlParams = [];
       const updateParms = [];
-
-      const updateparm = ' set 1=1 ';
-
       Object.keys(columnAndValue).forEach(k => {
         const v = columnAndValue[k];
-
         addSqlParams.push(v);
-        // updateparm = updateparm + ` ,${k}=? `
         updateParms.push(`${k} = ?`);
       });
 
-      let updatewhereparm = ' (1=1)  ';
       const searchparm = { pkName: pkValue };
 
       Object.keys(searchparm).forEach(k => {
         const v = searchparm[k];
-
         addSqlParams.push(v);
-        updatewhereparm += ` and ${k}=? `;
       });
 
       const updateParmsStr = updateParms.join(',');
@@ -189,7 +180,7 @@ class pgservice {
    * @param String        tablename  the table name.
    * @param String array  columnAndValue  the table column and value Map.
    * @param String array  condition   the primary key name.
-   * @param db ojbect     DB          the sqllite private database visit object
+   * @param db object     DB          the sqllite private database visit object
    *
    * @author robertfeng <fx19800215@163.com>
    * @author vchinoy
@@ -200,14 +191,9 @@ class pgservice {
     return new Promise((resolve, reject) => {
       const addSqlParams = [];
       const updateParms = [];
-
-      const updateparm = ' set 1=1 ';
-
       Object.keys(columnAndValue).forEach(k => {
         const v = columnAndValue[k];
-
         addSqlParams.push(v);
-        // updateparm = updateparm + ` ,${k}=? `
         updateParms.push(`${k} = ?`);
       });
 
@@ -247,8 +233,8 @@ class pgservice {
   }
 
   /**
-   *  excute update or delete  sql.
-   *  @param string  updateSql   the excute sql
+   *  execute update or delete  sql.
+   *  @param string  updateSql   the execute sql
    */
   updateBySql(updateSql) {
     const _self = this;
@@ -287,7 +273,9 @@ class pgservice {
   getRowByPk(tablename, column, pkColumn, value) {
     const _self = this;
     return new Promise((resolve, reject) => {
-      if (column == '') column = '*';
+      if (column === '') {
+        column = '*';
+      }
 
       const sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `;
 
@@ -299,8 +287,11 @@ class pgservice {
 
         // console.log(  `The solution is: ${rows.length }  `  );
         logger.debug(' the getRowByPk ');
-        if (res && res.rows && res.rows[0]) resolve(res.rows[0]);
-        else resolve(null);
+        if (res && res.rows && res.rows[0]) {
+          resolve(res.rows[0]);
+        } else {
+          resolve(null);
+        }
       });
     });
   }
@@ -327,8 +318,11 @@ class pgservice {
         logger.debug(` the getRowByPkOne sql ${sql}`);
         // (` the getRowByPkOne sql ${sql}`)
 
-        if (res && res.rows && res.rows[0]) resolve(res.rows[0]);
-        else resolve(null);
+        if (res && res.rows && res.rows[0]) {
+          resolve(res.rows[0]);
+        } else {
+          resolve(null);
+        }
       });
     });
   }
@@ -336,23 +330,24 @@ class pgservice {
   /**
    * search table
    * @param String tablename  the table name
-   * @param String columns    the field of seach result
-   * @param String ondtion    the search condition,it is sotre by array. exp condition = array("id"=>"1");
+   * @param String columns    the field of search result
+   * @param String condition    the search condition,it is sorted by array. exp condition = array("id"=>"1");
    * @param String orderBy    the order desc.
-   * @param String limit      the pagedtion.
+   * @param String limit      the page limit.
    *
    */
-  getRowsByCondition(tablename, column, condtion, orderBy, limit) {
+  getRowsByCondition(tablename, column, condition, orderBy, limit) {
     const _self = this;
     return new Promise((resolve, reject) => {
-      if (column == '') column = '*';
+      if (column === '') {
+        column = '*';
+      }
 
       let updatewhereparm = ' (1=1)  ';
-      const searchparm = { pkName: pkValue };
       const addSqlParams = [];
 
-      Object.keys(condtion).forEach(k => {
-        const v = condtion[k];
+      Object.keys(condition).forEach(k => {
+        const v = condition[k];
 
         addSqlParams.push(v);
         updatewhereparm += ` and ${k}=? `;
@@ -379,8 +374,8 @@ class pgservice {
   /**
    * search table by sql
    * @param datatype sqlchareter   the table name
-   * @param datatype ondtion       the search condition,it is sotre by array. exp condition = array("id"=>"1");
-   * @param datatype limit         the pagedtion.
+   * @param datatype condition       the search condition,it is sorted by array. exp condition = array("id"=>"1");
+   * @param datatype limit         the page limit.
    *
    */
   getRowsBySQl(sqlcharacter, condition, limit) {
@@ -424,22 +419,25 @@ class pgservice {
         }
         logger.debug(` the getRowsBySQlQuery ${sql}`);
 
-        if (res && res.rows) resolve(res.rows);
-        else resolve(null);
+        if (res && res.rows) {
+          resolve(res.rows);
+        } else {
+          resolve(null);
+        }
       });
     });
   }
 
   /**
-   * search table by sql and it's not condtion
+   * search table by sql and it's not condition
    *
    *
    * @param datatype sqlchareter   the table name
-   * @param datatype ondtion       the search condition,it is sotre by array. exp condition = array("id"=>"1");
-   * @param datatype limit         the pagedtion.
+   * @param datatype condition       the search condition,it is sorted by array. exp condition = array("id"=>"1");
+   * @param datatype limit         the page limit.
    *
    */
-  getRowsBySQlNoCondtion(sqlcharacter, limit) {
+  getRowsBySQlNoCondition(sqlcharacter, limit) {
     const _self = this;
     return new Promise((resolve, reject) => {
       let sql;
@@ -458,10 +456,13 @@ class pgservice {
         }
 
         // console.log(  `The solution is: ${rows.length }  `  );
-        logger.debug(` the getRowsBySQlNoCondtion ${sql}`);
+        logger.debug(` the getRowsBySQlNoCondition ${sql}`);
 
-        if (res && res.rows) resolve(res.rows);
-        else resolve(null);
+        if (res && res.rows) {
+          resolve(res.rows);
+        } else {
+          resolve(null);
+        }
       });
     });
   }
@@ -483,8 +484,11 @@ class pgservice {
 
         // console.log(  `The solution is: ${rows.length }  `  );
         logger.debug(` the getRowsBySQlCase ${sql}`);
-        if (res && res.rows && res.rows[0]) resolve(res.rows[0]);
-        else resolve(null);
+        if (res && res.rows && res.rows[0]) {
+          resolve(res.rows[0]);
+        } else {
+          resolve(null);
+        }
       });
     });
   }

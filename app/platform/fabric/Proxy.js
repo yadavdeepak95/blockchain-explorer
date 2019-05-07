@@ -38,7 +38,7 @@ class Proxy {
     if (!response) {
       response = {
         status: false,
-        message: `Failed to get network list `
+        message: 'Failed to get network list '
       };
     }
     logger.debug('networkList >> %s', response);
@@ -200,14 +200,14 @@ class Proxy {
 
   async register(reqUser) {
     const userService = new UserService(this.platform);
-    let response = await userService.register(reqUser);
+    const response = await userService.register(reqUser);
     logger.debug('register >> %s', response);
     return response;
   }
 
   async enroll(reqUser) {
     const userService = new UserService(this.platform);
-    let response = await userService.enroll(reqUser);
+    const response = await userService.enroll(reqUser);
     logger.debug('enroll >> %s', response);
     return response;
   }

@@ -59,7 +59,7 @@ const authroutes = async function(router, platform) {
   */
   router.post('/logout', async (req, res) => {
     // TODO: invalidate jwt token
-    console.log(`user logged out, `, req.body, res);
+    console.log('user logged out, ', req.body, res);
   });
-}; //end authroutes()
+}; // end authroutes()
 module.exports = authroutes;

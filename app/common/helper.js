@@ -42,23 +42,23 @@ for database logging for any file name. Please find an example below.
 To stacktrace, please pass the error.stack object to the logger. If there is no error.stack object pass in a
 string with description.
 
-var helper = require("./app/helper");
-var logger = helper.getLogger("main");
+const helper = require("./app/helper");
+const logger = helper.getLogger("main");
 logger.setLevel('INFO');
 */
 
-var getLogger = function(moduleName) {
-  var logger;
+function getLogger(moduleName) {
+  let logger;
 
-  if (moduleName == 'pgservice') {
+  if (moduleName === 'pgservice') {
     logger = log4js.getLogger('pgservice');
   } else {
     appList.push(moduleName);
     logger = log4js.getLogger(moduleName);
   }
 
-  var appLog = 'logs/app/app.log';
-  var dbLog = 'logs/db/db.log';
+  let appLog = 'logs/app/app.log';
+  let dbLog = 'logs/db/db.log';
 
   if (process.env.SYNC_LOG_PATH) {
     appLog = `${process.env.SYNC_LOG_PATH}/app/app.log`;
@@ -90,7 +90,7 @@ var getLogger = function(moduleName) {
   logger.setLevel('DEBUG');
 
   return logger;
-};
+}
 
 exports.getLogger = getLogger;
 exports.readAllFiles = readAllFiles;

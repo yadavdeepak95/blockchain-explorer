@@ -2,7 +2,6 @@
     SPDX-License-Identifier: Apache-2.0
 */
 
-const fs = require('fs-extra');
 const grpc = require('grpc');
 const convertHex = require('convert-hex');
 const helper = require('../../../common/helper');
@@ -10,7 +9,6 @@ const helper = require('../../../common/helper');
 const logger = helper.getLogger('SyncServices');
 const ExplorerError = require('../../../common/ExplorerError');
 const FabricUtils = require('../../../platform/fabric/utils/FabricUtils');
-const Fabric_Client = require('fabric-client');
 const fabric_const = require('../../../platform/fabric/utils/FabricConst')
   .fabric.const;
 const explorer_error = require('../../../common/ExplorerMessage').explorer
@@ -41,12 +39,14 @@ class SyncServices {
   async initialize() {}
 
   async synchNetworkConfigToDB(client) {
-    console.log(
-      'SyncServices.synchNetworkConfigToDB client ',
-      client.client_name
-    );
     const channels = client.getChannels();
     for (const [channel_name, channel] of channels.entries()) {
+      console.log(
+        'SyncServices.synchNetworkConfigToDB client ',
+        client.client_name,
+        ' channel_name ',
+        channel_name
+      );
       const block = await client.getGenesisBlock(channel);
       const channel_genesis_hash = await FabricUtils.generateBlockHash(
         block.header
@@ -108,7 +108,7 @@ class SyncServices {
         };
         this.platform.send(notify);
         throw new ExplorerError(explorer_error.ERROR_2013, channel_name);
-        return false;
+        //	return false;
       }
     }
     return true;
@@ -187,10 +187,10 @@ class SyncServices {
 
   // insert new orderer and channel relation
   async insertNewOrderers(orderer, channel_genesis_hash, client) {
-    let discoveryProtocol = client.hfc_client.getConfigSetting(
+    const discoveryProtocol = client.hfc_client.getConfigSetting(
       'discovery-protocol'
     );
-    let requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
+    const requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
     console.log(
       'insertNewOrderers discoveryProtocol ',
       discoveryProtocol,
@@ -330,6 +330,7 @@ class SyncServices {
     logger.debug('New Block  >>>>>>> %j', block);
     let channel_genesis_hash = client.getChannelGenHash(channel_name);
     // checking block is channel CONFIG block
+    /* eslint-disable */
     if (!channel_genesis_hash) {
       // get discovery and insert channel details to db and create new channel object in client context
       setTimeout(
@@ -392,6 +393,7 @@ class SyncServices {
         channel_genesis_hash
       );
     }
+    /* eslint-enable */
     const createdt = await FabricUtils.getBlockTimeStamp(
       header.channel_header.timestamp
     );
@@ -423,27 +425,28 @@ class SyncServices {
         let chaincodeID;
         let status;
         let mspId = [];
-        if (txid != undefined && txid != '') {
+        if (txid && txid !== '') {
           const validation_codes =
             block.metadata.metadata[block.metadata.metadata.length - 1];
           const val_code = validation_codes[i];
           validation_code = convertValidationCode(val_code);
         }
         let envelope_signature = txObj.signature;
-        if (envelope_signature != undefined) {
+        if (envelope_signature !== undefined) {
           envelope_signature = convertHex.bytesToHex(envelope_signature);
         }
         let payload_extension = txObj.payload.header.channel_header.extension;
-        if (payload_extension != undefined) {
+        if (payload_extension !== undefined) {
           payload_extension = convertHex.bytesToHex(payload_extension);
         }
         let creator_nonce = txObj.payload.header.signature_header.nonce;
-        if (creator_nonce != undefined) {
+        if (creator_nonce !== undefined) {
           creator_nonce = convertHex.bytesToHex(creator_nonce);
         }
+        /* eslint-disable */
         const creator_id_bytes =
           txObj.payload.header.signature_header.creator.IdBytes;
-        if (txObj.payload.data.actions != undefined) {
+        if (txObj.payload.data.actions !== undefined) {
           chaincode =
             txObj.payload.data.actions[0].payload.action
               .proposal_response_payload.extension.chaincode_id.name;
@@ -470,7 +473,7 @@ class SyncServices {
           chaincode_proposal_input =
             txObj.payload.data.actions[0].payload.chaincode_proposal_payload
               .input.chaincode_spec.input.args;
-          if (chaincode_proposal_input != undefined) {
+          if (chaincode_proposal_input !== undefined) {
             let inputs = '';
             for (const input of chaincode_proposal_input) {
               inputs =
@@ -482,7 +485,7 @@ class SyncServices {
           endorser_signature =
             txObj.payload.data.actions[0].payload.action.endorsements[0]
               .signature;
-          if (endorser_signature != undefined) {
+          if (endorser_signature !== undefined) {
             endorser_signature = convertHex.bytesToHex(endorser_signature);
           }
           payload_proposal_hash =
@@ -492,18 +495,10 @@ class SyncServices {
             txObj.payload.data.actions[0].payload.action.endorsements[0]
               .endorser.IdBytes;
         }
+
         const read_set = JSON.stringify(readSet, null, 2);
         const write_set = JSON.stringify(writeSet, null, 2);
-        /*
-                if (typeof read_set === 'string' || read_set instanceof String) {
-                  console.log('read_set length', read_set.length);
-                  const bytes = Buffer.byteLength(write_set, 'utf8');
-                  const kb = (bytes + 512) / 1024;
-                  const mb = (kb + 512) / 1024;
-                  const size = `${mb} MB`;
-                  console.log('write_set size >>>>>>>>> : ', size);
-                }
-        */
+
         const chaincode_id = String.fromCharCode.apply(null, chaincodeID);
         // checking new chaincode is deployed
         if (
@@ -536,6 +531,7 @@ class SyncServices {
             channel_genesis_hash
           );
         }
+        /* eslint-enable */
         const transaction_row = {
           blockid: block.header.number,
           txhash: txObj.payload.header.channel_header.tx_id,
@@ -561,15 +557,20 @@ class SyncServices {
         };
 
         // insert transaction
+
         const res = await this.persistence
           .getCrudService()
           .saveTransaction(transaction_row);
+        console.log('saveTransaction ', res);
       }
+
       // insert block
       console.log('block_row.blocknum ', block_row.blocknum);
       const status = await this.persistence
         .getCrudService()
         .saveBlock(block_row);
+      console.debug('status ', status);
+
       if (status) {
         // push last block
         const notify = {
@@ -592,6 +593,7 @@ class SyncServices {
         _self.platform.send(notify);
       }
     } else {
+      console.error('Failed to process the block %j', block);
       logger.error('Failed to process the block %j', block);
     }
     const index = blocksInProcess.indexOf(blockPro_key);

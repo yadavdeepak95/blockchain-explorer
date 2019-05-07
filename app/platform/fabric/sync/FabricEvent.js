@@ -40,7 +40,7 @@ class FabricEvent {
     eventHub.registerBlockEvent(
       async block => {
         // skip first block, it is process by peer event hub
-        if (!(block.header.number === '0' || block.header.number == 0)) {
+        if (!(block.header.number === '0' || block.header.number === 0)) {
           await this.fabricServices.processBlockEvent(this.client, block);
         }
       },
@@ -53,7 +53,7 @@ class FabricEvent {
     // set channel event hub to map
     FabricEvent.channelEventHubs.set(channel.getName(), eventHub);
   }
-
+  /* eslint-disable */
   connectChannelEventHub(channel_name, eventHub) {
     const _self = this;
     if (eventHub) {
@@ -81,7 +81,7 @@ class FabricEvent {
       return false;
     }
   }
-
+  /* eslint-disable */
   isChannelEventHubConnected(channel_name) {
     const eventHub = FabricEvent.channelEventHubs.get(channel_name);
     if (eventHub) {
@@ -169,7 +169,7 @@ class FabricEvent {
   }
 }
 
-//static class variable
+// static class variable
 FabricEvent.channelEventHubs = new Map();
 
 module.exports = FabricEvent;

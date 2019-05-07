@@ -11,7 +11,7 @@ class MetricService {
     this.sql = sql;
   }
 
-  //= =========================query counts ==========================
+  // = =========================query counts ==========================
   getChaincodeCount(channel_genesis_hash) {
     return this.sql.getRowsBySQlCase(
       `select count(1) c from chaincodes where channel_genesis_hash='${channel_genesis_hash}' `
@@ -39,7 +39,7 @@ class MetricService {
   async getPeerData(channel_genesis_hash) {
     const peerArray = [];
     const c1 = await this.sql
-      .getRowsBySQlNoCondtion(`select channel.name as channelName,c.requests as requests,c.channel_genesis_hash as channel_genesis_hash ,
+      .getRowsBySQlNoCondition(`select channel.name as channelName,c.requests as requests,c.channel_genesis_hash as channel_genesis_hash ,
     c.server_hostname as server_hostname, c.mspid as mspid, c.peer_type as peer_type  from peer as c inner join  channel on
     c.channel_genesis_hash=channel.channel_genesis_hash where c.channel_genesis_hash='${channel_genesis_hash}'`);
     for (let i = 0, len = c1.length; i < len; i++) {
@@ -59,7 +59,7 @@ class MetricService {
   // BE -303
   async getOrdererData() {
     const ordererArray = [];
-    const c1 = await this.sql.getRowsBySQlNoCondtion(
+    const c1 = await this.sql.getRowsBySQlNoCondition(
       'select c.requests as requests,c.server_hostname as server_hostname,c.channel_genesis_hash as channel_genesis_hash from orderer c'
     );
     for (let i = 0, len = c1.length; i < len; i++) {
@@ -77,12 +77,11 @@ class MetricService {
   async getTxPerChaincodeGenerate(channel_genesis_hash) {
     const txArray = [];
     const c = await this.sql
-      .getRowsBySQlNoCondtion(`select  c.name as chaincodename,channel.name as channelName ,c.version as version,c.channel_genesis_hash
+      .getRowsBySQlNoCondition(`select  c.name as chaincodename,channel.name as channelName ,c.version as version,c.channel_genesis_hash
        as channel_genesis_hash,c.path as path ,txcount  as c from chaincodes as c inner join channel on c.channel_genesis_hash=channel.channel_genesis_hash where  c.channel_genesis_hash='${channel_genesis_hash}' `);
     if (c) {
       c.forEach((item, index) => {
         txArray.push({
-          channel_genesis_hash: item.channel_genesis_hash,
           chaincodename: item.chaincodename,
           path: item.path,
           version: item.version,
@@ -96,7 +95,7 @@ class MetricService {
 
   async getOrgsData(channel_genesis_hash) {
     const orgs = [];
-    const rows = await this.sql.getRowsBySQlNoCondtion(
+    const rows = await this.sql.getRowsBySQlNoCondition(
       `select distinct on (mspid) mspid from peer  where channel_genesis_hash='${channel_genesis_hash}'`
     );
     for (let i = 0, len = rows.length; i < len; i++) {
@@ -119,15 +118,23 @@ class MetricService {
 
   async getStatusGenerate(channel_genesis_hash) {
     let chaincodeCount = await this.getChaincodeCount(channel_genesis_hash);
-    if (!chaincodeCount) chaincodeCount = 0;
+    if (!chaincodeCount) {
+      chaincodeCount = 0;
+    }
     let txCount = await this.getTxCount(channel_genesis_hash);
-    if (!txCount) txCount = 0;
+    if (!txCount) {
+      txCount = 0;
+    }
     txCount.c = txCount.c ? txCount.c : 0;
     let blockCount = await this.getBlockCount(channel_genesis_hash);
-    if (!blockCount) blockCount = 0;
+    if (!blockCount) {
+      blockCount = 0;
+    }
     blockCount.c = blockCount.c ? blockCount.c : 0;
     let peerCount = await this.getPeerlistCount(channel_genesis_hash);
-    if (!peerCount) peerCount = 0;
+    if (!peerCount) {
+      peerCount = 0;
+    }
     peerCount.c = peerCount.c ? peerCount.c : 0;
     return {
       chaincodeCount: chaincodeCount.c,

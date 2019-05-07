@@ -361,8 +361,8 @@ Related Information:
 #### Background Information:
     <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
     { Error: 12 UNIMPLEMENTED: unknown service discovery.Discovery
-        at new createStatusError (/Users/nfrunza/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:64:15)
-        at /Users/nfrunza/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:583:15
+        at new createStatusError (/Users/USER_ID/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:64:15)
+        at /Users/USER_ID/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:583:15
       code: 12,
       metadata: Metadata { _internal_repr: {} },
       details: 'unknown service discovery.Discovery' }
@@ -406,7 +406,7 @@ Related Information:
     error: [Remote.js]: Error: Failed to connect before the deadline
     <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
     Error: Failed to connect before the deadline
-        at checkState (/Users/nfrunza/workspace/blockchain-explorer/node_modules/grpc/src/client.js:838:16)
+        at checkState (/Users/USER_ID/workspace/blockchain-explorer/node_modules/grpc/src/client.js:838:16)
     E1004 14:32:16.436058000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
     Received kill signal, shutting down gracefully
     Closed out connections
@@ -499,13 +499,13 @@ Related Information:
 ### Problem Description:  error: [Remote.js]: Error: Failed to connect before the deadline URL:grpcs://localhost:7051
 
 #### Background Information:
-        at Object.exports.createStatusError (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/common.js:87:15)
-        at ClientDuplexStream._emitStatusIfDone (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client.js:235:26)
-        at ClientDuplexStream._receiveStatus (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client.js:213:8)
-        at Object.onReceiveStatus (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:1290:15)
-        at InterceptingListener._callNext (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:564:42)
-        at InterceptingListener.onReceiveStatus (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:614:8)
-        at /Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:1110:18
+        at Object.exports.createStatusError (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/common.js:87:15)
+        at ClientDuplexStream._emitStatusIfDone (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client.js:235:26)
+        at ClientDuplexStream._receiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client.js:213:8)
+        at Object.onReceiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:1290:15)
+        at InterceptingListener._callNext (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:564:42)
+        at InterceptingListener.onReceiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:614:8)
+        at /Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:1110:18
     code: 14,
     metadata: Metadata { _internal_repr: {} },
     details: 'Connect Failed' }
@@ -515,11 +515,11 @@ Related Information:
     SyncServices.synchNetworkConfigToDB client  first-network
     <<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>
     Error: "orderer" request parameter is missing and there are no orderers defined on this channel in the common connection profile
-        at Client.getTargetOrderer (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Client.js:1770:12)
-        at Channel.getGenesisBlock (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:1060:39)
-        at FabricClient.getGenesisBlock (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/FabricClient.js:530:40)
-        at SyncServices.synchNetworkConfigToDB (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/sync/SyncService.js:50:34)
-        at SyncPlatform.initialize (/Users/nfrunza/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/sync/SyncPlatform.js:97:40)
+        at Client.getTargetOrderer (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Client.js:1770:12)
+        at Channel.getGenesisBlock (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:1060:39)
+        at FabricClient.getGenesisBlock (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/FabricClient.js:530:40)
+        at SyncServices.synchNetworkConfigToDB (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/sync/SyncService.js:50:34)
+        at SyncPlatform.initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/sync/SyncPlatform.js:97:40)
         at <anonymous>
         at process._tickCallback (internal/process/next_tick.js:189:7)
     <<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>
@@ -584,6 +584,351 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
 
 #### Related Information:
     HL Explorer support for HL Fabric 1.4
+
+
+### Problem Description:  [error: [NetworkConfig101.js]: NetworkConfig101 - problem reading the PEM file :: Error: ENOENT: no such file or directory Error : Failed to connect client peer, please check the configuration and peer status
+
+#### Background Information:
+    2019-05-01T12:33:58.907Z - error: [NetworkConfig101.js]: NetworkConfig101 - problem reading the PEM file :: Error: ENOENT: no such file or directory, open '/fabric-path/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem'
+    { Error: ENOENT: no such file or directory, open '/fabric-path/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem'
+        at Object.fs.openSync (fs.js:646:18)
+        at Object.fs.readFileSync (fs.js:551:33)
+        at readFileSync (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/impl/NetworkConfig_1_0.js:425:19)
+        at getPEMfromConfig (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/impl/NetworkConfig_1_0.js:414:13)
+        at getTLSCACert (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/impl/NetworkConfig_1_0.js:401:10)
+        at NetworkConfig_1_0.getCertificateAuthority (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/impl/NetworkConfig_1_0.js:303:6)
+        at NetworkConfig_1_0.getOrganization (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/impl/NetworkConfig_1_0.js:257:23)
+        at Client._setAdminFromConfig (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Client.js:1306:53)
+        at Client.loadFromConfig (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Client.js:134:9)
+        at Function.loadFromConfig (/Users/USED_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Client.js:116:10)
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/fabric-path/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem' }
+
+    ********* call to initializeDetachClient **********
+    initializeDetachClient --> client_config  { name: 'balance-transfer',
+    profile: './connection-profile/balance-transfer.json' }  name  balance-transfer
+    initializeDetachClient, network config)  { name: 'balance-transfer-network',
+    version: '1.0.0',
+    license: 'Apache-2.0',
+    client:
+    { tlsEnable: true,
+        adminUser: 'admin',
+        adminPassword: 'adminpw',
+        enableAuthentication: true,
+        organization: 'Org1',
+        connection: { timeout: [Object] } },
+    channels: { mychannel: { orderers: [Array], peers: [Object] } },
+    organizations:
+    { Org1:
+        { mspid: 'Org1MSP',
+            peers: [Array],
+            certificateAuthorities: [Array],
+            adminPrivateKey: [Object],
+            signedCert: [Object] } },
+    peers:
+    { 'peer0.org1.example.com':
+        { url: 'grpcs://localhost:7051',
+            grpcOptions: [Object],
+            tlsCACerts: [Object] } },
+    certificateAuthorities:
+    { 'ca-org1':
+        { url: 'https://localhost:7054',
+            httpOptions: [Object],
+            tlsCACerts: [Object],
+            caName: 'ca-org1' } } }
+
+        ************************************* initializeDetachClient *************************************************
+        Error : Failed to connect client peer, please check the configuration and peer status
+        Info :  Explorer will continue working with only DB data
+        ************************************** initializeDetachClient ************************************************
+
+        FabricUtils.createDetachClient
+
+
+        Please open web browser to access ：http://localhost:8080/
+
+
+        pid is 34517
+
+
+        FabricConfig, this.config.channels  mychannel
+        <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+        Error :  [ 'Default client peer is down and no channel details available database' ]
+        Received kill signal, shutting down gracefully
+        <<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>
+        Closed out connections
+
+#### Possible cause:
+    Misconfiguration, this error was reported when running balance transfer sample provided by HLFabric, version 1.4
+#### Possible solution:
+    Update configuration , verify all paths are valid in connection profile
+
+#### Related Information:
+    HL Explorer support for HL Fabric 1.4
+
+### Problem Description:  Error: ENOENT: no such file or directory, open
+    ******* Initialization started for hyperledger fabric platform ******, { 'first-network':
+    { name: 'first-network',
+        profile: './connection-profile/first-network.json' } }
+    client_configs.name  first-network  client_configs.profile  ./connection-profile/first-network.json
+    FabricUtils.createFabricClient
+    FabricConfig, this.config.channels  mychannel
+    { Error: ENOENT: no such file or directory, open '/Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/955443f3286143c24aebe1e28c6601e145fe8a9c15d41beb2ab9b21d948327da_sk'
+        at Object.fs.openSync (fs.js:646:18)
+        at Object.fs.readFileSync (fs.js:551:33)
+        at FabricGateway._enrollUserIdentity (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/gateway/FabricGateway.js:189:20)
+        at FabricGateway.initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/gateway/FabricGateway.js:116:33)
+        at <anonymous>
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/955443f3286143c24aebe1e28c6601e145fe8a9c15d41beb2ab9b21d948327da_sk' }
+
+    ********* call to initializeDetachClient **********
+    initializeDetachClient --> client_config  { name: 'first-network',
+    profile: './connection-profile/first-network.json' }  name  first-network
+    initializeDetachClient, network config)  { name: 'first-network',
+    version: '1.0.0',
+    license: 'Apache-2.0',
+    client:
+    { tlsEnable: true,
+        adminUser: 'admin',
+        adminPassword: 'adminpw',
+        enableAuthentication: false,
+        organization: 'Org1',
+        connection: { timeout: [Object] } },
+    channels: { mychannel: { peers: [Object], connection: [Object] } },
+    organizations:
+    { Org1MSP:
+        { mspid: 'Org1MSP',
+            fullpath: true,
+            adminPrivateKey: [Object],
+            signedCert: [Object] } },
+    peers:
+    { 'peer0.org1.example.com':
+        { tlsCACerts: [Object],
+            url: 'grpcs://localhost:7051',
+            eventUrl: 'grpcs://localhost:7053',
+            grpcOptions: [Object] } } }
+
+    ************************************* initializeDetachClient *************************************************
+    Error : Failed to connect client peer, please check the configuration and peer status
+    Info :  Explorer will continue working with only DB data
+    ************************************** initializeDetachClient ************************************************
+
+    FabricUtils.createDetachClient
+
+
+    Please open web browser to access ：http://localhost:8080/
+
+
+    pid is 35924
+
+
+    FabricConfig, this.config.channels  mychannel
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+    Error :  [ 'Default client peer is down and no channel details available database' ]
+    Received kill signal, shutting down gracefully
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>
+    Closed out connections
+
+    app.log
+        [2019-05-01 10:45:56.932] [ERROR] FabricClient - Error: Failed to discover ::Error: Failed to connect before the deadline URL:grpcs://localhost:7051
+        at Channel._initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:347:11)
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:189:7)
+    [2019-05-01 10:45:56.934] [DEBUG] FabricClient - this.defaultPeer  peer0.org1.example.com
+    [2019-05-01 11:48:29.518] [DEBUG] Platform - ******* Initialization started for hyperledger fabric platform ******
+    [2019-05-01 11:48:29.520] [DEBUG] Platform - Setting admin organization enrolment files
+    [2019-05-01 11:48:29.521] [DEBUG] Platform - Creating client [[object Object]] >>  first-network
+    [2019-05-01 11:48:29.521] [DEBUG] FabricUtils - ************ Initializing fabric client for [first-network]************
+    [2019-05-01 11:48:29.522] [DEBUG] FabricClient - Client configuration [first-network]  ...  this.client_config  { name: 'first-network',
+    profile: './connection-profile/first-network.json' }
+    [2019-05-01 11:48:29.523] [DEBUG] FabricGateway -
+    LOADING CONFIGURATION  [OBJECT OBJECT]
+
+    [2019-05-01 11:48:29.523] [DEBUG] FabricGateway -
+    LOADING CONFIGURATION  [OBJECT OBJECT]
+
+    [2019-05-01 11:48:29.524] [INFO] FabricGateway - peer0.org1.example.com
+    [2019-05-01 11:48:29.524] [INFO] FabricGateway - peer0.org1.example.com
+    [2019-05-01 11:48:29.524] [INFO] FabricGateway - /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+    adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/955443f3286143c24aebe1e28c6601e145fe8a9c15d41beb2ab9b21d948327da_sk
+    [2019-05-01 11:48:29.524] [INFO] FabricGateway - /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+    adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/955443f3286143c24aebe1e28c6601e145fe8a9c15d41beb2ab9b21d948327da_sk
+    [2019-05-01 11:48:29.552] [ERROR] FabricGateway -  Error: ENOENT: no such file or directory, open '/Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/955443f3286143c24aebe1e28c6601e145fe8a9c15d41beb2ab9b21d948327da_sk'
+    [2019-05-01 11:48:29.552] [ERROR] FabricGateway -  Error: ENOENT: no such file or directory, open '/Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/955443f3286143c24aebe1e28c6601e145fe8a9c15d41beb2ab9b21d948327da_sk'
+    [2019-05-01 11:48:29.553] [ERROR] FabricClient - { ExplorerError: [ 'Failed to create wallet, please check the configuration, and valid file paths' ]
+        at FabricGateway.initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/gateway/FabricGateway.js:147:13)
+        at <anonymous>
+    name: 'ExplorerError',
+    message: '[ \'Failed to create wallet, please check the configuration, and valid file paths\' ]' }
+    [2019-05-01 11:48:29.553] [DEBUG] FabricClient - this.defaultPeer  {}
+    [2019-05-01 11:48:29.553] [ERROR] FabricClient - TypeError: Cannot read property 'queryChannels' of null
+        at FabricClient.initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/FabricClient.js:101:40)
+        at <anonymous>
+
+#### Possible cause:
+    Misconfiguration, this error was reported when running balance transfer sample provided by HLFabric, version 1.4
+#### Possible solution:
+    Update configuration , verify all paths are valid in connection profile
+
+#### Related Information:
+    HL Explorer support for HL Fabric 1.3
+
+### Problem Description:   UNAVAILABLE: Connect Failed,   Error: Failed to discover ::Error: Failed to connect before the deadline URL:grpcs://localhost:7051
+    { Error: 14 UNAVAILABLE: Connect Failed
+        at Object.exports.createStatusError (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/common.js:87:15)
+        at ClientDuplexStream._emitStatusIfDone (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client.js:235:26)
+        at ClientDuplexStream._receiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client.js:213:8)
+        at Object.onReceiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:1290:15)
+        at InterceptingListener._callNext (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:564:42)
+        at InterceptingListener.onReceiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:614:8)
+        at /Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:1110:18
+    code: 14,
+    metadata: Metadata { _internal_repr: {} },
+    details: 'Connect Failed' }
+    2019-05-01T16:04:01.755Z - error: [Remote.js]: Error: Failed to connect before the deadline URL:grpcs://localhost:7051
+    2019-05-01T16:04:01.756Z - error: [Channel.js]: Error: Failed to connect before the deadline URL:grpcs://localhost:7051
+    2019-05-01T16:04:04.764Z - error: [Remote.js]: Error: Failed to connect before the deadline URL:grpcs://localhost:7051
+    SyncServices.synchNetworkConfigToDB client  first-network
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>
+    Error: "orderer" request parameter is missing and there are no orderers defined on this channel in the common connection profile
+        at Client.getTargetOrderer (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Client.js:1770:12)
+        at Channel.getGenesisBlock (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:1060:39)
+        at FabricClient.getGenesisBlock (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/FabricClient.js:530:40)
+        at SyncServices.synchNetworkConfigToDB (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/sync/SyncService.js:50:34)
+        at SyncPlatform.initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/app/platform/fabric/sync/SyncPlatform.js:97:40)
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:189:7)
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>
+
+    app.log
+    [2019-05-01 12:09:58.039] [DEBUG] Proxy - getPeersStatus >> 0
+    [2019-05-01 12:10:58.034] [DEBUG] Proxy - getPeersStatus >>  Error: Failed to discover ::Error: Failed to connect before the deadline URL:grpcs://localhost:7051
+        at Channel._initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:347:11)
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:189:7)
+    [2019-05-01 12:10:58.035] [DEBUG] Proxy - getPeersStatus >> 0
+    [2019-05-01 12:10:58.040] [DEBUG] Proxy - getPeersStatus >>  Error: Failed to discover ::Error: Failed to connect before the deadline URL:grpcs://localhost:7051
+        at Channel._initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:347:11)
+        at <anonymous>
+        at process._tickCallback (internal/process/next_tick.js:189:7)
+    [2019-05-01 12:10:58.041] [DEBUG] Proxy - getPeersStatus >> 0
+
+#### Possible cause:
+    HL Fabric network down
+#### Possible solution:
+   Start HLFabric networ, and updtae connection profile to HL Fabric network
+#### Related Information:
+    HL Explorer support for HL Fabric 1.3
+
+### Problem Description:  [Channel.js]: Channel:mychannel received discovery error:access denied
+    false 'ssl-certs' '/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/ssl-certs'
+    postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
+    ******* Initialization started for hyperledger fabric platform ******, { 'first-network':
+    { name: 'first-network',
+        profile: './connection-profile/first-network.json' } }
+    client_configs.name  first-network  client_configs.profile  ./connection-profile/first-network.json
+    FabricUtils.createFabricClient
+    FabricConfig, this.config.channels  mychannel
+    An identity for the admin user: admin already exists in the wallet
+    2019-05-01T16:16:50.467Z - error: [Channel.js]: Channel:mychannel received discovery error:access denied
+    2019-05-01T16:16:50.468Z - error: [Channel.js]: Error: Channel:mychannel Discovery error:access denied
+
+    ********* call to initializeDetachClient **********
+    initializeDetachClient --> client_config  { name: 'first-network',
+    profile: './connection-profile/first-network.json' }  name  first-network
+    initializeDetachClient, network config)  { name: 'first-network',
+    version: '1.0.0',
+    license: 'Apache-2.0',
+    client:
+    { tlsEnable: true,
+        adminUser: 'admin',
+        adminPassword: 'adminpw',
+        enableAuthentication: false,
+        organization: 'Org1',
+        connection: { timeout: [Object] } },
+    channels: { mychannel: { peers: [Object], connection: [Object] } },
+    organizations:
+    { Org1MSP:
+        { mspid: 'Org1MSP',
+            fullpath: true,
+            adminPrivateKey: [Object],
+            signedCert: [Object] } },
+    peers:
+    { 'peer0.org1.example.com':
+        { tlsCACerts: [Object],
+            url: 'grpcs://localhost:7051',
+            eventUrl: 'grpcs://localhost:7053',
+            grpcOptions: [Object] } } }
+
+    ************************************* initializeDetachClient *************************************************
+    Error : Failed to connect client peer, please check the configuration and peer status
+    Info :  Explorer will continue working with only DB data
+    ************************************** initializeDetachClient ************************************************
+
+    FabricUtils.createDetachClient
+
+
+    Please open web browser to access ：http://localhost:8080/
+
+
+    pid is 37132
+
+
+    FabricConfig, this.config.channels  mychannel
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+    Error :  [ 'Default client peer is down and no channel details available database' ]
+    Received kill signal, shutting down gracefully
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>
+    Closed out connections
+
+    app.log
+        [2019-05-01 12:16:50.198] [DEBUG] Platform - ******* Initialization started for hyperledger fabric platform ******
+    [2019-05-01 12:16:50.199] [DEBUG] Platform - Setting admin organization enrolment files
+    [2019-05-01 12:16:50.199] [DEBUG] Platform - Creating client [[object Object]] >>  first-network
+    [2019-05-01 12:16:50.200] [DEBUG] FabricUtils - ************ Initializing fabric client for [first-network]************
+    [2019-05-01 12:16:50.200] [DEBUG] FabricClient - Client configuration [first-network]  ...  this.client_config  { name: 'first-network',
+    profile: './connection-profile/first-network.json' }
+    [2019-05-01 12:16:50.201] [DEBUG] FabricGateway -
+    LOADING CONFIGURATION  [OBJECT OBJECT]
+
+    [2019-05-01 12:16:50.201] [DEBUG] FabricGateway -
+    LOADING CONFIGURATION  [OBJECT OBJECT]
+
+    [2019-05-01 12:16:50.201] [INFO] FabricGateway - peer0.org1.example.com
+    [2019-05-01 12:16:50.201] [INFO] FabricGateway - peer0.org1.example.com
+    [2019-05-01 12:16:50.201] [INFO] FabricGateway - /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+    adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/9de69e9c615778a11926ff0fdb0cf704473537e7cc301ef4153a11492b2e29c1_sk
+    [2019-05-01 12:16:50.201] [INFO] FabricGateway - /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+    adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/9de69e9c615778a11926ff0fdb0cf704473537e7cc301ef4153a11492b2e29c1_sk
+    [2019-05-01 12:16:50.432] [DEBUG] FabricClient - Set client [first-network] default channel as  >> mychannel
+    [2019-05-01 12:16:50.468] [ERROR] FabricClient - Error: Failed to discover ::Error: Channel:mychannel Discovery error:access denied
+        at Channel._initialize (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/Channel.js:347:11)
+        at <anonymous>
+    [2019-05-01 12:16:50.468] [DEBUG] FabricClient - this.defaultPeer  peer0.org1.example.com
+    [2019-05-01 12:16:50.479] [ERROR] FabricClient - { Error: 2 UNKNOWN: access denied: channel [] creator org [Org1MSP]
+        at Object.exports.createStatusError (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/common.js:87:15)
+        at Object.onReceiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:1188:28)
+        at InterceptingListener._callNext (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:564:42)
+        at InterceptingListener.onReceiveStatus (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:614:8)
+        at callback (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/grpc/src/client_interceptors.js:841:24)
+    code: 2,
+    metadata: Metadata { _internal_repr: {} },
+    details: 'access denied: channel [] creator org [Org1MSP]' }
+    [2019-05-01 12:16:50.483] [INFO] main - Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.
+
+
+#### Possible cause:
+    Invalid signingIdentity
+#### Possible solution:
+    - Delete everything under the "wallet" directory
+    - ./start.sh start HL Explorer
+#### Related Information:
+    HL Explorer support for HL Fabric 1.3
 
 
 

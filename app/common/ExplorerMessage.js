@@ -10,8 +10,8 @@ exports.explorer = {
     ERROR_1002:
       'Missing database configuration property [%s] in explorerconfig.json',
     ERROR_1003: 'Persistence implementation is not found for %s',
-    ERROR_1004: 'Platform implimenation is not found for %s',
-    ERROR_1005: 'Platform implimenation is not found for synch process %s',
+    ERROR_1004: 'Platform implementation is not found for %s',
+    ERROR_1005: 'Platform implementation is not found for synch process %s',
     ERROR_1006: 'Platform type is not found in syncconfig or argument',
     ERROR_1007:
       'Missing network_name and client_name , Please run as > sync.js network_name client_name',

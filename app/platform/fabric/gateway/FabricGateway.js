@@ -57,14 +57,14 @@ class FabricGateway {
     const info = `\nLoading configuration  ${this.config} \n`;
     logger.debug(info.toUpperCase());
 
-    let peers = this.fabricConfig.getPeers();
+    const peers = this.fabricConfig.getPeers();
     this.defaultPeer = peers[0].name;
     this.defaultPeerUrl = peers[0].url;
     let orgMsp = [];
     let signedCertPath;
     let adminPrivateKeyPath;
     logger.log('========== > defaultPeer ', this.defaultPeer);
-
+    /* eslint-disable */
     ({
       orgMsp,
       adminPrivateKeyPath,
@@ -80,9 +80,7 @@ class FabricGateway {
     this.defaultChannelName = this.fabricConfig.getDefaultChannel();
     this.mspId = orgMsp[0];
     let caURL = [];
-    /* eslint-disable */
     let serverCertPath = null;
-
     ({ caURL, serverCertPath } = this.fabricConfig.getCertificateAuthorities());
     /* eslint-enable */
     let identity;
@@ -90,9 +88,8 @@ class FabricGateway {
 
     try {
       // Create a new file system based wallet for managing identities.
-      let walletPath = path.join(process.cwd(), this.FSWALLET);
+      const walletPath = path.join(process.cwd(), this.FSWALLET);
       this.wallet = new FileSystemWallet(walletPath);
-      //TODO, when used after a different network is configured, fails to get the correct user, may need to use identity label, password, or other
       // Check to see if we've already enrolled the admin user.
       const adminExists = await this.wallet.exists(this.userName);
       if (adminExists) {
@@ -104,7 +101,7 @@ class FabricGateway {
         await this.wallet.export(this.userName);
       } else {
         if (this.fabricCaEnabled) {
-          //TODO best way to verify  if the network has fabric-ca server authorization
+          // TODO best way to verify  if the network has fabric-ca server authorization
           ({ enrollment, identity } = await this._enrollCaIdentity(
             caURL,
             enrollment,
@@ -122,7 +119,7 @@ class FabricGateway {
       }
 
       // Set connection options; identity and wallet
-      let connectionOptions = {
+      const connectionOptions = {
         identity: this.userName,
         mspId: this.mspId,
         wallet: this.wallet,
@@ -182,8 +179,8 @@ class FabricGateway {
    *
    */
   async _enrollUserIdentity(signedCertPath, adminPrivateKeyPath, identity) {
-    let _signedCertPath = signedCertPath;
-    let _adminPrivateKeyPath = adminPrivateKeyPath;
+    const _signedCertPath = signedCertPath;
+    const _adminPrivateKeyPath = adminPrivateKeyPath;
     const cert = fs.readFileSync(_signedCertPath, 'utf8');
     // see in first-network-connection.json adminPrivateKey key
     const key = fs.readFileSync(_adminPrivateKeyPath, 'utf8');
@@ -206,7 +203,7 @@ class FabricGateway {
         caURL
       );
       if (this.fabricCaEnabled) {
-        let ca = new FabricCAServices(caURL[0]);
+        const ca = new FabricCAServices(caURL[0]);
         enrollment = await ca.enroll({
           enrollmentID: this.userName,
           enrollmentSecret: this.fabricConfig.getAdminPassword()
@@ -222,11 +219,11 @@ class FabricGateway {
         await this.wallet.import(this.identityLabel, identity);
       }
     } catch (error) {
-      //TODO add explanation for message 'Calling enrollment endpoint failed with error [Error: connect ECONNREFUSED 127.0.0.1:7054]'
+      // TODO add explanation for message 'Calling enrollment endpoint failed with error [Error: connect ECONNREFUSED 127.0.0.1:7054]'
       // reason : no fabric running, check your network
       logger.error('Error instantiating FabricCAServices ', error);
       console.dir('Error instantiating FabricCAServices ', error);
-      //TODO decide how to proceed if error
+      // TODO decide how to proceed if error
     }
     return {
       enrollment,
@@ -238,7 +235,7 @@ class FabricGateway {
     let identityInfo;
     console.log('Searching for an identity with label: ', label);
     try {
-      let list = await this.wallet.list();
+      const list = await this.wallet.list();
       identityInfo = list.filter(id => {
         return id.label === label;
       });

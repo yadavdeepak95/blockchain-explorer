@@ -42,7 +42,7 @@ class FabricConfig {
 
   getDefaultChannel() {
     let defChannel;
-    for (let x in this.config.channels) {
+    for (const x in this.config.channels) {
       // getting default channel
       console.log('FabricConfig, this.config.channels ', x);
       if (x) {
@@ -53,7 +53,7 @@ class FabricConfig {
   }
   getDefaultPeerConfig() {
     let defaultPeerConfig = [];
-    let peers = this.getPeersConfig();
+    const peers = this.getPeersConfig();
     if (peers) {
       defaultPeerConfig = peers[0];
     }
@@ -61,11 +61,11 @@ class FabricConfig {
   }
 
   getPeersConfig() {
-    let peers = [];
-    for (let x in this.config.peers) {
-      //TODO may need to handle multiple fabric-ca server ??
+    const peers = [];
+    for (const x in this.config.peers) {
+      // TODO may need to handle multiple fabric-ca server ??
       if (this.config.peers[x].url) {
-        let peer = {
+        const peer = {
           name: x,
           url: this.config.peers[x].url,
           tlsCACerts: this.config.peers[x].tlsCACerts,
@@ -77,13 +77,12 @@ class FabricConfig {
     }
     return peers;
   }
-  //TOD need to verify maybe there is a better way of getting the key/value from the configuration
+  // TOD need to verify maybe there is a better way of getting the key/value from the configuration
   getOrganizationsConfig() {
-    let orgMsp = [];
+    const orgMsp = [];
     let adminPrivateKeyPath;
     let signedCertPath;
-    for (let x in this.config.organizations) {
-      //TODO may need to handle multiple MSPID's ??
+    for (const x in this.config.organizations) {
       if (this.config.organizations[x].mspid) {
         orgMsp.push(this.config.organizations[x].mspid);
       }
@@ -100,7 +99,7 @@ class FabricConfig {
   getServerCertPath() {
     let serverCertPath = null;
     if (this.config.certificateAuthorities) {
-      for (let x in this.config.certificateAuthorities) {
+      for (const x in this.config.certificateAuthorities) {
         if (this.config.certificateAuthorities[x].tlsCACerts) {
           serverCertPath = this.config.certificateAuthorities[x].tlsCACerts
             .path;
@@ -112,12 +111,11 @@ class FabricConfig {
   }
 
   getCertificateAuthorities() {
-    let caURL = [];
+    const caURL = [];
     let serverCertPath = null;
     // let serverCert = fs.readFileSync(path.join(__dirname, 'somepath/msp/tlscacerts/example.com-cert.pem'));
     if (this.config.certificateAuthorities) {
-      for (let x in this.config.certificateAuthorities) {
-        //TODO may need to handle multiple fabric-ca server ??
+      for (const x in this.config.certificateAuthorities) {
         if (this.config.certificateAuthorities[x].tlsCACerts) {
           serverCertPath = this.config.certificateAuthorities[x].tlsCACerts
             .path;
@@ -131,11 +129,10 @@ class FabricConfig {
   }
 
   getPeers() {
-    let peers = [];
-    for (let x in this.config.peers) {
-      //TODO may need to handle multiple fabric-ca server ??
+    const peers = [];
+    for (const x in this.config.peers) {
       if (this.config.peers[x].url) {
-        let peer = {
+        const peer = {
           name: x,
           url: this.config.peers[x].url,
           tlsCACerts: this.config.peers[x].tlsCACerts,
