@@ -41,3 +41,19 @@
  - Navigate to http://localhost:3000/dashboard/import
  - Click "Upload .json File" button, and select [sample](/app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json) file.
 
+  #### Setup Prometheus server and Grafana with using Docker
+
+  - In [our sample docker-compose file](https://github.com/hyperledger/blockchain-explorer/blob/master/docker-compose.yaml), we've already done configuration for Prometheus server and Grafana provisioning. If you want to custmise the configuration, please see the following files and the official instructions ( [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/#using-docker) / [Grafana](https://grafana.com/docs/administration/provisioning/#provisioning-grafana) ).
+     ```
+     - app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml
+     - app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json
+     - app/platform/fabric/artifacts/operations/grafana_conf/provisioning/dashboards/dashboard.yaml
+     - app/platform/fabric/artifacts/operations/grafana_conf/provisioning/datasources/datasource.yaml
+     ```
+
+  - After bring up services with the following command, open http://localhost:3000 in a browser. You'll be able to see the provisioned `Balance Transfer, Quick Summary` dashboard.
+    ```
+    $ cd blockchain-explorer
+    $ docker-compose down -v  # Just for cleaning up the old persist docker volumes
+    $ docker-compose up -d
+    ```
