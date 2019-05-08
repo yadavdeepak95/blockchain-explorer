@@ -25,14 +25,14 @@ exports.getLogger = getLogger;
 exports.readAllFiles = readAllFiles;
 
 function readAllFiles(dir) {
-  const files = fs.readdirSync(dir);
-  const certs = [];
-  files.forEach(file_name => {
-    const file_path = path.join(dir, file_name);
-    const data = fs.readFileSync(file_path);
-    certs.push(data);
-  });
-  return certs;
+	const files = fs.readdirSync(dir);
+	const certs = [];
+	files.forEach(file_name => {
+		const file_path = path.join(dir, file_name);
+		const data = fs.readFileSync(file_path);
+		certs.push(data);
+	});
+	return certs;
 }
 
 /*
@@ -48,48 +48,48 @@ logger.setLevel('INFO');
 */
 
 function getLogger(moduleName) {
-  let logger;
+	let logger;
 
-  if (moduleName === 'pgservice') {
-    logger = log4js.getLogger('pgservice');
-  } else {
-    appList.push(moduleName);
-    logger = log4js.getLogger(moduleName);
-  }
+	if (moduleName === 'pgservice') {
+		logger = log4js.getLogger('pgservice');
+	} else {
+		appList.push(moduleName);
+		logger = log4js.getLogger(moduleName);
+	}
 
-  let appLog = 'logs/app/app.log';
-  let dbLog = 'logs/db/db.log';
+	let appLog = 'logs/app/app.log';
+	let dbLog = 'logs/db/db.log';
 
-  if (process.env.SYNC_LOG_PATH) {
-    appLog = `${process.env.SYNC_LOG_PATH}/app/app.log`;
-    dbLog = `${process.env.SYNC_LOG_PATH}/db/db.log`;
-  }
+	if (process.env.SYNC_LOG_PATH) {
+		appLog = `${process.env.SYNC_LOG_PATH}/app/app.log`;
+		dbLog = `${process.env.SYNC_LOG_PATH}/db/db.log`;
+	}
 
-  fs.ensureFileSync(appLog);
-  fs.ensureFileSync(dbLog);
+	fs.ensureFileSync(appLog);
+	fs.ensureFileSync(dbLog);
 
-  log4js.configure({
-    appenders: [
-      {
-        type: 'dateFile',
-        filename: appLog,
-        // eslint-disable-next-line spellcheck/spell-checker
-        pattern: '-yyyy-MM-dd',
-        category: appList
-      },
-      {
-        type: 'dateFile',
-        filename: dbLog,
-        // eslint-disable-next-line spellcheck/spell-checker
-        pattern: '-yyyy-MM-dd',
-        category: ['pgservice']
-      }
-    ]
-  });
+	log4js.configure({
+		appenders: [
+			{
+				type: 'dateFile',
+				filename: appLog,
+				// eslint-disable-next-line spellcheck/spell-checker
+				pattern: '-yyyy-MM-dd',
+				category: appList
+			},
+			{
+				type: 'dateFile',
+				filename: dbLog,
+				// eslint-disable-next-line spellcheck/spell-checker
+				pattern: '-yyyy-MM-dd',
+				category: ['pgservice']
+			}
+		]
+	});
 
-  logger.setLevel('DEBUG');
+	logger.setLevel('DEBUG');
 
-  return logger;
+	return logger;
 }
 
 exports.getLogger = getLogger;

@@ -8,14 +8,17 @@
  *
  */
 
+const helper = require('./helper');
+const logger = helper.getLogger('ForkSenderHandler');
+
 function toUTCmilliseconds(dateStr) {
-  let startSyncMills = null;
-  try {
-    startSyncMills = Date.parse(dateStr);
-  } catch (err) {
-    logger.error('Unparsable date format, dateStr= ', dateStr, ' ', err);
-  }
-  return startSyncMills;
+	let startSyncMills = null;
+	try {
+		startSyncMills = Date.parse(dateStr);
+	} catch (err) {
+		logger.error('Unparsable date format, dateStr= ', dateStr, ' ', err);
+	}
+	return startSyncMills;
 }
 
 exports.toUTCmilliseconds = toUTCmilliseconds;

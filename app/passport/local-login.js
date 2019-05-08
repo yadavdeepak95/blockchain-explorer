@@ -17,39 +17,39 @@ const config = require('../explorerconfig.json');
 const jwtSignAsync = promisify(jwt.sign);
 
 const strategy = function(platform) {
-  const proxy = platform.getProxy();
-  return new PassportLocalStrategy(
-    {
-      usernameField: 'user',
-      passwordField: 'password',
-      session: false,
-      passReqToCallback: true
-    },
-    async (req, user, password, done) => {
-      const userData = {
-        user: user.trim(),
-        password: password.trim()
-      };
+	const proxy = platform.getProxy();
+	return new PassportLocalStrategy(
+		{
+			usernameField: 'user',
+			passwordField: 'password',
+			session: false,
+			passReqToCallback: true
+		},
+		async (req, user, password, done) => {
+			const userData = {
+				user: user.trim(),
+				password: password.trim()
+			};
 
-      const reqUser = await new User(req.body).asJson();
-      const userInfo = await proxy.authenticate(reqUser);
+			const reqUser = await new User(req.body).asJson();
+			const userInfo = await proxy.authenticate(reqUser);
 
-      const payload = {
-        sub: userInfo.user
-      };
+			const payload = {
+				sub: userInfo.user
+			};
 
-      const token = await jwtSignAsync(payload, config.jwt.secret, {
-        expiresIn: config.jwt.expiresIn
-      });
+			const token = await jwtSignAsync(payload, config.jwt.secret, {
+				expiresIn: config.jwt.expiresIn
+			});
 
-      const data = {
-        message: 'logged in',
-        name: userData.user
-      };
+			const data = {
+				message: 'logged in',
+				name: userData.user
+			};
 
-      return done(null, token, data);
-    }
-  );
+			return done(null, token, data);
+		}
+	);
 };
 
 /**

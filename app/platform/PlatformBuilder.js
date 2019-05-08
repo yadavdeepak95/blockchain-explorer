@@ -7,14 +7,14 @@ const explorer_error = require('../common/ExplorerMessage').explorer.error;
 const ExplorerError = require('../common/ExplorerError');
 
 class PlatformBuilder {
-  static async build(pltfrm, persistence, broadcaster) {
-    if (pltfrm === explorer_const.PLATFORM_FABRIC) {
-      const Platform = require('./fabric/Platform');
-      const platform = new Platform(persistence, broadcaster);
-      return platform;
-    }
-    throw new ExplorerError(explorer_error.ERROR_1004, pltfrm);
-  }
+	static async build(pltfrm, persistence, broadcaster) {
+		if (pltfrm === explorer_const.PLATFORM_FABRIC) {
+			const Platform = require('./fabric/Platform');
+			const platform = new Platform(persistence, broadcaster);
+			return platform;
+		}
+		throw new ExplorerError(explorer_error.ERROR_1004, pltfrm);
+	}
 }
 
 module.exports = PlatformBuilder;

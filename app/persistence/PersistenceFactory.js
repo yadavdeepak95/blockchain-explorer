@@ -6,16 +6,16 @@ const explorer_error = require('../common/ExplorerMessage').explorer.error;
 const ExplorerError = require('../common/ExplorerError');
 
 class PersistenceFactory {
-  static async create(db, dbconfig) {
-    if (db === explorer_const.PERSISTENCE_POSTGRESQL) {
-      // avoid to load all db Persist module
-      const PostgreSQL = require('./postgreSQL/Persist');
-      const persistence = new PostgreSQL(dbconfig);
-      await persistence.getPGService().handleDisconnect();
-      return persistence;
-    }
-    throw new ExplorerError(explorer_error.ERROR_1003, db);
-  }
+	static async create(db, dbconfig) {
+		if (db === explorer_const.PERSISTENCE_POSTGRESQL) {
+			// avoid to load all db Persist module
+			const PostgreSQL = require('./postgreSQL/Persist');
+			const persistence = new PostgreSQL(dbconfig);
+			await persistence.getPGService().handleDisconnect();
+			return persistence;
+		}
+		throw new ExplorerError(explorer_error.ERROR_1003, db);
+	}
 }
 
 module.exports = PersistenceFactory;

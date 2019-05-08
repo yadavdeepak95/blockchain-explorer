@@ -13,9 +13,9 @@ const util = require('util');
   }
  */
 module.exports = function ExplorerError(...args) {
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.message = util.format(args);
+	Error.captureStackTrace(this, this.constructor);
+	this.name = this.constructor.name;
+	this.message = util.format(args);
 };
 
 require('util').inherits(module.exports, Error);

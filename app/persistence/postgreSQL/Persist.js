@@ -4,35 +4,35 @@
 const pgservice = require('./pgservice');
 
 class Persist {
-  constructor(pgconfig) {
-    this.pgservice = new pgservice(pgconfig);
-    this.metricservice = null;
-    this.crudService = null;
-  }
+	constructor(pgconfig) {
+		this.pgservice = new pgservice(pgconfig);
+		this.metricservice = null;
+		this.crudService = null;
+	}
 
-  setMetricService(metricservice) {
-    this.metricservice = metricservice;
-  }
+	setMetricService(metricservice) {
+		this.metricservice = metricservice;
+	}
 
-  setCrudService(crudService) {
-    this.crudService = crudService;
-  }
+	setCrudService(crudService) {
+		this.crudService = crudService;
+	}
 
-  getMetricService() {
-    return this.metricservice;
-  }
+	getMetricService() {
+		return this.metricservice;
+	}
 
-  getCrudService() {
-    return this.crudService;
-  }
+	getCrudService() {
+		return this.crudService;
+	}
 
-  getPGService() {
-    return this.pgservice;
-  }
+	getPGService() {
+		return this.pgservice;
+	}
 
-  closeconnection() {
-    this.pgservice.closeconnection();
-  }
+	closeconnection() {
+		this.pgservice.closeconnection();
+	}
 }
 
 module.exports = Persist;
