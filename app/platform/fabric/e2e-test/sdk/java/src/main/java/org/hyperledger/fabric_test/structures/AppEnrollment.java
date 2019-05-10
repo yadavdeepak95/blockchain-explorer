@@ -1,3 +1,7 @@
+/*
+ *SPDX-License-Identifier: Apache-2.0
+ */
+
 package org.hyperledger.fabric_test.structures;
 
 import org.hyperledger.fabric.sdk.Enrollment;

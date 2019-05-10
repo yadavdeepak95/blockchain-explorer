@@ -1,3 +1,7 @@
+/*
+ *SPDX-License-Identifier: Apache-2.0
+ */
+
 package org.hyperledger.fabric_test.structures;
 
 import java.security.PrivateKey;

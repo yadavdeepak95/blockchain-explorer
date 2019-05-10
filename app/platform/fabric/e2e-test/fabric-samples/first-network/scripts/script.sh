@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+#    SPDX-License-Identifier: Apache-2.0
+#
+
 echo
 echo " ____    _____      _      ____    _____ "
 echo "/ ___|  |_   _|    / \    |  _ \  |_   _|"

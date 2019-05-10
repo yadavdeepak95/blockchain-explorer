@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+#
+#    SPDX-License-Identifier: Apache-2.0
+#
+
 WD=$GOPATH/src/github.com/hyperledger/fabric-test/feature/sdk/java
 cd $WD
 
