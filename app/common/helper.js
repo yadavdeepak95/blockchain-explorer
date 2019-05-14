@@ -40,7 +40,7 @@ function readAllFiles(dir) {
 }
 
 /*
-Please assign the logger with the file name for the application logging and assign the logger with "pgservice"
+Please assign the logger with the file name for the application logging and assign the logger with "PgService"
 for database logging for any file name. Please find an example below.
 
 To stacktrace, please pass the error.stack object to the logger. If there is no error.stack object pass in a
@@ -54,8 +54,8 @@ logger.setLevel('INFO');
 function getLogger(moduleName) {
 	let logger;
 
-	if (moduleName === 'pgservice') {
-		logger = log4js.getLogger('pgservice');
+	if (moduleName === 'PgService') {
+		logger = log4js.getLogger('PgService');
 	} else {
 		appList.push(moduleName);
 		logger = log4js.getLogger(moduleName);
@@ -86,7 +86,7 @@ function getLogger(moduleName) {
 				filename: dbLog,
 				// eslint-disable-next-line spellcheck/spell-checker
 				pattern: '-yyyy-MM-dd',
-				category: ['pgservice']
+				category: ['PgService']
 			}
 		]
 	});

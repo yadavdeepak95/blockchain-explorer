@@ -107,10 +107,10 @@ class MetricService {
 	async getTxPerChaincode(channel_genesis_hash, cb) {
 		try {
 			const txArray = await this.getTxPerChaincodeGenerate(channel_genesis_hash);
-			cb(txArray);
+			return cb(txArray);
 		} catch (err) {
 			logger.error(err);
-			cb([]);
+			return cb([]);
 		}
 	}
 
@@ -145,9 +145,10 @@ class MetricService {
 	async getStatus(channel_genesis_hash, cb) {
 		try {
 			const data = await this.getStatusGenerate(channel_genesis_hash);
-			cb(data);
+			return cb(data);
 		} catch (err) {
 			logger.error(err);
+			return cb([]);
 		}
 	}
 
@@ -155,13 +156,12 @@ class MetricService {
 		try {
 			const peerArray = await this.getPeerData(channel_genesis_hash);
 			if (cb) {
-				cb(peerArray);
-			} else {
-				return peerArray;
+				return cb(peerArray);
 			}
+			return peerArray;
 		} catch (err) {
 			logger.error(err);
-			cb([]);
+			return cb([]);
 		}
 	}
 
@@ -169,10 +169,10 @@ class MetricService {
 	async getOrdererList(cb) {
 		try {
 			const ordererArray = await this.getOrdererData();
-			cb(ordererArray);
+			return cb(ordererArray);
 		} catch (err) {
 			logger.error(err);
-			cb([]);
+			return cb([]);
 		}
 	}
 	// BE -303

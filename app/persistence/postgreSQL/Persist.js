@@ -1,11 +1,11 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-const pgservice = require('./pgservice');
+const PgService = require('./PgService');
 
 class Persist {
 	constructor(pgconfig) {
-		this.pgservice = new pgservice(pgconfig);
+		this.pgservice = new PgService(pgconfig);
 		this.metricservice = null;
 		this.crudService = null;
 	}

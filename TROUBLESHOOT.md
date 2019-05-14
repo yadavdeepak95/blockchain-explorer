@@ -51,7 +51,6 @@
 	update config.json “fabric-path/” with the path to your fabric network
 #### Related Information:
 
-
 ### Problem Description: Hyperledger Explorer fails to run, Client has already been connected. You cannot reuse a client.
 
 #### Background Information:
@@ -154,7 +153,6 @@
     Follow up on “Database Setup”, stop node process, $ pkill node, then
     Start hyperledger explorer ./start.sh from root directory
 
-
 ### Problem Description:  Hyperledger explorer application fails to start, UNAVAILABLE: Connect Failed
 
 #### Background Information
@@ -178,7 +176,6 @@ No fabric network detected based on the explorer configuration
 #### Possible solution:
     Verify if fabric network is running
 Related Information:
-
 
 ### Problem Description:  Explorer fails to start
 
@@ -299,7 +296,6 @@ Related Information:
 
 #### Related Information:
 
-
 ### Problem Description:  Explorer fails to start
 
 #### Background Information:
@@ -325,7 +321,6 @@ Related Information:
    (node:23110) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code. E0823 15:26:53.086211000 140736010920832 ssl_transport_security.cc:989] Handshake failed with fatal error
    SSL_ERROR_SSL:error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
 
-
 #### Possible cause:
     Fabric network down, or unavailable, miss configuration
 #### Possible solution:
@@ -347,7 +342,6 @@ Related Information:
       Received kill signal, shutting down gracefully
       Closed out connections
 
-
 #### Possible cause:
     Misconfiguration, please configure connection to fabric
 #### Possible solution:
@@ -368,7 +362,6 @@ Related Information:
       details: 'unknown service discovery.Discovery' }
     Received kill signal, shutting down gracefully
 
-
 #### Possible cause:
     Fabric version not supported, this could be you’re connecting to HLFabric 1.1
 #### Possible solution:
@@ -376,7 +369,6 @@ Related Information:
 
 #### Related Information:
     HL Explorer support for HL Fabric 1.2
-
 
 ### Problem Description:  HL Explorer fails to start
 
@@ -584,7 +576,6 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
 
 #### Related Information:
     HL Explorer support for HL Fabric 1.4
-
 
 ### Problem Description:  [error: [NetworkConfig101.js]: NetworkConfig101 - problem reading the PEM file :: Error: ENOENT: no such file or directory Error : Failed to connect client peer, please check the configuration and peer status
 
@@ -804,7 +795,6 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
         at <anonymous>
         at process._tickCallback (internal/process/next_tick.js:189:7)
     <<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>
-
     app.log
     [2019-05-01 12:09:58.039] [DEBUG] Proxy - getPeersStatus >> 0
     [2019-05-01 12:10:58.034] [DEBUG] Proxy - getPeersStatus >>  Error: Failed to discover ::Error: Failed to connect before the deadline URL:grpcs://localhost:7051
@@ -921,7 +911,6 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
     details: 'access denied: channel [] creator org [Org1MSP]' }
     [2019-05-01 12:16:50.483] [INFO] main - Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.
 
-
 #### Possible cause:
     Invalid signingIdentity
 #### Possible solution:
@@ -930,7 +919,28 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
 #### Related Information:
     HL Explorer support for HL Fabric 1.3
 
+### Problem Description:  Error: Received status message on the block stream. status:NOT_FOUND
+    at ClientDuplexStream._stream.on (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/lib/ChannelEventHub.js:539:23)
+    at emitOne (events.js:116:13)
+    at ClientDuplexStream.emit (events.js:211:7)
+    at addChunk (_stream_readable.js:263:12)
+    at readableAddChunk (_stream_readable.js:250:11)
+    at ClientDuplexStream.Readable.push (_stream_readable.js:208:10)
+    at Object.onReceiveMessage (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/node_modules/grpc/src/client_interceptors.js:1292:19)
+    at InterceptingListener.recvMessageWithContext (/Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/node_modules/grpc/src/client_interceptors.js:607:19)
+    at /Users/USER_ID/workspace/EXPLORER-MIN-CONFIG/blockchain-explorer/node_modules/fabric-network/node_modules/fabric-client/node_modules/grpc/src/client_interceptors.js:706:14
+initializeChannelFromDiscover  mychannel
+initializeChannelFromDiscover  mychannel
+2019-05-14T18:15:30.333Z - error: [Channel.js]: Channel:mychannel received discovery error:access denied
 
+#### Possible cause:
+    Invalid signingIdentity, channel Blockhash mismatch with database
+#### Possible solution:
+    - Delete everything under the "wallet" directory
+    - Run $ blockchain-explorer/app/persistence/fabric/postgreSQL/db/createdb.sh
+    - ./start.sh start HL Explorer
+#### Related Information:
+    HL Explorer support for HL Fabric 1.4
 
 ### Docker Troubleshooting commands
     List your networks

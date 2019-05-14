@@ -22,9 +22,9 @@ const { Client } = require('pg');
 
 const helper = require('../../common/helper');
 
-const logger = helper.getLogger('pgservice');
+const logger = helper.getLogger('PgService');
 
-class pgservice {
+class PgService {
 	constructor(pgconfig) {
 		this.pgconfig = pgconfig;
 		this.pgconfig.host = process.env.DATABASE_HOST || pgconfig.host;
@@ -568,4 +568,4 @@ class pgservice {
 	}
 }
 
-module.exports = pgservice;
+module.exports = PgService;
