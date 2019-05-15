@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const helper = require('../../common/helper');
 const logger = helper.getLogger('ForkSenderHandler');

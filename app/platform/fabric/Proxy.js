@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 const UserService = require('./service/UserService.js');
 const helper = require('../../common/helper');
 const NetworkService = require('./service/NetworkService.js');
@@ -211,11 +211,10 @@ class Proxy {
 	}
 
 	processSyncMessage(msg) {
-		// get message from child process
-		// console.debug('Message from child %j', msg);
+		// Get message from child process
 		logger.debug('Message from child %j', msg);
 		if (fabric_const.NOTITY_TYPE_NEWCHANNEL === msg.notify_type) {
-			// initialize new channel instance in parent
+			// Initialize new channel instance in parent
 			if (msg.network_name && msg.client_name) {
 				const client = this.platform.networks
 					.get(msg.network_name)
@@ -236,7 +235,7 @@ class Proxy {
 			fabric_const.NOTITY_TYPE_UPDATECHANNEL === msg.notify_type ||
 			fabric_const.NOTITY_TYPE_CHAINCODE === msg.notify_type
 		) {
-			// update channel details in parent
+			// Update channel details in parent
 			if (msg.network_name && msg.client_name) {
 				const client = this.platform.networks
 					.get(msg.network_name)
@@ -254,7 +253,7 @@ class Proxy {
 				);
 			}
 		} else if (fabric_const.NOTITY_TYPE_BLOCK === msg.notify_type) {
-			// broad cast new block message to client
+			// Broad cast new block message to client
 			const notify = {
 				title: msg.title,
 				type: msg.type,

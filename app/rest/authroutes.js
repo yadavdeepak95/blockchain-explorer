@@ -9,11 +9,12 @@ const { responder } = require('./requestutils');
 const authroutes = async function(router, platform) {
 	const proxy = platform.getProxy();
 
-	/** *
-   Network list
-   GET /networklist -> /login
-   curl -i 'http://<host>:<port>/networklist'
-   */
+	/**
+	 * *
+	 * Network list
+	 * GET /networklist -> /login
+	 * curl -i 'http://<host>:<port>/networklist'
+	 */
 	router.get(
 		'/networklist',
 		responder(async req => {
@@ -22,11 +23,12 @@ const authroutes = async function(router, platform) {
 		})
 	);
 
-	/** *
-  Login
-  POST /login -> /login
-  curl -X POST -H 'Content-Type: routerlication/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/login'
-  */
+	/**
+	 * *
+	 * Login
+	 * POST /login -> /login
+	 * curl -X POST -H 'Content-Type: routerlication/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/login'
+	 */
 	router.post('/login', async (req, res, next) => {
 		console.log('req.body', req.body);
 		return passport.authenticate('local-login', (err, token, userData) => {
@@ -52,14 +54,15 @@ const authroutes = async function(router, platform) {
 		})(req, res, next);
 	});
 
-	/** *
-  Logout
-  POST /logout -> /logout
-  curl -X POST -H 'Content-Type: routerlication/json' -i 'http://<host>:<port>/logout'
-  */
+	/**
+	 * *
+	 * Logout
+	 * POST /logout -> /logout
+	 * curl -X POST -H 'Content-Type: routerlication/json' -i 'http://<host>:<port>/logout'
+	 */
 	router.post('/logout', async (req, res) => {
 		// TODO: invalidate jwt token
 		console.log('user logged out, ', req.body, res);
 	});
-}; // end authroutes()
+}; // End authroutes()
 module.exports = authroutes;

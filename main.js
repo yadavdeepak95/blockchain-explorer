@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  *
@@ -89,7 +89,7 @@ async function startExplorer() {
 }
 
 startExplorer();
-
+/* eslint-disable */
 let connections = [];
 server.on('connection', connection => {
 	connections.push(connection);
@@ -98,9 +98,11 @@ server.on('connection', connection => {
 		() => (connections = connections.filter(curr => curr !== connection))
 	);
 });
-
-// this function is called when you want the server to die gracefully
-// i.e. wait for existing connections
+/* eslint-enable */
+/*
+ * This function is called when you want the server to die gracefully
+ * i.e. wait for existing connections
+ */
 const shutDown = function(exitCode) {
 	console.log('Received kill signal, shutting down gracefully');
 	server.close(() => {
@@ -144,7 +146,7 @@ process.on('uncaughtException', up => {
 	}, 2000);
 });
 
-// listen for TERM signal .e.g. kill
+// Listen for TERM signal .e.g. kill
 process.on('SIGTERM', shutDown);
-// listen for INT signal e.g. Ctrl-C
+// Listen for INT signal e.g. Ctrl-C
 process.on('SIGINT', shutDown);

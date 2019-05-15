@@ -17,9 +17,9 @@ const explorer_error = require('../../../common/ExplorerMessage').explorer
 	.error;
 
 async function createFabricClient(client_configs, client_name, persistence) {
-	// create new FabricClient
+	// Create new FabricClient
 	const client = new FabricClient(client_name);
-	// initialize fabric client
+	// Initialize fabric client
 	logger.debug(
 		'************ Initializing fabric client for [%s]************',
 		client_name
@@ -33,7 +33,7 @@ async function createFabricClient(client_configs, client_name, persistence) {
 }
 
 async function createDetachClient(client_configs, client_name, persistence) {
-	// clone global.hfc.config configuration
+	// Clone global.hfc.config configuration
 	const client_config = cloneConfig(client_configs, client_name);
 
 	const client = new FabricClient(client_name);
@@ -53,7 +53,7 @@ function cloneConfig(client_configs, client_name) {
 	client_config.orderers = client_configs.orderers;
 	client_config.certificateAuthorities = client_configs.certificateAuthorities;
 
-	// modify url with respect to TLS enable
+	// Modify url with respect to TLS enable
 	client_config = processTLS_URL(client_config);
 	return client_config;
 }
@@ -92,11 +92,13 @@ async function setAdminEnrolmentPath(network_configs) {
 function setOrgEnrolmentPath(network_config) {
 	if (network_config && network_config.organizations) {
 		for (const organization_name in network_config.organizations) {
-			// checking files path is defined as full path or directory
-			// if directory, then it will consider the first file
+			/*
+			 * Checking files path is defined as full path or directory
+			 * If directory, then it will consider the first file
+			 */
 			const organization = network_config.organizations[organization_name];
 			if (!organization.fullpath) {
-				// setting admin private key as first file from keystore dir
+				// Setting admin private key as first file from keystore dir
 				logger.debug(
 					'Organization [%s] enrolment files path defined as directory',
 					organization_name
@@ -108,7 +110,7 @@ function setOrgEnrolmentPath(network_config) {
 						organization.adminPrivateKey.path = path.join(privateKeyPath, files[0]);
 					}
 				}
-				// setting admin private key as first file from signcerts dir
+				// Setting admin private key as first file from signcerts dir
 				if (organization.signedCert) {
 					const signedCertPath = organization.signedCert.path;
 					const files = fs.readdirSync(signedCertPath);
@@ -169,7 +171,7 @@ function getPEMfromConfig(config) {
 	let result = null;
 	if (config) {
 		if (config.path) {
-			// cert value is in a file
+			// Cert value is in a file
 			result = readFileSync(config.path);
 			result = utils.normalizeX509(result);
 		}

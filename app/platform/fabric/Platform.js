@@ -1,5 +1,5 @@
 /**
- *    SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 const path = require('path');
@@ -39,12 +39,12 @@ class Platform {
 		const _self = this;
 		/* eslint-enable */
 
-		// loading the config.json
+		// Loading the config.json
 		const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 		const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 		this.syncType = all_config.syncType;
 
-		// build client context
+		// Build client context
 		logger.debug(
 			'******* Initialization started for hyperledger fabric platform ******'
 		);
@@ -71,7 +71,7 @@ class Platform {
 		/* eslint-enable */
 		let clientstatus = true;
 
-		// setting organization enrolment files
+		// Setting organization enrolment files
 		logger.debug('Setting admin organization enrolment files');
 		try {
 			this.network_configs = await FabricUtils.setAdminEnrolmentPath(
@@ -86,13 +86,15 @@ class Platform {
 		for (const network_name in this.network_configs) {
 			this.networks.set(network_name, new Map());
 			const client_configs = this.network_configs[network_name];
-			// console.log('network_name ', network_name, ' client_configs ', client_configs)
+			// Console.log('network_name ', network_name, ' client_configs ', client_configs)
 			if (!this.defaultNetwork) {
 				this.defaultNetwork = network_name;
 			}
 
-			// Create fabric explorer client for each
-			// Each client is connected to only a single peer and monitor that particular peer only
+			/*
+			 * Create fabric explorer client for each
+			 * Each client is connected to only a single peer and monitor that particular peer only
+			 */
 			console.log(
 				' client_configs.name ',
 				client_configs.name,
@@ -100,14 +102,12 @@ class Platform {
 				client_configs.profile
 			);
 			const client_name = client_configs.name;
-			//  for (const client_name in client_configs) {
-			// console.log('client_name ', client_name, ' client_configs ', client_configs)
-			// set default client as first client
+			// Set default client as first client
 			if (!this.defaultClient) {
 				this.defaultClient = client_name;
 			}
 
-			// create client instance
+			// Create client instance
 			logger.debug('Creating client [%s] >> ', client_configs, client_name);
 
 			let client;
@@ -128,11 +128,11 @@ class Platform {
 				);
 			}
 			if (client) {
-				// set client into clients map
+				// Set client into clients map
 				console.log('FabricUtils.createDetachClient ');
 				const clients = this.networks.get(network_name);
 				clients.set(client_name, client);
-				// console.log('clients ', clients);
+				// Console.log('clients ', clients);
 			}
 			//  }
 		}
@@ -154,7 +154,7 @@ class Platform {
 	}
 
 	setPersistenceService() {
-		// setting platform specific CRUDService and MetricService
+		// Setting platform specific CRUDService and MetricService
 		this.persistence.setMetricService(
 			new MetricService(this.persistence.getPGService())
 		);

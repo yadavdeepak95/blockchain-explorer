@@ -175,8 +175,7 @@ class MetricService {
 			return cb([]);
 		}
 	}
-	// BE -303
-	// transaction metrics
+	// BE -303 transaction metrics
 
 	getTxByMinute(channel_genesis_hash, hours) {
 		const sqlPerMinute = ` with minutes as (
@@ -293,7 +292,7 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerYear);
 	}
 
-	// block metrics API
+	// Block metrics API
 
 	getBlocksByMinute(channel_genesis_hash, hours) {
 		const sqlPerMinute = ` with minutes as (
