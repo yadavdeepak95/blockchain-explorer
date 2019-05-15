@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const grpc = require('grpc');
 const convertHex = require('convert-hex');
@@ -20,7 +20,7 @@ const _transProto = grpc.load(
 
 const blocksInProcess = [];
 
-// transaction validation code
+// Transaction validation code
 const _validation_codes = {};
 const keys = Object.keys(_transProto.TxValidationCode);
 for (let i = 0; i < keys.length; i++) {
@@ -70,7 +70,7 @@ class SyncServices {
 		return true;
 	}
 
-	// insert new channel to DB
+	// Insert new channel to DB
 	async insertNewChannel(client, channel, block, channel_genesis_hash) {
 		const channel_name = channel.getName();
 
@@ -107,7 +107,7 @@ class SyncServices {
 				};
 				this.platform.send(notify);
 				throw new ExplorerError(explorer_error.ERROR_2013, channel_name);
-				//	return false;
+				//	Return false;
 			}
 		}
 		return true;
@@ -118,7 +118,7 @@ class SyncServices {
 		const discoveryResults = await client.initializeChannelFromDiscover(
 			channel_name
 		);
-		// insert peer
+		// Insert peer
 		if (discoveryResults && discoveryResults.peers_by_org) {
 			for (const org_name in discoveryResults.peers_by_org) {
 				const org = discoveryResults.peers_by_org[org_name];
@@ -127,7 +127,7 @@ class SyncServices {
 				}
 			}
 		}
-		// insert orderer
+		// Insert orderer
 		if (discoveryResults && discoveryResults.orderers) {
 			for (const org_name in discoveryResults.orderers) {
 				const org = discoveryResults.orderers[org_name];
@@ -137,7 +137,7 @@ class SyncServices {
 				}
 			}
 		}
-		// insert chaincode
+		// Insert chaincode
 		await this.insertNewChannelChaincode(
 			client,
 			channel,
@@ -146,7 +146,7 @@ class SyncServices {
 		);
 	}
 
-	// insert new peer and channel relation
+	// Insert new peer and channel relation
 	async insertNewPeer(peer, channel_genesis_hash, client) {
 		let eventurl = '';
 		let requesturl = peer.endpoint;
@@ -182,7 +182,7 @@ class SyncServices {
 		await this.persistence.getCrudService().savePeerChannelRef(channel_peer_row);
 	}
 
-	// insert new orderer and channel relation
+	// Insert new orderer and channel relation
 	async insertNewOrderers(orderer, channel_genesis_hash, client) {
 		const discoveryProtocol = client.hfc_client.getConfigSetting(
 			'discovery-protocol'
@@ -212,7 +212,7 @@ class SyncServices {
 			.savePeerChannelRef(channel_orderer_row);
 	}
 
-	// insert new chaincode, peer and channel relation
+	// Insert new chaincode, peer and channel relation
 	async insertNewChannelChaincode(
 		client,
 		channel,
@@ -255,7 +255,7 @@ class SyncServices {
 		}
 	}
 
-	// insert new chaincode relation with peer and channel
+	// Insert new chaincode relation with peer and channel
 	async insertNewChaincodePeerRef(chaincode, endpoint, channel_genesis_hash) {
 		const host_port = endpoint.split(':');
 		const chaincode_peer_row = {
@@ -280,21 +280,21 @@ class SyncServices {
 		}
 		this.synchInProcess.push(synch_key);
 
-		// get channel information from ledger
+		// Get channel information from ledger
 		const channelInfo = await client
 			.getHFC_Client()
 			.getChannel(channel_name)
 			.queryInfo(client.getDefaultPeer(), true);
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		const blockHeight = parseInt(channelInfo.height.low) - 1;
-		// query missing blocks from DB
+		// Query missing blocks from DB
 		const results = await this.persistence
 			.getMetricService()
 			.findMissingBlockNumber(channel_genesis_hash, blockHeight);
 
 		if (results) {
 			for (const result of results) {
-				// get block by number
+				// Get block by number
 				const block = await client
 					.getHFC_Client()
 					.getChannel(channel_name)
@@ -310,9 +310,9 @@ class SyncServices {
 
 	async processBlockEvent(client, block) {
 		const _self = this;
-		// get the first transaction
+		// Get the first transaction
 		const first_tx = block.data.data[0];
-		// the 'header' object contains metadata of the transaction
+		// The 'header' object contains metadata of the transaction
 		const header = first_tx.payload.header;
 		const channel_name = header.channel_header.channel_id;
 		const blockPro_key = `${channel_name}_${block.header.number}`;
@@ -324,7 +324,7 @@ class SyncServices {
 
 		logger.debug('New Block  >>>>>>> %j', block);
 		let channel_genesis_hash = client.getChannelGenHash(channel_name);
-		// checking block is channel CONFIG block
+		// Checking block is channel CONFIG block
 		/* eslint-disable */
 		if (!channel_genesis_hash) {
 			// get discovery and insert channel details to db and create new channel object in client context
@@ -544,7 +544,7 @@ class SyncServices {
 					endorser_id_bytes
 				};
 
-				// insert transaction
+				// Insert transaction
 
 				const res = await this.persistence
 					.getCrudService()
@@ -552,13 +552,13 @@ class SyncServices {
 				console.log('saveTransaction ', res);
 			}
 
-			// insert block
+			// Insert block
 			console.log('block_row.blocknum ', block_row.blocknum);
 			const status = await this.persistence.getCrudService().saveBlock(block_row);
 			console.debug('status ', status);
 
 			if (status) {
-				// push last block
+				// Push last block
 				const notify = {
 					notify_type: fabric_const.NOTITY_TYPE_BLOCK,
 					network_name: _self.platform.network_name,
@@ -596,7 +596,7 @@ class SyncServices {
 }
 
 module.exports = SyncServices;
-// transaction validation code
+// Transaction validation code
 function convertValidationCode(code) {
 	if (typeof code === 'string') {
 		return code;

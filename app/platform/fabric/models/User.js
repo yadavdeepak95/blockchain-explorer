@@ -7,7 +7,7 @@ const logger = helper.getLogger('FabricGateway');
 
 class User {
 	constructor(user) {
-		// put the user request in user object
+		// Put the user request in user object
 		this.userJson = {};
 		Object.keys(user).forEach(key => {
 			const value = user[key];

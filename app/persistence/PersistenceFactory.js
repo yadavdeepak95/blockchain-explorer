@@ -8,7 +8,7 @@ const ExplorerError = require('../common/ExplorerError');
 class PersistenceFactory {
 	static async create(db, dbconfig) {
 		if (db === explorer_const.PERSISTENCE_POSTGRESQL) {
-			// avoid to load all db Persist module
+			// Avoid to load all db Persist module
 			const PostgreSQL = require('./postgreSQL/Persist');
 			const persistence = new PostgreSQL(dbconfig);
 			await persistence.getPGService().handleDisconnect();

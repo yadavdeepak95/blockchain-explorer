@@ -8,12 +8,12 @@ const platformroutes = async function(router, platform) {
 	const proxy = platform.getProxy();
 
 	/**
-  Transactions by Organization(s)
-  GET /txByOrg
-  curl -i 'http://<host>:<port>/txByOrg/<channel_genesis_hash>'
-  Response:
-  {'rows':[{'count':'4','creator_msp_id':'Org1'}]}
-  */
+	 * Transactions by Organization(s)
+	 * GET /txByOrg
+	 * curl -i 'http://<host>:<port>/txByOrg/<channel_genesis_hash>'
+	 * Response:
+	 * {'rows':[{'count':'4','creator_msp_id':'Org1'}]}
+	 */
 	router.get('/txByOrg/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 
@@ -27,18 +27,18 @@ const platformroutes = async function(router, platform) {
 	});
 
 	/**
-  Channels
-  GET /channels -> /channels/info
-  curl -i 'http://<host>:<port>/channels/<info>'
-  Response:
-  [
-    {
-      'channelName': 'mychannel',
-      'channel_hash': '',
-      'craetedat': '1/1/2018'
-    }
-  ]
-  */
+	 * Channels
+	 * GET /channels -> /channels/info
+	 * curl -i 'http://<host>:<port>/channels/<info>'
+	 * Response:
+	 * [
+	 * {
+	 * 'channelName': 'mychannel',
+	 * 'channel_hash': '',
+	 * 'craetedat': '1/1/2018'
+	 * }
+	 * ]
+	 */
 	router.get('/channels/info', (req, res) => {
 		proxy
 			.getChannelsInfo()
@@ -51,17 +51,18 @@ const platformroutes = async function(router, platform) {
 			.catch(err => res.send({ status: 500, error: err }));
 	});
 
-	/** *Peer Status List
-  GET /peerlist -> /peersStatus
-  curl -i 'http://<host>:<port>/peersStatus/<channel>'
-  Response:
-  [
-    {
-      'requests': 'grpcs://127.0.0.1:7051',
-      'server_hostname': 'peer0.org1.example.com'
-    }
-  ]
-  */
+	/**
+	 * *Peer Status List
+	 * GET /peerlist -> /peersStatus
+	 * curl -i 'http://<host>:<port>/peersStatus/<channel>'
+	 * Response:
+	 * [
+	 * {
+	 * 'requests': 'grpcs://127.0.0.1:7051',
+	 * 'server_hostname': 'peer0.org1.example.com'
+	 * }
+	 * ]
+	 */
 	router.get('/peersStatus/:channel', (req, res) => {
 		const channelName = req.params.channel;
 		if (channelName) {
@@ -73,11 +74,12 @@ const platformroutes = async function(router, platform) {
 		}
 	});
 
-	/** *
-  Block by number
-  GET /block/getinfo -> /block
-  curl -i 'http://<host>:<port>/block/<channel>/<number>'
-  */
+	/**
+	 * *
+	 * Block by number
+	 * GET /block/getinfo -> /block
+	 * curl -i 'http://<host>:<port>/block/<channel>/<number>'
+	 */
 	router.get('/block/:channel_genesis_hash/:number', (req, res) => {
 		const number = parseInt(req.params.number);
 		const channel_genesis_hash = req.params.channel_genesis_hash;
@@ -97,18 +99,18 @@ const platformroutes = async function(router, platform) {
 	});
 
 	/**
-  Return list of channels
-  GET /channellist -> /channels
-  curl -i http://<host>:<port>/channels
-  Response:
-  {
-    'channels': [
-      {
-        'channel_id': 'mychannel'
-      }
-    ]
-  }
-  */
+	 * Return list of channels
+	 * GET /channellist -> /channels
+	 * curl -i http://<host>:<port>/channels
+	 * Response:
+	 * {
+	 * 'channels': [
+	 * {
+	 * 'channel_id': 'mychannel'
+	 * }
+	 * ]
+	 * }
+	 */
 	router.get('/channels', (req, res) => {
 		proxy.getChannels().then(channels => {
 			const response = {
@@ -120,10 +122,10 @@ const platformroutes = async function(router, platform) {
 	});
 
 	/**
-  Return current channel
-  GET /curChannel
-  curl -i 'http://<host>:<port>/curChannel'
-  */
+	 * Return current channel
+	 * GET /curChannel
+	 * curl -i 'http://<host>:<port>/curChannel'
+	 */
 	router.get('/curChannel', (req, res) => {
 		proxy.getCurrentChannel().then(data => {
 			res.send(data);
@@ -131,10 +133,10 @@ const platformroutes = async function(router, platform) {
 	});
 
 	/**
-  Return change channel
-  POST /changeChannel
-  curl -i 'http://<host>:<port>/curChannel'
-  */
+	 * Return change channel
+	 * POST /changeChannel
+	 * curl -i 'http://<host>:<port>/curChannel'
+	 */
 	router.get('/changeChannel/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		proxy.changeChannel(channel_genesis_hash).then(data => {
@@ -144,17 +146,18 @@ const platformroutes = async function(router, platform) {
 		});
 	});
 
-	/** *Peer Status List
-  GET /peerlist -> /peersStatus
-  curl -i 'http://<host>:<port>/peersStatus/<channel>'
-  Response:
-  [
-    {
-      'requests': 'grpcs://127.0.0.1:7051',
-      'server_hostname': 'peer0.org1.example.com'
-    }
-  ]
-  */
+	/**
+	 * *Peer Status List
+	 * GET /peerlist -> /peersStatus
+	 * curl -i 'http://<host>:<port>/peersStatus/<channel>'
+	 * Response:
+	 * [
+	 * {
+	 * 'requests': 'grpcs://127.0.0.1:7051',
+	 * 'server_hostname': 'peer0.org1.example.com'
+	 * }
+	 * ]
+	 */
 	router.get('/peersStatus/:channel', (req, res) => {
 		const channelName = req.params.channel;
 		if (channelName) {
@@ -165,6 +168,6 @@ const platformroutes = async function(router, platform) {
 			return requtil.invalidRequest(req, res);
 		}
 	});
-}; // end platformroutes()
+}; // End platformroutes()
 
 module.exports = platformroutes;

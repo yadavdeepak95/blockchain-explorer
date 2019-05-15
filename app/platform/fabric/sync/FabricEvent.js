@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('FabricEvent');
@@ -12,7 +12,7 @@ class FabricEvent {
 	}
 
 	async initialize() {
-		// creating channel event hub
+		// Creating channel event hub
 		const channels = this.client.getChannels();
 
 		for (const [channel_name, channel] of channels.entries()) {
@@ -35,11 +35,11 @@ class FabricEvent {
 	}
 
 	createChannelEventHub(channel) {
-		// create channel event hub
+		// Create channel event hub
 		const eventHub = channel.newChannelEventHub(this.client.defaultPeer);
 		eventHub.registerBlockEvent(
 			async block => {
-				// skip first block, it is process by peer event hub
+				// Skip first block, it is process by peer event hub
 				if (!(block.header.number === '0' || block.header.number === 0)) {
 					await this.fabricServices.processBlockEvent(this.client, block);
 				}
@@ -50,7 +50,7 @@ class FabricEvent {
 			}
 		);
 		this.connectChannelEventHub(channel.getName(), eventHub);
-		// set channel event hub to map
+		// Set channel event hub to map
 		FabricEvent.channelEventHubs.set(channel.getName(), eventHub);
 	}
 	/* eslint-disable */

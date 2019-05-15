@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 /* eslint-disable */
 
 const User = require('../models/User');
@@ -15,7 +15,7 @@ class UserService {
 		this.platform = platform;
 	}
 	// 1. If config file for a network contains  "enableAuthentication": true|false, based on this flag authenticate
-	// platform gives an access to the network configuration, and the client that is derived from the FabricGateway
+	// Platform gives an access to the network configuration, and the client that is derived from the FabricGateway
 	/* TODO do an authentication, get the user from the wallet, if it's not in the wallet
    then return null user info object, otherwise return user info.
    The wallet is saving user under the wallet<network name>/<user name> directory,
@@ -28,7 +28,7 @@ class UserService {
 			logger.log('user.network ', user.network);
 			const network = this.platform.getNetworks().get(user.network);
 
-			//TODO, need review maybe there is a better way to get the client config enableAuthentication
+			// TODO, need review maybe there is a better way to get the client config enableAuthentication
 			for (const [network_name, clients] of network.entries()) {
 				if (clients.config && clients.config.client) {
 					let enableAuth = clients.config.client.enableAuthentication;
@@ -62,7 +62,7 @@ class UserService {
 	}
 
 	async register(user) {
-		/*TODO
+		/* TODO
     1. verify if user exists
     2. register user if doesn't exist
     3. depending on the user type use either enrollUserIdentity, or  enrollCaIdentity*/
@@ -134,7 +134,7 @@ class UserService {
 	}
 
 	async enrollCaIdentity(user) {
-		/*TODO should have the same logic as the method in _enrollCaIdentity of
+		/* TODO should have the same logic as the method in _enrollCaIdentity of
       block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
       FabricGateway enrolls a CA ( Certificate Authority) Identity that is defined in the config.json,
       but we may need enroll a CA entry form to enroll a CA
@@ -145,9 +145,9 @@ class UserService {
 		var fabricGw = fabricClient.fabricGateway;
 		var isExist = await fabricGw.wallet.exists(username);
 		if (isExist) {
-			// throw new Error('Failed to enroll: Not found identity in wallet, ' + err.toString());
+			// Throw new Error('Failed to enroll: Not found identity in wallet, ' + err.toString());
 			const identity = await fabricGw.wallet.export(username);
-			// await reconnectGw(user, identity);
+			// Await reconnectGw(user, identity);
 			return identity;
 		} else {
 			try {
@@ -163,7 +163,7 @@ class UserService {
 					enrollmentSecret: user['password']
 				});
 
-				// import identity wallet
+				// Import identity wallet
 				var identity = X509WalletMixin.createIdentity(
 					fabricGw.mspId,
 					enrollment.certificate,
@@ -206,7 +206,7 @@ class UserService {
 
 			fabricGw.gateway.disconnect();
 
-			// connect to gateway
+			// Connect to gateway
 			await fabricGw.gateway.connect(
 				fabricGw.config,
 				connectionOptions

@@ -73,19 +73,19 @@ class Explorer {
 
 			passport.use('local-login', localLoginStrategy(platform));
 
-			// initializing the platform
+			// Initializing the platform
 			await platform.initialize();
 
 			this.app.use('/api', authCheckMiddleware);
 
 			const authrouter = new Express.Router();
 
-			// initializing the rest app services
+			// Initializing the rest app services
 			await authroutes(authrouter, platform);
 
 			const apirouter = new Express.Router();
 
-			// initializing the rest app services
+			// Initializing the rest app services
 			await dbroutes(apirouter, platform);
 			await platformroutes(apirouter, platform);
 			await adminroutes(apirouter, platform);
@@ -93,7 +93,7 @@ class Explorer {
 			this.app.use('/auth', authrouter);
 			this.app.use('/api', apirouter);
 
-			// initializing sync listener
+			// Initializing sync listener
 			platform.initializeListener(explorerconfig.sync);
 
 			this.platforms.push(platform);

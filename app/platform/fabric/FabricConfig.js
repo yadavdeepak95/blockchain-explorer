@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const fs = require('fs');
 class FabricConfig {
@@ -43,7 +43,7 @@ class FabricConfig {
 	getDefaultChannel() {
 		let defChannel;
 		for (const x in this.config.channels) {
-			// getting default channel
+			// Getting default channel
 			console.log('FabricConfig, this.config.channels ', x);
 			if (x) {
 				defChannel = x;
@@ -112,7 +112,7 @@ class FabricConfig {
 	getCertificateAuthorities() {
 		const caURL = [];
 		let serverCertPath = null;
-		// let serverCert = fs.readFileSync(path.join(__dirname, 'somepath/msp/tlscacerts/example.com-cert.pem'));
+
 		if (this.config.certificateAuthorities) {
 			for (const x in this.config.certificateAuthorities) {
 				if (this.config.certificateAuthorities[x].tlsCACerts) {

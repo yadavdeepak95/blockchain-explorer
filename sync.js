@@ -24,8 +24,11 @@ async function start() {
 
 start();
 
-// this function is called when you want the server to die gracefully
-// i.e. wait for existing connections
+/*
+ * This function is called when you want the server to die gracefully
+ * i.e. wait for existing connections
+ */
+
 const shutDown = function() {
 	console.log(
 		'<<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>'
@@ -70,7 +73,7 @@ process.on('uncaughtException', up => {
 	shutDown();
 });
 
-// listen for TERM signal .e.g. kill
+// Listen for TERM signal .e.g. kill
 process.on('SIGTERM', shutDown);
-// listen for INT signal e.g. Ctrl-C
+// Listen for INT signal e.g. Ctrl-C
 process.on('SIGINT', shutDown);

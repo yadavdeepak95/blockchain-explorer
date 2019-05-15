@@ -3,19 +3,19 @@
  */
 
 /*
- Copyright ONECHAIN 2017 All Rights Reserved.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright ONECHAIN 2017 All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 const { Client } = require('pg');
@@ -61,21 +61,23 @@ class PgService {
 			await this.client.connect();
 		} catch (err) {
 			if (err) {
-				// We introduce a delay before attempting to reconnect,
-				// to avoid a hot loop, and to allow our node script to
-				// process asynchronous requests in the meantime.
+				/*
+				 * We introduce a delay before attempting to reconnect,
+				 * To avoid a hot loop, and to allow our node script to
+				 * Process asynchronous requests in the meantime.
+				 */
 				console.log('error when connecting to db:', err);
 				setTimeout(this.handleDisconnect, 2000);
 			}
 		}
 	}
 
-	// open connection
+	// Open connection
 	openconnection() {
 		this.client.connect();
 	}
 
-	// close connection
+	// Close connection
 	closeconnection() {
 		this.client.end();
 	}
@@ -99,7 +101,7 @@ class PgService {
 			const updatesqlflagstr = updatesqlflag.join(',');
 			const addSql = `INSERT INTO ${tablename}  ( ${updatesqlparmstr} ) VALUES( ${updatesqlflagstr}  ) RETURNING *;`;
 			logger.debug(`Insert sql is ${addSql}`);
-			//   console.log(`Insert sql is ${addSql}`);
+			//   Console.log(`Insert sql is ${addSql}`);
 			_self.client.query(addSql, addSqlParams, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
@@ -111,7 +113,7 @@ class PgService {
 				logger.debug(
 					'--------------------------INSERT----------------------------'
 				);
-				//  console.log('INSERT ID:', res.rows[0].id);
+				//  Console.log('INSERT ID:', res.rows[0].id);
 				logger.debug(
 					'-----------------------------------------------------------------\n\n'
 				);
@@ -167,8 +169,10 @@ class PgService {
 				logger.debug(
 					'--------------------------UPDATE----------------------------'
 				);
-				// logger.debug(' update result :', result.affectedRows);
-				// console.log(res);
+				/*
+				 * Logger.debug(' update result :', result.affectedRows);
+				 * Console.log(res);
+				 */
 				logger.debug(
 					'-----------------------------------------------------------------\n\n'
 				);
@@ -237,7 +241,7 @@ class PgService {
 	}
 
 	/**
-	 *  execute update or delete  sql.
+	 *  Execute update or delete  sql.
 	 *  @param string  updateSql   the execute sql
 	 */
 	updateBySql(updateSql) {
@@ -266,7 +270,7 @@ class PgService {
 	}
 
 	/**
-	 * get row by primary key
+	 * Get row by primary key
 	 * @param String tablename   the table name.
 	 * @param String column      the filed of search result.
 	 * @param String pkColumn	    the primary key column name.
@@ -289,7 +293,7 @@ class PgService {
 					return;
 				}
 
-				// console.log(  `The solution is: ${rows.length }  `  );
+				// Console.log(  `The solution is: ${rows.length }  `  );
 				logger.debug(' the getRowByPk ');
 				if (res && res.rows && res.rows[0]) {
 					resolve(res.rows[0]);
@@ -310,7 +314,7 @@ class PgService {
 	getRowByPkOne(sql) {
 		const _self = this;
 		return new Promise((resolve, reject) => {
-			// var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
+			// Var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
 
 			_self.client.query(sql, (err, res) => {
 				if (err) {
@@ -318,7 +322,7 @@ class PgService {
 					return;
 				}
 
-				// console.log(  `The solution is: ${rows.length }  `  );
+				// Console.log(  `The solution is: ${rows.length }  `  );
 				logger.debug(` the getRowByPkOne sql ${sql}`);
 				// (` the getRowByPkOne sql ${sql}`)
 
@@ -332,7 +336,7 @@ class PgService {
 	}
 
 	/**
-	 * search table
+	 * Search table
 	 * @param String tablename  the table name
 	 * @param String columns    the field of search result
 	 * @param String condition    the search condition,it is sorted by array. exp condition = array("id"=>"1");
@@ -367,7 +371,7 @@ class PgService {
 					return;
 				}
 
-				// console.log(  `The solution is: ${rows.length }  `  );
+				// Console.log(  `The solution is: ${rows.length }  `  );
 				logger.debug(' the getRowsByCondition ');
 
 				resolve(res.rows);
@@ -376,7 +380,7 @@ class PgService {
 	}
 
 	/**
-	 * search table by sql
+	 * Search table by sql
 	 * @param datatype sqlchareter   the table name
 	 * @param datatype condition       the search condition,it is sorted by array. exp condition = array("id"=>"1");
 	 * @param datatype limit         the page limit.
@@ -405,7 +409,7 @@ class PgService {
 					return;
 				}
 
-				// console.log(` The solution is: ${res.rows.length}  `);
+				// Console.log(` The solution is: ${res.rows.length}  `);
 				logger.debug(' The getRowsBySQl  ');
 
 				resolve(res.rows);
@@ -433,7 +437,7 @@ class PgService {
 	}
 
 	/**
-	 * search table by sql and it's not condition
+	 * Search table by sql and it's not condition
 	 *
 	 *
 	 * @param datatype sqlchareter   the table name
@@ -442,6 +446,7 @@ class PgService {
 	 *
 	 */
 	getRowsBySQlNoCondition(sqlcharacter, limit) {
+		/* eslint-disable */
 		const _self = this;
 		return new Promise((resolve, reject) => {
 			let sql;
@@ -469,6 +474,7 @@ class PgService {
 				}
 			});
 		});
+		/* eslint-enable */
 	}
 
 	/**
@@ -486,7 +492,7 @@ class PgService {
 					return;
 				}
 
-				// console.log(  `The solution is: ${rows.length }  `  );
+				// Console.log(  `The solution is: ${rows.length }  `  );
 				logger.debug(` the getRowsBySQlCase ${sql}`);
 				if (res && res.rows && res.rows[0]) {
 					resolve(res.rows[0]);
@@ -543,7 +549,7 @@ class PgService {
 					return;
 				}
 
-				// logger.debug(  `The solution is: ${rows.length }  `  );
+				// Logger.debug(  `The solution is: ${rows.length }  `  );
 				logger.debug(' the getSqlMap ');
 
 				const keymap = new Map();

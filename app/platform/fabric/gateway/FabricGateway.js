@@ -108,8 +108,10 @@ class FabricGateway {
 						identity
 					));
 				} else {
-					// Identity credentials to be stored in the wallet
-					// look for signedCert in first-network-connection.json
+					/*
+					 * Identity credentials to be stored in the wallet
+					 * Look for signedCert in first-network-connection.json
+					 */
 					identity = await this._enrollUserIdentity(
 						signedCertPath,
 						adminPrivateKeyPath,
@@ -132,7 +134,7 @@ class FabricGateway {
 				}
 			};
 
-			// connect to gateway
+			// Connect to gateway
 			await this.gateway.connect(
 				this.config,
 				connectionOptions
@@ -182,7 +184,7 @@ class FabricGateway {
 		const _signedCertPath = signedCertPath;
 		const _adminPrivateKeyPath = adminPrivateKeyPath;
 		const cert = fs.readFileSync(_signedCertPath, 'utf8');
-		// see in first-network-connection.json adminPrivateKey key
+		// See in first-network-connection.json adminPrivateKey key
 		const key = fs.readFileSync(_adminPrivateKeyPath, 'utf8');
 		identity = X509WalletMixin.createIdentity(this.mspId, cert, key);
 		logger.log('this.identityLabel ', this.identityLabel);
@@ -215,12 +217,14 @@ class FabricGateway {
 					enrollment.key.toBytes()
 				);
 				logger.log('identity ', identity);
-				// import identity wallet
+				// Import identity wallet
 				await this.wallet.import(this.identityLabel, identity);
 			}
 		} catch (error) {
-			// TODO add explanation for message 'Calling enrollment endpoint failed with error [Error: connect ECONNREFUSED 127.0.0.1:7054]'
-			// reason : no fabric running, check your network
+			/*
+			 * TODO add explanation for message 'Calling enrollment endpoint failed with error [Error: connect ECONNREFUSED 127.0.0.1:7054]'
+			 * Reason : no fabric running, check your network
+			 */
 			logger.error('Error instantiating FabricCAServices ', error);
 			console.dir('Error instantiating FabricCAServices ', error);
 			// TODO decide how to proceed if error

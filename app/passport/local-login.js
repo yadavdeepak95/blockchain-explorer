@@ -1,8 +1,8 @@
 // @ts-check
 
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const { promisify } = require('util');
 
@@ -11,9 +11,9 @@ const jwt = require('jsonwebtoken');
 const PassportLocalStrategy = require('passport-local').Strategy;
 
 const User = require('../platform/fabric/models/User');
-
+// @ts-ignore
 const config = require('../explorerconfig.json');
-
+// @ts-check
 const jwtSignAsync = promisify(jwt.sign);
 
 const strategy = function(platform) {
@@ -38,10 +38,11 @@ const strategy = function(platform) {
 				sub: userInfo.user
 			};
 
+			// @ts-ignore
 			const token = await jwtSignAsync(payload, config.jwt.secret, {
 				expiresIn: config.jwt.expiresIn
 			});
-
+			// @ts-check
 			const data = {
 				message: 'logged in',
 				name: userData.user

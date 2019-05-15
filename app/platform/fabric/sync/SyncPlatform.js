@@ -1,6 +1,6 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const path = require('path');
 const fs = require('fs-extra');
@@ -48,16 +48,16 @@ class SyncPlatform {
 			this.initialize(args);
 		}, 30000);
 
-		// loading the config.json
+		// Loading the config.json
 		const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 		const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
 		if (args.length === 0) {
-			// get the first network and first client
+			// Get the first network and first client
 			this.network_name = Object.keys(network_configs)[0];
 			this.client_name = network_configs[this.network_name].name;
 		} else if (args.length === 1) {
-			// get the first client with respect to the passed network name
+			// Get the first client with respect to the passed network name
 			this.network_name = args[0];
 			this.client_name = Object.keys(
 				network_configs[this.network_name].clients
@@ -73,11 +73,11 @@ class SyncPlatform {
 			this.client_name
 		);
 
-		// setting the block synch interval time
+		// Setting the block synch interval time
 		await this.setBlocksSyncTime(all_config);
 
 		logger.debug('Blocks synch interval time >> %s', this.blocksSyncTime);
-		// update the discovery-cache-life as block synch interval time in global config
+		// Update the discovery-cache-life as block synch interval time in global config
 		global.hfc.config.set('discovery-cache-life', this.blocksSyncTime);
 		global.hfc.config.set('initialize-with-discovery', true);
 
@@ -93,18 +93,20 @@ class SyncPlatform {
 			throw new ExplorerError(explorer_mess.error.ERROR_2011);
 		}
 
-		// updating the client network and other details to DB
+		// Updating the client network and other details to DB
 		const res = await this.syncService.synchNetworkConfigToDB(this.client);
 		if (!res) {
 			return;
 		}
 
-		// start event
+		// Start event
 		this.eventHub = new FabricEvent(this.client, this.syncService);
 		await this.eventHub.initialize();
 
-		// setting interval for validating any missing block from the current client ledger
-		// set blocksSyncTime property in platform config.json in minutes
+		/*
+		 * Setting interval for validating any missing block from the current client ledger
+		 * Set blocksSyncTime property in platform config.json in minutes
+		 */
 		setInterval(() => {
 			_self.isChannelEventHubConnected();
 		}, this.blocksSyncTime);
@@ -116,12 +118,12 @@ class SyncPlatform {
 
 	async isChannelEventHubConnected() {
 		for (const [channel_name, channel] of this.client.getChannels().entries()) {
-			// validate channel event is connected
+			// Validate channel event is connected
 			const status = this.eventHub.isChannelEventHubConnected(channel_name);
 			if (status) {
 				await this.syncService.synchBlocks(this.client, channel);
 			} else {
-				// channel client is not connected then it will reconnect
+				// Channel client is not connected then it will reconnect
 				this.eventHub.connectChannelEventHub(channel_name);
 			}
 		}
@@ -131,14 +133,13 @@ class SyncPlatform {
 		if (blocksSyncTime) {
 			const time = parseInt(blocksSyncTime, 10);
 			if (!isNaN(time)) {
-				// this.blocksSyncTime = 1 * 10 * 1000;
 				this.blocksSyncTime = time * 60 * 1000;
 			}
 		}
 	}
 
 	setPersistenceService() {
-		// setting platform specific CRUDService and MetricService
+		// Setting platform specific CRUDService and MetricService
 		this.persistence.setMetricService(
 			new MetricService(this.persistence.getPGService())
 		);

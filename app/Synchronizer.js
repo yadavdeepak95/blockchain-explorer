@@ -1,20 +1,18 @@
 /*
-    SPDX-License-Identifier: Apache-2.0
-*/
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const syncconfig = require('./explorerconfig.json');
-// const helper = require('./common/helper');
+const helper = require('./common/helper');
 const ExplorerError = require('./common/ExplorerError');
 
-// const logger = helper.getLogger('Synchronizer');
+const logger = helper.getLogger('Synchronizer');
 const SyncBuilder = require('./sync/SyncBuilder');
 const PersistenceFactory = require('./persistence/PersistenceFactory');
 const ExplorerSender = require('./sync/sender/ExplorerSender');
 
 const explorer_const = require('./common/ExplorerConst').explorer.const;
 const explorer_error = require('./common/ExplorerMessage').explorer.error;
-
-// let syncScanner;
 
 class Synchronizer {
 	constructor(args) {
@@ -48,7 +46,7 @@ class Synchronizer {
 
 		const sender = new ExplorerSender(syncconfig.sync);
 		sender.initialize();
-
+		logger.debug(' Synchronizer initialized');
 		this.platform = await SyncBuilder.build(pltfrm, this.persistence, sender);
 
 		this.platform.setPersistenceService();
