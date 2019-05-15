@@ -10,6 +10,7 @@
  */
 
 const helper = require('./helper');
+
 const logger = helper.getLogger('ForkSenderHandler');
 
 function toUTCmilliseconds(dateStr) {

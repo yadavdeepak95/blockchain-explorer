@@ -8,13 +8,12 @@ const sha = require('js-sha256');
 const asn = require('asn1.js');
 const utils = require('fabric-client/lib/utils');
 const FabricClient = require('./../FabricClient.js');
+const ExplorerError = require('../../../common/ExplorerError');
+const explorer_error = require('../../../common/ExplorerMessage').explorer
+	.error;
 const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('FabricUtils');
-const ExplorerError = require('../../../common/ExplorerError');
-
-const explorer_error = require('../../../common/ExplorerMessage').explorer
-	.error;
 
 async function createFabricClient(client_configs, client_name, persistence) {
 	// Create new FabricClient

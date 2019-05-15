@@ -3,6 +3,7 @@
  */
 
 const helper = require('../../common/helper');
+
 const logger = helper.getLogger('CRUDService');
 
 class CRUDService {

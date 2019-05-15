@@ -19,11 +19,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-
+import Grid from '@material-ui/core/Grid';
 import { shape, string } from 'prop-types';
 
 import { authSelectors, authOperations } from '../../state/redux/auth';
-import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
 	container: {

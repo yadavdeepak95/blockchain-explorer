@@ -7,7 +7,8 @@
  * Created by shouhewu on 6/8/17.
  *
  */
-
+const express = require('express');
+const path = require('path');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
@@ -17,8 +18,7 @@ const appconfig = require('./appconfig.json');
 const helper = require('./app/common/helper');
 
 const logger = helper.getLogger('main');
-const express = require('express');
-const path = require('path');
+
 const Explorer = require('./app/Explorer');
 const ExplorerError = require('./app/common/ExplorerError');
 

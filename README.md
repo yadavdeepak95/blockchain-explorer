@@ -98,12 +98,12 @@ blockchain-explorer
 Following are the software dependencies required to install and run hyperledger explorer:
 * Nodejs 8.11.x (Note that v9.x is not yet supported)
 * PostgreSQL 9.5 or greater
-* jq (https://stedolan.github.io/jq)
+* [jq](https://stedolan.github.io/jq)
 * Linux-based operating system, such as Ubuntu or MacOS
 
 Verified Docker versions supported:
-* Docker CE 18.09.2 or later (https://hub.docker.com/search/?type=edition&offering=community&operating_system=linux)
-* Docker Compose 1.14.0 (https://docs.docker.com/compose)
+* [Docker CE 18.09.2 or later](https://hub.docker.com/search/?type=edition&offering=community&operating_system=linux)
+* [Docker Compose 1.14.0](https://docs.docker.com/compose)
 
 
 
@@ -137,11 +137,11 @@ Clone this repository to get the latest using the following command.
 
 Another alternative to configure database settings is to use environment variables, example of settings:
 <pre>
-export DATABASE_HOST=127.0.0.1
-export DATABASE_PORT=5432
-export DATABASE_DATABASE=fabricexplorer
-export DATABASE_USERNAME=hppoc
-export DATABASE_PASSWD=pass12345
+	export DATABASE_HOST=127.0.0.1
+	export DATABASE_PORT=5432
+	export DATABASE_DATABASE=fabricexplorer
+	export DATABASE_USERNAME=hppoc
+	export DATABASE_PASSWD=pass12345
 </pre>
 
 **Important repeat after every git pull (in some case you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/fabric/postgreSQL run: `chmod -R 775 db/`
@@ -316,6 +316,14 @@ If you are connecting to a non TLS fabric peer, please modify "network-id.client
 
 On another terminal:
 
+- `./main.sh install`
+    - to install, run tests, and build project
+- `./main.sh clean`
+    - to clean the /node_modules, client/node_modules client/build, client/coverage, app/test/node_modules
+   directories
+
+Or
+
 - `cd blockchain-explorer`
 - `npm install`
 - `cd blockchain-explorer/app/test`
@@ -325,14 +333,6 @@ On another terminal:
 - `npm install`
 - `npm test -- -u --coverage`
 - `npm run build`
-
-Or
-
-- `./main.sh install`
-    - to install, run tests, and build project
-- `./main.sh clean`
-    - to clean the /node_modules, client/node_modules client/build, client/coverage, app/test/node_modules
-   directories
 
 <a name="Config-https-Hyperledger-Explorer" />
 

@@ -2,9 +2,9 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { TimeChart } from './TimeChart';
 import _ from 'lodash';
 import React from 'react';
+import { TimeChart } from './TimeChart';
 
 const setup = () => {
 	const props = {

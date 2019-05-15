@@ -146,7 +146,9 @@ class PgService {
 				updateParms.push(`${k} = ?`);
 			});
 
-			const searchparm = { pkName: pkValue };
+			const searchparm = {
+				pkName: pkValue
+			};
 
 			Object.keys(searchparm).forEach(k => {
 				const v = searchparm[k];
@@ -169,10 +171,7 @@ class PgService {
 				logger.debug(
 					'--------------------------UPDATE----------------------------'
 				);
-				/*
-				 * Logger.debug(' update result :', result.affectedRows);
-				 * Console.log(res);
-				 */
+				logger.debug(' update result :', res);
 				logger.debug(
 					'-----------------------------------------------------------------\n\n'
 				);
@@ -230,7 +229,7 @@ class PgService {
 				logger.debug(
 					'--------------------------UPDATE----------------------------'
 				);
-				logger.debug(' update result :', res.rows);
+				logger.debug(' update result :', res);
 				logger.debug(
 					'-----------------------------------------------------------------\n\n'
 				);
@@ -259,7 +258,7 @@ class PgService {
 				logger.debug(
 					'--------------------------UPDATE----------------------------'
 				);
-				logger.debug(' update result :', res.affectedRows);
+				logger.debug(' update result :', res);
 				logger.debug(
 					'-----------------------------------------------------------------\n\n'
 				);

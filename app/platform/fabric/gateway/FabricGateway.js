@@ -9,13 +9,15 @@ const {
 } = require('fabric-network');
 
 const FabricCAServices = require('fabric-ca-client');
-const FabricConfig = require('../FabricConfig');
+
 const fs = require('fs');
 const path = require('path');
 const helper = require('../../../common/helper');
+
 const logger = helper.getLogger('FabricGateway');
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;
 const ExplorerError = require('../../../common/ExplorerError');
+const FabricConfig = require('../FabricConfig');
 
 class FabricGateway {
 	constructor(networkConfig) {

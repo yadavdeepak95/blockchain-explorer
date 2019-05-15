@@ -6,15 +6,13 @@ const Express = require('express');
 const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const compression = require('compression');
+const passport = require('passport');
 const PlatformBuilder = require('./platform/PlatformBuilder');
 const explorerconfig = require('./explorerconfig.json');
 const PersistenceFactory = require('./persistence/PersistenceFactory');
 const ExplorerError = require('./common/ExplorerError');
 
-const passport = require('passport');
-
 const localLoginStrategy = require('./passport/local-login');
-
 const authroutes = require('./rest/authroutes');
 const dbroutes = require('./rest/dbroutes');
 const platformroutes = require('./rest/platformroutes');

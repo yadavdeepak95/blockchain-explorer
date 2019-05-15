@@ -3,16 +3,19 @@
  */
 
 const Fabric_Client = require('fabric-client');
-const helper = require('../../common/helper');
 const path = require('path');
-const logger = helper.getLogger('FabricClient');
-const ExplorerError = require('../../common/ExplorerError');
+
+const Constants = require('fabric-client/lib/Constants.js');
+
 const BlockDecoder = require('fabric-client/lib/BlockDecoder');
 const User = require('fabric-client/lib/User.js');
+const ExplorerError = require('../../common/ExplorerError');
 const FabricUtils = require('./utils/FabricUtils.js');
 const FabricGateway = require('../../platform/fabric/gateway/FabricGateway');
 const FabricConfig = require('../fabric/FabricConfig');
-const Constants = require('fabric-client/lib/Constants.js');
+const helper = require('../../common/helper');
+
+const logger = helper.getLogger('FabricClient');
 
 const ROLES = Constants.NetworkConfig.ROLES;
 

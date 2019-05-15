@@ -3,6 +3,7 @@
  */
 
 const fs = require('fs');
+
 class FabricConfig {
 	constructor() {}
 
