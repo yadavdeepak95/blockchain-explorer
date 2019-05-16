@@ -23,7 +23,9 @@ class UserService {
     */
 
 	async authenticate(user) {
-		let enableAuthentication = false;
+		let enableAuth = false;
+		let adminUser = null;
+		let adminPassword = null;
 		if (user.user && user.password && user.network) {
 			logger.log('user.network ', user.network);
 			const network = this.platform.getNetworks().get(user.network);
@@ -31,33 +33,50 @@ class UserService {
 			// TODO, need review maybe there is a better way to get the client config enableAuthentication
 			for (const [network_name, clients] of network.entries()) {
 				if (clients.config && clients.config.client) {
-					let enableAuth = clients.config.client.enableAuthentication;
+					enableAuth = clients.config.client.enableAuthentication;
 					if (typeof enableAuth !== 'undefined' && enableAuth !== null) {
-						enableAuthentication = enableAuth;
-						logger.log(
-							`Network: ${network_name} enableAuthentication ${enableAuthentication}`
-						);
+						logger.log(`Network: ${network_name} enableAuthentication ${enableAuth}`);
 						console.log(
-							`Network: ${network_name} enableAuthentication ${enableAuthentication}`
+							`Network: ${network_name} enableAuthentication ${enableAuth}`
 						);
+						adminUser = clients.config.client.adminUser;
+						adminPassword = clients.config.client.adminPassword;
 						break;
 					}
 				}
 			}
 
-			if (!enableAuthentication) {
+			// Skip authentication, if set to false in connection profile, key: enableAuthentication
+			if (!enableAuth) {
 				return {
 					authenticated: true,
 					user: user.user,
-					enableAuthentication: enableAuthentication
+					enableAuthentication: enableAuth
 				};
 			}
 
-			// TODO lookup in the wallet/network-name (example wallet/firstnetwork/admin )for the user
-			//
-			return { authenticated: true, user: user.user };
+			// For now validate only for the admin user
+			if (user.user === adminUser && user.password === adminPassword) {
+				return {
+					authenticated: true,
+					user: user.user,
+					enableAuthentication: enableAuth
+				};
+			} else {
+				return {
+					authenticated: false,
+					user: user.user,
+					message: 'Invalid user name, or password',
+					enableAuthentication: enableAuth
+				};
+			}
 		} else {
-			return { authenticated: false, message: 'Invalid request, found ', user };
+			return {
+				authenticated: false,
+				message: 'Invalid request, found ',
+				user: user.user,
+				enableAuthentication: enableAuth
+			};
 		}
 	}
 
@@ -112,7 +131,9 @@ class UserService {
 				message: error.toString()
 			};
 		}
-		return { status: 200 };
+		return {
+			status: 200
+		};
 	}
 
 	async enroll(user) {
@@ -130,7 +151,9 @@ class UserService {
 					error.toString()
 			};
 		}
-		return { status: 200 };
+		return {
+			status: 200
+		};
 	}
 
 	async enrollCaIdentity(user) {
@@ -201,7 +224,9 @@ class UserService {
 					asLocalhost: fabricClient.asLocalhost
 				},
 				clientTlsIdentity: username,
-				eventHandlerOptions: { commitTimeout: 100 }
+				eventHandlerOptions: {
+					commitTimeout: 100
+				}
 			};
 
 			fabricGw.gateway.disconnect();

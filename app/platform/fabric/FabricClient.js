@@ -83,6 +83,8 @@ class FabricClient {
 			// Set discovery protocol
 			if (!this.tls) {
 				this.hfc_client.setConfigSetting('discovery-protocol', 'grpc');
+			} else {
+				this.hfc_client.setConfigSetting('discovery-protocol', 'grpcs');
 			}
 			// Enable discover service
 			await this.defaultChannel.initialize({
@@ -374,6 +376,8 @@ class FabricClient {
 		if (channel) {
 			if (!this.tls) {
 				this.hfc_client.setConfigSetting('discovery-protocol', 'grpc');
+			} else {
+				this.hfc_client.setConfigSetting('discovery-protocol', 'grpcs');
 			}
 			await channel.initialize({
 				discover: true,
@@ -449,7 +453,6 @@ class FabricClient {
 							endpoint.port,
 							this.client_name
 						);
-						//  }
 					}
 				}
 			}

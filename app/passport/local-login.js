@@ -38,6 +38,14 @@ const strategy = function(platform) {
 				sub: userInfo.user
 			};
 
+			if (userInfo && !userInfo.authenticated) {
+				const error = {
+					name: 'IncorrectCredentialsError',
+					message: userInfo.message
+				};
+
+				return done(error, null, null);
+			}
 			// @ts-ignore
 			const token = await jwtSignAsync(payload, config.jwt.secret, {
 				expiresIn: config.jwt.expiresIn

@@ -23,6 +23,7 @@ class FabricConfig {
 		return false;
 	}
 	getTls() {
+		console.log('config.client.tlsEnable ', this.config.client.tlsEnable);
 		return this.config.client.tlsEnable;
 	}
 
