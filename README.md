@@ -373,7 +373,9 @@ From a new terminal:
 
 - `cd blockchain-explorer/`
 - `./start.sh`  (it will have the backend up).
-- Launch the URL http://localhost:8080 on a browser.
+- `./start.sh debug`  (it will have the backend in debug mode).
+- `./start.sh print`  (it will print help).
+- Launch the URL http(s)://localhost:8080 on a browser.
 - `./stop.sh`  (it will stop the node server).
 
 From new terminal (if Sync Process in Standalone).
