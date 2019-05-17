@@ -20,43 +20,9 @@ echo "**************************************************************************
 echo "***** Please check the log [$LOG_CONSOLE_PATH] for any error *****"
 echo "************************************************************************************"
 
-set -e
+node main.js name - hyperledger-explorer >>$LOG_CONSOLE_PATH 2>&1 &
 
-# Print usage
-function print_help() {
-	echo "Usage: "
-	echo "    main.sh <mode> - one of 'debug' 'help' "
-	echo "            - 'debug' - prints to the console debug statements"
-	echo "            - print this message"
-}
-
-
-function do_debug() {
-	export HFC_LOGGING='{"debug":"console"}'
-	(node main.js name - hyperledger-explorer >$LOG_CONSOLE_PATH ) 2>&1
-	find ./logs/app -mtime +7 -type f -delete & find ./logs/db -mtime +7 -type f -delete & find ./logs/console -mtime +7 -type f -delete
-}
-
-function default(){
-	node main.js name - hyperledger-explorer >>$LOG_CONSOLE_PATH  2>&1 &
-	find ./logs/app -mtime +7 -type f -delete & find ./logs/db -mtime +7 -type f -delete & find ./logs/console -mtime +7 -type f -delete
-}
-
-# Get subcommand
-SUBCOMMAND=$1
-shift
-
-case $SUBCOMMAND in
-	debug)
- do_debug
-	 ;;
-	help)
- print_help
-	 ;;
-		*)
-	default
-	 ;;
-esac
+find ./logs/app -mtime +7 -type f -delete & find ./logs/db -mtime +7 -type f -delete & find ./logs/console -mtime +7 -type f -delete
 
 
 
