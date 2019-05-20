@@ -21,11 +21,13 @@ const login = ({ user, password }, network) => dispatch =>
 			Auth.authenticateUser(resp.token);
 			dispatch(errorAction(null));
 			dispatch(loginAction({ user, ...resp }));
+			return { status: 'Success' };
 		})
 		.catch(error => {
 			// eslint-disable-next-line no-console
 			console.error(error);
-			dispatch(errorAction(error));
+			dispatch(errorAction(JSON.stringify(error)));
+			return { status: 'Error', message: 'Invalid User, Password' };
 		});
 
 const network = () => dispatch =>
