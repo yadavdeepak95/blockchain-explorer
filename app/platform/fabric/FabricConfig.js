@@ -4,44 +4,113 @@
 
 const fs = require('fs');
 
+/**
+ *
+ *
+ * @class FabricConfig
+ */
 class FabricConfig {
+	/**
+	 * Creates an instance of FabricConfig.
+	 * @memberof FabricConfig
+	 */
+
+	/*eslint-disable */
 	constructor() {}
+
+	/* eslint-enable */
+	/**
+	 *
+	 *
+	 * @param {*} configPath
+	 * @memberof FabricConfig
+	 */
 
 	initialize(configPath) {
 		const configJson = fs.readFileSync(configPath, 'utf8');
 		this.config = JSON.parse(configJson);
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getConfig() {
 		return this.config;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	isFabricCaEnabled() {
 		if (this.config.certificateAuthorities) {
 			return true;
 		}
 		return false;
 	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getTls() {
 		console.log('config.client.tlsEnable ', this.config.client.tlsEnable);
 		return this.config.client.tlsEnable;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getEnableAuthentication() {
 		return this.config.client.enableAuthentication;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getAdminUser() {
 		return this.config.client.adminUser;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getNetworkName() {
 		return this.config.name;
 	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getAdminPassword() {
 		return this.config.client.adminPassword;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getDefaultChannel() {
 		let defChannel;
 		for (const x in this.config.channels) {
@@ -53,6 +122,13 @@ class FabricConfig {
 		}
 		return defChannel;
 	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getDefaultPeerConfig() {
 		let defaultPeerConfig = [];
 		const peers = this.getPeersConfig();
@@ -62,6 +138,12 @@ class FabricConfig {
 		return defaultPeerConfig;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getPeersConfig() {
 		const peers = [];
 		for (const x in this.config.peers) {
@@ -79,7 +161,13 @@ class FabricConfig {
 		}
 		return peers;
 	}
-	// TOD need to verify maybe there is a better way of getting the key/value from the configuration
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getOrganizationsConfig() {
 		const orgMsp = [];
 		let adminPrivateKeyPath;
@@ -98,6 +186,12 @@ class FabricConfig {
 		return { orgMsp, adminPrivateKeyPath, signedCertPath };
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getServerCertPath() {
 		let serverCertPath = null;
 		if (this.config.certificateAuthorities) {
@@ -111,6 +205,12 @@ class FabricConfig {
 		return serverCertPath;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getCertificateAuthorities() {
 		const caURL = [];
 		let serverCertPath = null;
@@ -128,6 +228,12 @@ class FabricConfig {
 		return { caURL, serverCertPath };
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getPeers() {
 		const peers = [];
 		for (const x in this.config.peers) {

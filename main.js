@@ -28,7 +28,18 @@ const host = process.env.HOST || appconfig.host;
 const port = process.env.PORT || appconfig.port;
 const protocol = sslEnabled ? 'https' : 'http';
 
+/**
+ *
+ *
+ * @class Broadcaster
+ * @extends {WebSocket.Server}
+ */
 class Broadcaster extends WebSocket.Server {
+	/**
+	 * Creates an instance of Broadcaster.
+	 * @param {*} server
+	 * @memberof Broadcaster
+	 */
 	constructor(server) {
 		super({
 			server
@@ -41,6 +52,12 @@ class Broadcaster extends WebSocket.Server {
 		});
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} data
+	 * @memberof Broadcaster
+	 */
 	broadcast(data) {
 		this.clients.forEach(client => {
 			if (client.readyState === WebSocket.OPEN) {
@@ -103,6 +120,7 @@ server.on('connection', connection => {
  * This function is called when you want the server to die gracefully
  * i.e. wait for existing connections
  */
+
 const shutDown = function(exitCode) {
 	console.log('Received kill signal, shutting down gracefully');
 	server.close(() => {

@@ -4,6 +4,12 @@
 
 const requtil = require('./requestutils.js');
 
+/**
+ *
+ *
+ * @param {*} router
+ * @param {*} platform
+ */
 const dbroutes = (router, platform) => {
 	const dbStatusMetrics = platform.getPersistence().getMetricService();
 	const dbCrudService = platform.getPersistence().getCrudService();
@@ -188,7 +194,7 @@ const dbroutes = (router, platform) => {
 
 	/**
 	 * *
-	 * List of blocks and transaction list per block
+	 * List of blocks and transactions
 	 * GET /blockAndTxList
 	 * curl -i 'http://<host>:<port>/blockAndTxList/channel_genesis_hash/<blockNum>/<limitrows>/<offset>'
 	 * Response:

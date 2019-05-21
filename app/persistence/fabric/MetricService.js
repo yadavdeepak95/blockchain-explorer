@@ -6,36 +6,75 @@ const helper = require('../../common/helper');
 
 const logger = helper.getLogger('MetricService');
 
+/**
+ *
+ *
+ * @class MetricService
+ */
 class MetricService {
 	constructor(sql) {
 		this.sql = sql;
 	}
 
-	// = =========================query counts ==========================
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getChaincodeCount(channel_genesis_hash) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from chaincodes where channel_genesis_hash='${channel_genesis_hash}' `
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getPeerlistCount(channel_genesis_hash) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from peer where channel_genesis_hash='${channel_genesis_hash}' and peer_type='PEER' `
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxCount(channel_genesis_hash) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from transactions where channel_genesis_hash='${channel_genesis_hash}'`
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getBlockCount(channel_genesis_hash) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from blocks where channel_genesis_hash='${channel_genesis_hash}'`
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getPeerData(channel_genesis_hash) {
 		const peerArray = [];
 		const c1 = await this.sql
@@ -56,7 +95,12 @@ class MetricService {
 		return peerArray;
 	}
 
-	// BE -303
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getOrdererData() {
 		const ordererArray = [];
 		const c1 = await this.sql.getRowsBySQlNoCondition(
@@ -73,7 +117,13 @@ class MetricService {
 		return ordererArray;
 	}
 
-	// BE -303
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getTxPerChaincodeGenerate(channel_genesis_hash) {
 		const txArray = [];
 		const c = await this.sql
@@ -93,6 +143,13 @@ class MetricService {
 		return txArray;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getOrgsData(channel_genesis_hash) {
 		const orgs = [];
 		const rows = await this.sql.getRowsBySQlNoCondition(
@@ -104,6 +161,14 @@ class MetricService {
 		return orgs;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} cb
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getTxPerChaincode(channel_genesis_hash, cb) {
 		try {
 			const txArray = await this.getTxPerChaincodeGenerate(channel_genesis_hash);
@@ -114,6 +179,13 @@ class MetricService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getStatusGenerate(channel_genesis_hash) {
 		let chaincodeCount = await this.getChaincodeCount(channel_genesis_hash);
 		if (!chaincodeCount) {
@@ -142,6 +214,14 @@ class MetricService {
 		};
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} cb
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getStatus(channel_genesis_hash, cb) {
 		try {
 			const data = await this.getStatusGenerate(channel_genesis_hash);
@@ -152,6 +232,14 @@ class MetricService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} cb
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getPeerList(channel_genesis_hash, cb) {
 		try {
 			const peerArray = await this.getPeerData(channel_genesis_hash);
@@ -165,7 +253,13 @@ class MetricService {
 		}
 	}
 
-	// BE -303
+	/**
+	 *
+	 *
+	 * @param {*} cb
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async getOrdererList(cb) {
 		try {
 			const ordererArray = await this.getOrdererData();
@@ -175,8 +269,15 @@ class MetricService {
 			return cb([]);
 		}
 	}
-	// BE -303 transaction metrics
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} hours
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxByMinute(channel_genesis_hash, hours) {
 		const sqlPerMinute = ` with minutes as (
             select generate_series(
@@ -196,6 +297,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerMinute);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} day
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxByHour(channel_genesis_hash, day) {
 		const sqlPerHour = ` with hours as (
             select generate_series(
@@ -215,6 +324,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerHour);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} days
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxByDay(channel_genesis_hash, days) {
 		const sqlPerDay = ` with days as (
             select generate_series(
@@ -234,6 +351,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerDay);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} weeks
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxByWeek(channel_genesis_hash, weeks) {
 		const sqlPerWeek = ` with weeks as (
             select generate_series(
@@ -253,6 +378,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerWeek);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} months
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxByMonth(channel_genesis_hash, months) {
 		const sqlPerMonth = ` with months as (
             select generate_series(
@@ -273,6 +406,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerMonth);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} years
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxByYear(channel_genesis_hash, years) {
 		const sqlPerYear = ` with years as (
             select generate_series(
@@ -293,7 +434,14 @@ class MetricService {
 	}
 
 	// Block metrics API
-
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} hours
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getBlocksByMinute(channel_genesis_hash, hours) {
 		const sqlPerMinute = ` with minutes as (
             select generate_series(
@@ -313,6 +461,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerMinute);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} days
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getBlocksByHour(channel_genesis_hash, days) {
 		const sqlPerHour = ` with hours as (
             select generate_series(
@@ -332,6 +488,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerHour);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} days
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getBlocksByDay(channel_genesis_hash, days) {
 		const sqlPerDay = `  with days as (
             select generate_series(
@@ -351,6 +515,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerDay);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} weeks
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getBlocksByWeek(channel_genesis_hash, weeks) {
 		const sqlPerWeek = ` with weeks as (
             select generate_series(
@@ -370,6 +542,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerWeek);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} months
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getBlocksByMonth(channel_genesis_hash, months) {
 		const sqlPerMonth = `  with months as (
             select generate_series(
@@ -389,6 +569,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerMonth);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} years
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getBlocksByYear(channel_genesis_hash, years) {
 		const sqlPerYear = ` with years as (
             select generate_series(
@@ -408,6 +596,13 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerYear);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof MetricService
+	 */
 	getTxByOrgs(channel_genesis_hash) {
 		const sqlPerOrg = ` select count(creator_msp_id), creator_msp_id
       from transactions
@@ -417,6 +612,14 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlPerOrg);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} maxHeight
+	 * @returns
+	 * @memberof MetricService
+	 */
 	async findMissingBlockNumber(channel_genesis_hash, maxHeight) {
 		const sqlQuery = `SELECT s.id AS missing_id
     FROM generate_series(0, ${maxHeight}) s(id) WHERE NOT EXISTS (SELECT 1 FROM blocks WHERE blocknum = s.id and channel_genesis_hash ='${channel_genesis_hash}' )`;

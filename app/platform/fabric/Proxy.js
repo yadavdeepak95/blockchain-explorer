@@ -12,13 +12,30 @@ const ExplorerError = require('../../common/ExplorerError');
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
+/**
+ *
+ *
+ * @class Proxy
+ */
 class Proxy {
+	/**
+	 * Creates an instance of Proxy.
+	 * @param {*} platform
+	 * @memberof Proxy
+	 */
 	constructor(platform) {
 		this.platform = platform;
 		this.persistence = platform.getPersistence();
 		this.broadcaster = platform.getBroadcaster();
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} user
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async authenticate(user) {
 		const userService = new UserService(this.platform);
 		let response = await userService.authenticate(user);
@@ -32,6 +49,12 @@ class Proxy {
 		return response;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async networkList() {
 		const networkService = new NetworkService(this.platform);
 		let response = await networkService.networkList();
@@ -44,6 +67,13 @@ class Proxy {
 		logger.debug('networkList >> %s', response);
 		return response;
 	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async getCurrentChannel() {
 		const client = await this.platform.getClient();
 		const channel = client.getDefaultChannel();
@@ -64,6 +94,13 @@ class Proxy {
 		return respose;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async getPeersStatus(channel_genesis_hash) {
 		const client = await this.platform.getClient();
 		const channel = client.getDefaultChannel();
@@ -104,6 +141,13 @@ class Proxy {
 		return peers;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async changeChannel(channel_genesis_hash) {
 		const client = this.platform.getClient();
 		const respose = client.setDefaultChannelByHash(channel_genesis_hash);
@@ -111,6 +155,12 @@ class Proxy {
 		return respose;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async getChannelsInfo() {
 		const client = this.platform.getClient();
 		const channels = await this.persistence
@@ -130,6 +180,13 @@ class Proxy {
 		return currentchannels;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async getTxByOrgs(channel_genesis_hash) {
 		const rows = await this.persistence
 			.getMetricService()
@@ -153,6 +210,14 @@ class Proxy {
 		return rows;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} number
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async getBlockByNumber(channel_genesis_hash, number) {
 		const client = this.platform.getClient();
 		const channel = client.getChannelByHash(channel_genesis_hash);
@@ -170,11 +235,23 @@ class Proxy {
 		return 'response_payloads is null';
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Proxy
+	 */
 	getClientStatus() {
 		const client = this.platform.getClient();
 		return client.getStatus();
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async getChannels() {
 		const client = this.platform.getClient();
 		const client_channels = client.getChannelNames();
@@ -196,6 +273,13 @@ class Proxy {
 		return respose;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} reqUser
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async register(reqUser) {
 		const userService = new UserService(this.platform);
 		const response = await userService.register(reqUser);
@@ -203,6 +287,13 @@ class Proxy {
 		return response;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} reqUser
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async enroll(reqUser) {
 		const userService = new UserService(this.platform);
 		const response = await userService.enroll(reqUser);
@@ -210,6 +301,12 @@ class Proxy {
 		return response;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} msg
+	 * @memberof Proxy
+	 */
 	processSyncMessage(msg) {
 		// Get message from child process
 		logger.debug('Message from child %j', msg);

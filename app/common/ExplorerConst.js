@@ -2,6 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/**
+ * Explorer constants
+ */
 exports.explorer = {
 	const: {
 		PERSISTENCE: 'persistence',

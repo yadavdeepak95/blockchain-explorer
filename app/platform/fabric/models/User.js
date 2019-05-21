@@ -6,7 +6,17 @@ const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('FabricGateway');
 
+/**
+ *
+ *
+ * @class User
+ */
 class User {
+	/**
+	 * Creates an instance of User.
+	 * @param {*} user
+	 * @memberof User
+	 */
 	constructor(user) {
 		// Put the user request in user object
 		this.userJson = {};
@@ -17,6 +27,12 @@ class User {
 		});
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof User
+	 */
 	async asJson() {
 		return this.userJson;
 	}

@@ -28,6 +28,12 @@ const fs = require('fs-extra');
 exports.getLogger = getLogger;
 exports.readAllFiles = readAllFiles;
 
+/**
+ * Read files from a directory
+ *
+ * @param {*} dir
+ * @returns
+ */
 function readAllFiles(dir) {
 	const files = fs.readdirSync(dir);
 	const certs = [];
@@ -51,6 +57,12 @@ function readAllFiles(dir) {
  * logger.setLevel('INFO');
  */
 
+/**
+ *
+ * Returns Logger
+ * @param {*} moduleName
+ * @returns
+ */
 function getLogger(moduleName) {
 	let logger;
 

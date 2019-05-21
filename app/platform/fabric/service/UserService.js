@@ -10,7 +10,17 @@ const logger = helper.getLogger('UserService');
 const { X509WalletMixin } = require('fabric-network');
 const FabricCAServices = require('fabric-ca-client');
 
+/**
+ *
+ *
+ * @class UserService
+ */
 class UserService {
+	/**
+	 *Creates an instance of UserService.
+	 * @param {*} platform
+	 * @memberof UserService
+	 */
 	constructor(platform) {
 		this.platform = platform;
 	}
@@ -22,6 +32,13 @@ class UserService {
    see variable this.FSWALLET in  block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
     */
 
+	/**
+	 *
+	 *
+	 * @param {*} user
+	 * @returns
+	 * @memberof UserService
+	 */
 	async authenticate(user) {
 		let enableAuth = false;
 		let adminUser = null;
@@ -80,6 +97,13 @@ class UserService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} user
+	 * @returns
+	 * @memberof UserService
+	 */
 	async register(user) {
 		/* TODO
     1. verify if user exists
@@ -136,6 +160,13 @@ class UserService {
 		};
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} user
+	 * @returns
+	 * @memberof UserService
+	 */
 	async enroll(user) {
 		try {
 			logger.debug('UserService::enroll');
@@ -156,6 +187,13 @@ class UserService {
 		};
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} user
+	 * @returns
+	 * @memberof UserService
+	 */
 	async enrollCaIdentity(user) {
 		/* TODO should have the same logic as the method in _enrollCaIdentity of
       block chain-explorer/app/platform/fabric/gateway/FabricGateway.js
@@ -207,6 +245,13 @@ class UserService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} user
+	 * @param {*} identity
+	 * @memberof UserService
+	 */
 	async reconnectGw(user, identity) {
 		try {
 			logger.debug('reconnectGw: ', user);

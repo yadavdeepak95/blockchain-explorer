@@ -5,12 +5,28 @@ const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('FabricEvent');
 
+/**
+ *
+ *
+ * @class FabricEvent
+ */
 class FabricEvent {
+	/**
+	 * Creates an instance of FabricEvent.
+	 * @param {*} client
+	 * @param {*} fabricServices
+	 * @memberof FabricEvent
+	 */
 	constructor(client, fabricServices) {
 		this.client = client;
 		this.fabricServices = fabricServices;
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof FabricEvent
+	 */
 	async initialize() {
 		// Creating channel event hub
 		const channels = this.client.getChannels();
@@ -34,6 +50,12 @@ class FabricEvent {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel
+	 * @memberof FabricEvent
+	 */
 	createChannelEventHub(channel) {
 		// Create channel event hub
 		const eventHub = channel.newChannelEventHub(this.client.defaultPeer);
@@ -54,6 +76,14 @@ class FabricEvent {
 		FabricEvent.channelEventHubs.set(channel.getName(), eventHub);
 	}
 	/* eslint-disable */
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @param {*} eventHub
+	 * @returns
+	 * @memberof FabricEvent
+	 */
 	connectChannelEventHub(channel_name, eventHub) {
 		const _self = this;
 		if (eventHub) {
@@ -82,6 +112,13 @@ class FabricEvent {
 		}
 	}
 	/* eslint-disable */
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @returns
+	 * @memberof FabricEvent
+	 */
 	isChannelEventHubConnected(channel_name) {
 		const eventHub = FabricEvent.channelEventHubs.get(channel_name);
 		if (eventHub) {
@@ -90,6 +127,13 @@ class FabricEvent {
 		return false;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @returns
+	 * @memberof FabricEvent
+	 */
 	disconnectChannelEventHub(channel_name) {
 		logger.debug('disconnectChannelEventHub(' + channel_name + ')');
 
@@ -97,6 +141,11 @@ class FabricEvent {
 		return eventHub.disconnect();
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof FabricEvent
+	 */
 	disconnectEventHubs() {
 		logger.debug('disconnectEventHubs()');
 
@@ -119,6 +168,12 @@ class FabricEvent {
 	}
 
 	// channel event hub used to sync the blocks
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @memberof FabricEvent
+	 */
 	async synchChannelBlocks(channel_name) {
 		if (this.isChannelEventHubConnected(channel_name)) {
 			const channel = this.client.hfc_client.getChannel(channel_name);
@@ -126,7 +181,11 @@ class FabricEvent {
 		}
 	}
 
-	// Interval and peer event hub used to sync the blocks
+	/**
+	 *
+	 *
+	 * @memberof FabricEvent
+	 */
 	async synchBlocks() {
 		// getting all channels list from client ledger
 		const channels = await this.client

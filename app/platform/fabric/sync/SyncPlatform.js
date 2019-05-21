@@ -22,7 +22,18 @@ const explorer_mess = require('../../../common/ExplorerMessage').explorer;
 
 const config_path = path.resolve(__dirname, '../config.json');
 
+/**
+ *
+ *
+ * @class SyncPlatform
+ */
 class SyncPlatform {
+	/**
+	 * Creates an instance of SyncPlatform.
+	 * @param {*} persistence
+	 * @param {*} sender
+	 * @memberof SyncPlatform
+	 */
 	constructor(persistence, sender) {
 		this.network_name = null;
 		this.client_name = null;
@@ -35,6 +46,13 @@ class SyncPlatform {
 		this.client_configs = null;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} args
+	 * @returns
+	 * @memberof SyncPlatform
+	 */
 	async initialize(args) {
 		const _self = this;
 
@@ -42,7 +60,7 @@ class SyncPlatform {
 			'******* Initialization started for child client process %s ******',
 			this.client_name
 		);
-		/* TOTDO TRY WITH NO Timeout*/
+
 		setTimeout(() => {
 			console.log('SyncPlatform initialize()-- @ ', new Date().toDateString());
 			this.initialize(args);
@@ -116,6 +134,11 @@ class SyncPlatform {
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof SyncPlatform
+	 */
 	async isChannelEventHubConnected() {
 		for (const [channel_name, channel] of this.client.getChannels().entries()) {
 			// Validate channel event is connected
@@ -138,6 +161,11 @@ class SyncPlatform {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof SyncPlatform
+	 */
 	setPersistenceService() {
 		// Setting platform specific CRUDService and MetricService
 		this.persistence.setMetricService(
@@ -148,12 +176,23 @@ class SyncPlatform {
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} notify
+	 * @memberof SyncPlatform
+	 */
 	send(notify) {
 		if (this.sender) {
 			this.sender.send(notify);
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof SyncPlatform
+	 */
 	destroy() {
 		if (this.eventHub) {
 			this.eventHub.disconnectEventHubs();

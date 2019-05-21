@@ -21,7 +21,18 @@ const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 const config_path = path.resolve(__dirname, './config.json');
 
+/**
+ *
+ *
+ * @class Platform
+ */
 class Platform {
+	/**
+	 * Creates an instance of Platform.
+	 * @param {*} persistence
+	 * @param {*} broadcaster
+	 * @memberof Platform
+	 */
 	constructor(persistence, broadcaster) {
 		this.persistence = persistence;
 		this.broadcaster = broadcaster;
@@ -34,6 +45,11 @@ class Platform {
 		this.explorerListeners = [];
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof Platform
+	 */
 	async initialize() {
 		/* eslint-disable */
 		const _self = this;
@@ -65,6 +81,12 @@ class Platform {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} network_configs
+	 * @memberof Platform
+	 */
 	async buildClients(network_configs) {
 		/* eslint-disable */
 		const _self = this;
@@ -138,6 +160,12 @@ class Platform {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} syncconfig
+	 * @memberof Platform
+	 */
 	initializeListener(syncconfig) {
 		/* eslint-disable */
 		for (const [network_name, clients] of this.networks.entries()) {
@@ -153,6 +181,11 @@ class Platform {
 		/* eslint-enable */
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof Platform
+	 */
 	setPersistenceService() {
 		// Setting platform specific CRUDService and MetricService
 		this.persistence.setMetricService(
@@ -163,6 +196,15 @@ class Platform {
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} network_name
+	 * @param {*} client_name
+	 * @param {*} channel_name
+	 * @returns
+	 * @memberof Platform
+	 */
 	changeNetwork(network_name, client_name, channel_name) {
 		const network = this.networks.get(network_name);
 		if (network) {
@@ -190,32 +232,75 @@ class Platform {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Platform
+	 */
 	getNetworks() {
 		return this.networks;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} network_name
+	 * @param {*} client_name
+	 * @returns
+	 * @memberof Platform
+	 */
 	getClient(network_name, client_name) {
 		return this.networks
 			.get(network_name || this.defaultNetwork)
 			.get(client_name || this.defaultClient);
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Platform
+	 */
 	getPersistence() {
 		return this.persistence;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Platform
+	 */
 	getBroadcaster() {
 		return this.broadcaster;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Platform
+	 */
 	getProxy() {
 		return this.proxy;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} defaultClient
+	 * @memberof Platform
+	 */
 	setDefaultClient(defaultClient) {
 		this.defaultClient = defaultClient;
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof Platform
+	 */
 	async destroy() {
 		console.log(
 			'<<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>'

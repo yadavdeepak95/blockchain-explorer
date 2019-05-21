@@ -6,11 +6,27 @@ const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('NetworkService');
 
+/**
+ *
+ *
+ * @class NetworkService
+ */
 class NetworkService {
+	/**
+	 * Creates an instance of NetworkService.
+	 * @param {*} platform
+	 * @memberof NetworkService
+	 */
 	constructor(platform) {
 		this.platform = platform;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof NetworkService
+	 */
 	async networkList() {
 		// Get the list of the networks from the  configuration that was loaded from the config.json
 		const networklist = [];

@@ -6,6 +6,12 @@ const passport = require('passport');
 
 const { responder } = require('./requestutils');
 
+/**
+ *
+ *
+ * @param {*} router
+ * @param {*} platform
+ */
 const authroutes = async function(router, platform) {
 	const proxy = platform.getProxy();
 
@@ -15,6 +21,7 @@ const authroutes = async function(router, platform) {
 	 * GET /networklist -> /login
 	 * curl -i 'http://<host>:<port>/networklist'
 	 */
+
 	router.get(
 		'/networklist',
 		responder(async req => {

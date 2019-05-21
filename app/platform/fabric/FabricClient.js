@@ -21,7 +21,17 @@ const ROLES = Constants.NetworkConfig.ROLES;
 
 const explorer_mess = require('../../common/ExplorerMessage').explorer;
 
+/**
+ *
+ *
+ * @class FabricClient
+ */
 class FabricClient {
+	/**
+	 * Creates an instance of FabricClient.
+	 * @param {*} client_name
+	 * @memberof FabricClient
+	 */
 	constructor(client_name) {
 		this.client_name = client_name;
 		this.hfc_client = null;
@@ -42,6 +52,13 @@ class FabricClient {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} client_config
+	 * @param {*} persistence
+	 * @memberof FabricClient
+	 */
 	async initialize(client_config, persistence) {
 		this.client_config = client_config;
 
@@ -160,6 +177,13 @@ class FabricClient {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} client_config
+	 * @param {*} persistence
+	 * @memberof FabricClient
+	 */
 	async initializeDetachClient(client_config, persistence) {
 		const name = client_config.name;
 		console.debug(
@@ -239,6 +263,7 @@ class FabricClient {
 					' \n',
 					e
 				);
+
 				/*
 				 * Const url = 'grpc://localhost:7051';
 				 * const newpeer = this.hfc_client.newPeer(url, {
@@ -264,6 +289,13 @@ class FabricClient {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} client_config
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	async getRegisteredUser(client_config) {
 		let username = null;
 		try {
@@ -271,6 +303,7 @@ class FabricClient {
 			const userOrg = client_config.client.organization;
 
 			logger.debug('Successfully initialized the credential stores');
+
 			/*
 			 * Client can now act as an agent for the specified organization
 			 * First check to see if the user is already enrolled
@@ -322,6 +355,12 @@ class FabricClient {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @memberof FabricClient
+	 */
 	async initializeNewChannel(channel_name) {
 		// If the new channel is not defined in configuration, then use default channel configuration as new channel configuration
 		if (!this.config.channels[channel_name]) {
@@ -329,6 +368,7 @@ class FabricClient {
 				channel_name
 			] = this.config.channels[this.defaultChannel.getName()];
 		}
+
 		/*
 		 * Get channel, if the channel is not exist in the hfc client context,
 		 * Then it will create new channel from the network configuration
@@ -366,6 +406,13 @@ class FabricClient {
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	async initializeChannelFromDiscover(channel_name) {
 		console.debug('initializeChannelFromDiscover ', channel_name);
 		let channel = this.hfc_client.getChannel(channel_name, false);
@@ -462,6 +509,17 @@ class FabricClient {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel
+	 * @param {*} url
+	 * @param {*} msp_id
+	 * @param {*} host
+	 * @param {*} msps
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	newOrderer(channel, url, msp_id, host, msps) {
 		let newOrderer = null;
 		channel._orderers.forEach(orderer => {
@@ -485,6 +543,17 @@ class FabricClient {
 		return newOrderer;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel
+	 * @param {*} url
+	 * @param {*} msp_id
+	 * @param {*} host
+	 * @param {*} msps
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	newPeer(channel, url, msp_id, host, msps) {
 		let newpeer = null;
 		channel._channel_peers.forEach(peer => {
@@ -508,6 +577,13 @@ class FabricClient {
 		return newpeer;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	async getChannelDiscover(channel) {
 		const discover_request = {
 			target: this.defaultPeer,
@@ -517,6 +593,13 @@ class FabricClient {
 		return discover_results;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	async getGenesisBlock(channel) {
 		const defaultOrderer = this.getDefaultOrderer();
 		const request = {
@@ -528,6 +611,15 @@ class FabricClient {
 		return block;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} msp_name
+	 * @param {*} username
+	 * @param {*} msp_admin_cert
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	async newUser(msp_name, username, msp_admin_cert) {
 		const organization = await this.hfc_client._network_config.getOrganization(
 			msp_name,
@@ -587,46 +679,115 @@ class FabricClient {
 		return user;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getChannelNames() {
 		return Array.from(this.channelsGenHash.keys());
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getHFC_Client() {
 		return this.hfc_client;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getChannels() {
 		return this.hfc_client._channels; // Return Map
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getChannelGenHash(channel_name) {
 		return this.channelsGenHash.get(channel_name);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} name
+	 * @param {*} channel_genesis_hash
+	 * @memberof FabricClient
+	 */
 	setChannelGenHash(name, channel_genesis_hash) {
 		this.channelsGenHash.set(name, channel_genesis_hash);
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getDefaultPeer() {
 		return this.defaultPeer;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getClientName() {
 		return this.client_name;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getDefaultChannel() {
 		return this.defaultChannel;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getDefaultOrderer() {
 		return this.defaultOrderer;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} defaultPeer
+	 * @memberof FabricClient
+	 */
 	setDefaultPeer(defaultPeer) {
 		this.defaultPeer = defaultPeer;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getChannelByHash(channel_genesis_hash) {
 		for (const [channel_name, hash_name] of this.channelsGenHash.entries()) {
 			if (channel_genesis_hash === hash_name) {
@@ -635,14 +796,34 @@ class FabricClient {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getChannel(channel_name) {
 		return this.hfc_client.getChannel(channel_name);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @memberof FabricClient
+	 */
 	setDefaultChannel(channel_name) {
 		this.defaultChannel = this.hfc_client.getChannel(channel_name);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} new_channel_genesis_hash
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	setDefaultChannelByHash(new_channel_genesis_hash) {
 		for (const [
 			channel_name,
@@ -655,12 +836,32 @@ class FabricClient {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} defaultOrderer
+	 * @memberof FabricClient
+	 */
 	setDefaultOrderer(defaultOrderer) {
 		this.defaultOrderer = defaultOrderer;
 	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getDefaultMspId() {
 		return this.defaultMspId;
 	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
 	getStatus() {
 		return this.status;
 	}

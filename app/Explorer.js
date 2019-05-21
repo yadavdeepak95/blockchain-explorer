@@ -25,7 +25,16 @@ const swaggerDocument = require('../swagger.json');
 const explorer_const = require('./common/ExplorerConst').explorer.const;
 const explorer_error = require('./common/ExplorerMessage').explorer.error;
 
+/**
+ *
+ *
+ * @class Explorer
+ */
 class Explorer {
+	/**
+	 * Creates an instance of Explorer.
+	 * @memberof Explorer
+	 */
 	constructor() {
 		this.app = new Express();
 		this.app.use(bodyParser.json());
@@ -41,10 +50,22 @@ class Explorer {
 		this.platforms = [];
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Explorer
+	 */
 	getApp() {
 		return this.app;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} broadcaster
+	 * @memberof Explorer
+	 */
 	async initialize(broadcaster) {
 		if (!explorerconfig[explorer_const.PERSISTENCE]) {
 			throw new ExplorerError(explorer_error.ERROR_1001);
@@ -97,6 +118,12 @@ class Explorer {
 			this.platforms.push(platform);
 		}
 	}
+
+	/**
+	 *
+	 *
+	 * @memberof Explorer
+	 */
 
 	close() {
 		if (this.persistence) {

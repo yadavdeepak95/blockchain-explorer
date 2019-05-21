@@ -24,7 +24,17 @@ const helper = require('../../common/helper');
 
 const logger = helper.getLogger('PgService');
 
+/**
+ *
+ *
+ * @class PgService
+ */
 class PgService {
+	/**
+	 * Creates an instance of PgService.
+	 * @param {*} pgconfig
+	 * @memberof PgService
+	 */
 	constructor(pgconfig) {
 		this.pgconfig = pgconfig;
 		this.pgconfig.host = process.env.DATABASE_HOST || pgconfig.host;
@@ -48,6 +58,11 @@ class PgService {
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof PgService
+	 */
 	async handleDisconnect() {
 		try {
 			this.client.on('error', err => {
@@ -72,16 +87,32 @@ class PgService {
 		}
 	}
 
-	// Open connection
+	/**
+	 *
+	 *
+	 * @memberof PgService
+	 */
 	openconnection() {
 		this.client.connect();
 	}
 
-	// Close connection
+	/**
+	 *
+	 *
+	 * @memberof PgService
+	 */
 	closeconnection() {
 		this.client.end();
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} tablename
+	 * @param {*} columnValues
+	 * @returns
+	 * @memberof PgService
+	 */
 	saveRow(tablename, columnValues) {
 		const _self = this;
 		return new Promise((resolve, reject) => {
@@ -416,6 +447,13 @@ class PgService {
 		});
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} sql
+	 * @returns
+	 * @memberof PgService
+	 */
 	getRowsBySQlQuery(sql) {
 		const _self = this;
 		return new Promise((resolve, reject) => {

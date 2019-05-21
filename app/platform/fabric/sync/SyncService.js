@@ -28,7 +28,18 @@ for (let i = 0; i < keys.length; i++) {
 	_validation_codes[new_key] = keys[i];
 }
 
+/**
+ *
+ *
+ * @class SyncServices
+ */
 class SyncServices {
+	/**
+	 * Creates an instance of SyncServices.
+	 * @param {*} platform
+	 * @param {*} persistence
+	 * @memberof SyncServices
+	 */
 	constructor(platform, persistence) {
 		this.platform = platform;
 		this.persistence = persistence;
@@ -36,8 +47,21 @@ class SyncServices {
 		this.synchInProcess = [];
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof SyncServices
+	 */
+	/*eslint-disable */
 	async initialize() {}
-
+	/* eslint-enable */
+	/**
+	 *
+	 *
+	 * @param {*} client
+	 * @returns
+	 * @memberof SyncServices
+	 */
 	async synchNetworkConfigToDB(client) {
 		const channels = client.getChannels();
 		for (const [channel_name, channel] of channels.entries()) {
@@ -71,6 +95,16 @@ class SyncServices {
 	}
 
 	// Insert new channel to DB
+	/**
+	 *
+	 *
+	 * @param {*} client
+	 * @param {*} channel
+	 * @param {*} block
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof SyncServices
+	 */
 	async insertNewChannel(client, channel, block, channel_genesis_hash) {
 		const channel_name = channel.getName();
 
@@ -113,6 +147,14 @@ class SyncServices {
 		return true;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} client
+	 * @param {*} channel
+	 * @param {*} channel_genesis_hash
+	 * @memberof SyncServices
+	 */
 	async insertFromDiscoveryResults(client, channel, channel_genesis_hash) {
 		const channel_name = channel.getName();
 		const discoveryResults = await client.initializeChannelFromDiscover(
@@ -137,6 +179,7 @@ class SyncServices {
 				}
 			}
 		}
+
 		// Insert chaincode
 		await this.insertNewChannelChaincode(
 			client,
@@ -146,7 +189,14 @@ class SyncServices {
 		);
 	}
 
-	// Insert new peer and channel relation
+	/**
+	 *
+	 *
+	 * @param {*} peer
+	 * @param {*} channel_genesis_hash
+	 * @param {*} client
+	 * @memberof SyncServices
+	 */
 	async insertNewPeer(peer, channel_genesis_hash, client) {
 		let eventurl = '';
 		let requesturl = peer.endpoint;
@@ -182,7 +232,14 @@ class SyncServices {
 		await this.persistence.getCrudService().savePeerChannelRef(channel_peer_row);
 	}
 
-	// Insert new orderer and channel relation
+	/**
+	 *
+	 *
+	 * @param {*} orderer
+	 * @param {*} channel_genesis_hash
+	 * @param {*} client
+	 * @memberof SyncServices
+	 */
 	async insertNewOrderers(orderer, channel_genesis_hash, client) {
 		const discoveryProtocol = client.hfc_client.getConfigSetting(
 			'discovery-protocol'
@@ -212,7 +269,15 @@ class SyncServices {
 			.savePeerChannelRef(channel_orderer_row);
 	}
 
-	// Insert new chaincode, peer and channel relation
+	/**
+	 *
+	 *
+	 * @param {*} client
+	 * @param {*} channel
+	 * @param {*} channel_genesis_hash
+	 * @param {*} discoveryResults
+	 * @memberof SyncServices
+	 */
 	async insertNewChannelChaincode(
 		client,
 		channel,
@@ -255,7 +320,14 @@ class SyncServices {
 		}
 	}
 
-	// Insert new chaincode relation with peer and channel
+	/**
+	 *
+	 *
+	 * @param {*} chaincode
+	 * @param {*} endpoint
+	 * @param {*} channel_genesis_hash
+	 * @memberof SyncServices
+	 */
 	async insertNewChaincodePeerRef(chaincode, endpoint, channel_genesis_hash) {
 		const host_port = endpoint.split(':');
 		const chaincode_peer_row = {
@@ -308,6 +380,14 @@ class SyncServices {
 		this.synchInProcess.splice(index, 1);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} client
+	 * @param {*} block
+	 * @returns
+	 * @memberof SyncServices
+	 */
 	async processBlockEvent(client, block) {
 		const _self = this;
 		// Get the first transaction
@@ -584,12 +664,30 @@ class SyncServices {
 		blocksInProcess.splice(index, 1);
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof SyncServices
+	 */
 	getCurrentChannel() {}
 
+	/**
+	 *
+	 *
+	 *
+	 * @returns
+	 * @memberof SyncServices
+	 */
 	getPlatform() {
 		return this.platform;
 	}
 
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof SyncServices
+	 */
 	getPersistence() {
 		return this.persistence;
 	}

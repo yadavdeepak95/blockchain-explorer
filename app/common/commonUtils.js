@@ -2,16 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/**
- * **
- *  Returns the number of milliseconds between midnight,
- *  January 1, 1970 Universal Coordinated Time (UTC) (or GMT) and the specified date.
- *
- */
-
 const helper = require('./helper');
 
 const logger = helper.getLogger('ForkSenderHandler');
+
+/**
+ * Returns the number of milliseconds between midnight,
+ * January 1, 1970 Universal Coordinated Time (UTC) (or GMT) and the specified date.
+ *
+ * @param {*} dateStr
+ * @returns
+ */
 
 function toUTCmilliseconds(dateStr) {
 	let startSyncMills = null;

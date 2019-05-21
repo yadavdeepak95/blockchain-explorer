@@ -101,9 +101,8 @@ class FabricGateway {
 					} already exists in the wallet`
 				);
 				await this.wallet.export(this.userName);
-			} else {
+			} else if (!adminExists) {
 				if (this.fabricCaEnabled) {
-					// TODO best way to verify  if the network has fabric-ca server authorization
 					({ enrollment, identity } = await this._enrollCaIdentity(
 						caURL,
 						enrollment,

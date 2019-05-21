@@ -5,7 +5,21 @@ const explorer_const = require('../common/ExplorerConst').explorer.const;
 const explorer_error = require('../common/ExplorerMessage').explorer.error;
 const ExplorerError = require('../common/ExplorerError');
 
+/**
+ *
+ *
+ * @class PersistenceFactory
+ */
 class PersistenceFactory {
+	/**
+	 *
+	 *
+	 * @static
+	 * @param {*} db
+	 * @param {*} dbconfig
+	 * @returns
+	 * @memberof PersistenceFactory
+	 */
 	static async create(db, dbconfig) {
 		if (db === explorer_const.PERSISTENCE_POSTGRESQL) {
 			// Avoid to load all db Persist module

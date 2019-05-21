@@ -14,13 +14,28 @@ const ExplorerSender = require('./sync/sender/ExplorerSender');
 const explorer_const = require('./common/ExplorerConst').explorer.const;
 const explorer_error = require('./common/ExplorerMessage').explorer.error;
 
+/**
+ *
+ *
+ * @class Synchronizer
+ */
 class Synchronizer {
+	/**
+	 * Creates an instance of Synchronizer.
+	 * @param {*} args
+	 * @memberof Synchronizer
+	 */
 	constructor(args) {
 		this.args = args;
 		this.persistence = null;
 		this.platform = null;
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof Synchronizer
+	 */
 	async initialize() {
 		if (!syncconfig[explorer_const.PERSISTENCE]) {
 			throw new ExplorerError(explorer_error.ERROR_1001);
@@ -56,6 +71,11 @@ class Synchronizer {
 		await this.platform.initialize(this.args);
 	}
 
+	/**
+	 *
+	 *
+	 * @memberof Synchronizer
+	 */
 	close() {
 		if (this.persistence) {
 			this.persistence.closeconnection();

@@ -57,6 +57,12 @@ function cloneConfig(client_configs, client_name) {
 	return client_config;
 }
 
+/**
+ *
+ *
+ * @param {*} client_config
+ * @returns
+ */
 function processTLS_URL(client_config) {
 	for (const peer_name in client_config.peers) {
 		const url = client_config.peers[peer_name].url;
@@ -79,6 +85,12 @@ function processTLS_URL(client_config) {
 	return client_config;
 }
 
+/**
+ *
+ *
+ * @param {*} network_configs
+ * @returns
+ */
 async function setAdminEnrolmentPath(network_configs) {
 	for (const network_name in network_configs) {
 		network_configs[network_name] = setOrgEnrolmentPath(
@@ -88,6 +100,12 @@ async function setAdminEnrolmentPath(network_configs) {
 	return network_configs;
 }
 
+/**
+ *
+ *
+ * @param {*} network_config
+ * @returns
+ */
 function setOrgEnrolmentPath(network_config) {
 	if (network_config && network_config.organizations) {
 		for (const organization_name in network_config.organizations) {
@@ -128,6 +146,12 @@ function setOrgEnrolmentPath(network_config) {
 	return network_config;
 }
 
+/**
+ *
+ *
+ * @param {*} dateStr
+ * @returns
+ */
 async function getBlockTimeStamp(dateStr) {
 	try {
 		return new Date(dateStr);
@@ -137,6 +161,11 @@ async function getBlockTimeStamp(dateStr) {
 	return new Date(dateStr);
 }
 
+/**
+ *
+ *
+ * @returns
+ */
 async function generateDir() {
 	const tempDir = `/tmp/${new Date().getTime()}`;
 	try {
@@ -147,6 +176,12 @@ async function generateDir() {
 	return tempDir;
 }
 
+/**
+ *
+ *
+ * @param {*} header
+ * @returns
+ */
 async function generateBlockHash(header) {
 	const headerAsn = asn.define('headerAsn', function() {
 		this.seq().obj(
@@ -166,19 +201,36 @@ async function generateBlockHash(header) {
 	return sha.sha256(output);
 }
 
+/**
+ *
+ *
+ * @param {*} config
+ * @returns
+ */
 function getPEMfromConfig(config) {
 	let result = null;
 	if (config) {
 		if (config.path) {
 			// Cert value is in a file
-			result = readFileSync(config.path);
-			result = utils.normalizeX509(result);
+			try {
+				result = readFileSync(config.path);
+				result = utils.normalizeX509(result);
+			} catch (e) {
+				logger.error(e);
+				console.error(e);
+			}
 		}
 	}
 
 	return result;
 }
 
+/**
+ *
+ *
+ * @param {*} config_path
+ * @returns
+ */
 function readFileSync(config_path) {
 	try {
 		const config_loc = path.resolve(config_path);

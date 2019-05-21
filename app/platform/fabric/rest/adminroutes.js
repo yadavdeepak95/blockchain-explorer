@@ -6,6 +6,12 @@ const User = require('./../models/User');
 
 const { responder } = require('./../../../rest/requestutils');
 
+/**
+ *
+ *
+ * @param {*} router
+ * @param {*} platform
+ */
 const adminroutes = async function(router, platform) {
 	const proxy = platform.getProxy();
 
@@ -18,6 +24,7 @@ const adminroutes = async function(router, platform) {
 	 *
 	 * "affiliation": "department1" see fabric-ca server configuration, https://hyperledger-fabric-ca.readthedocs.io/en/latest/serverconfig.html
 	 */
+
 	router.post(
 		'/register',
 		responder(async req => {

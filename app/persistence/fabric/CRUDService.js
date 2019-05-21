@@ -6,10 +6,24 @@ const helper = require('../../common/helper');
 
 const logger = helper.getLogger('CRUDService');
 
+/**
+ *
+ *
+ * @class CRUDService
+ */
 class CRUDService {
 	constructor(sql) {
 		this.sql = sql;
 	}
+
+	/**
+	 * Get transactions count by block number
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} blockNum
+	 * @returns
+	 * @memberof CRUDService
+	 */
 
 	getTxCountByBlockNum(channel_genesis_hash, blockNum) {
 		return this.sql.getRowByPkOne(
@@ -17,11 +31,27 @@ class CRUDService {
 		);
 	}
 
+	/**
+	 * Get transaction by ID
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} txhash
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	getTransactionByID(channel_genesis_hash, txhash) {
 		const sqlTxById = ` select t.txhash,t.validation_code,t.payload_proposal_hash,t.creator_msp_id,t.endorser_msp_id,t.chaincodename,t.type,t.createdt,t.read_set,
         t.write_set,channel.name as channelName from TRANSACTIONS as t inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash where t.txhash = '${txhash}' `;
 		return this.sql.getRowByPkOne(sqlTxById);
 	}
+
+	/**
+	 * Returns the latest 'n' blocks by channel
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof CRUDService
+	 */
 
 	getBlockActivityList(channel_genesis_hash) {
 		const sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
@@ -33,6 +63,18 @@ class CRUDService {
 		return this.sql.getRowsBySQlQuery(sqlBlockActivityList);
 	}
 
+	/**
+	 * Returns the list of transactions by channel, organization, date range and greater than a block and transaction id.
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} blockNum
+	 * @param {*} txid
+	 * @param {*} from
+	 * @param {*} to
+	 * @param {*} orgs
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	getTxList(channel_genesis_hash, blockNum, txid, from, to, orgs) {
 		let txListSql = '';
 		if (orgs && orgs !== '') {
@@ -44,6 +86,18 @@ class CRUDService {
 		return this.sql.getRowsBySQlQuery(sqlTxList);
 	}
 
+	/**
+	 *
+	 * Returns the list of blocks and transactions by channel, organization, date range.
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} blockNum
+	 * @param {*} from
+	 * @param {*} to
+	 * @param {*} orgs
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	getBlockAndTxList(channel_genesis_hash, blockNum, from, to, orgs) {
 		let blockTxListSql = '';
 		if (orgs && orgs !== '') {
@@ -59,6 +113,14 @@ class CRUDService {
 		return this.sql.getRowsBySQlQuery(sqlBlockTxList);
 	}
 
+	/**
+	 * Returns channel configuration
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof CRUDService
+	 */
+
 	async getChannelConfig(channel_genesis_hash) {
 		const channelConfig = await this.sql.getRowsBySQlCase(
 			` select * from channel where channel_genesis_hash ='${channel_genesis_hash}' `
@@ -66,6 +128,14 @@ class CRUDService {
 		return channelConfig;
 	}
 
+	/**
+	 * Returns channel by name, and channel genesis hash
+	 *
+	 * @param {*} channelname
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	async getChannel(channelname, channel_genesis_hash) {
 		const channel = await this.sql.getRowsBySQlCase(
 			` select * from channel where name='${channelname}' and channel_genesis_hash='${channel_genesis_hash}' `
@@ -73,6 +143,12 @@ class CRUDService {
 		return channel;
 	}
 
+	/**
+	 *
+	 * @param {*} channelname
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	async existChannel(channelname) {
 		const channel = await this.sql.getRowsBySQlCase(
 			` select count(1) from channel where name='${channelname}' `
@@ -80,7 +156,15 @@ class CRUDService {
 		return channel;
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} block
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	/* eslint-disable */
+
 	async saveBlock(block) {
 		const c = await this.sql
 			.getRowByPkOne(`select count(1) as c from blocks where blocknum='${
@@ -105,6 +189,13 @@ class CRUDService {
 
 	/* eslint-enable */
 
+	/**
+	 *
+	 *
+	 * @param {*} transaction
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	async saveTransaction(transaction) {
 		const c = await this.sql.getRowByPkOne(
 			`select count(1) as c from transactions where blockid='${
@@ -132,6 +223,13 @@ class CRUDService {
 		return false;
 	}
 
+	/**
+	 * Returns latest block from blocks table
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	async getCurBlockNum(channel_genesis_hash) {
 		let curBlockNum;
 		try {
@@ -153,6 +251,12 @@ class CRUDService {
 	}
 
 	/* eslint-disable */
+	/**
+	 *
+	 *
+	 * @param {*} chaincode
+	 * @memberof CRUDService
+	 */
 	async saveChaincode(chaincode) {
 		const c = await this.sql
 			.getRowByPkOne(`select count(1) as c from chaincodes where name='${
@@ -168,12 +272,25 @@ class CRUDService {
 	}
 	/* eslint-enable */
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	getChannelByGenesisBlockHash(channel_genesis_hash) {
 		return this.sql.getRowByPkOne(
 			`select name from channel where channel_genesis_hash='${channel_genesis_hash}'`
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} peers_ref_chaincode
+	 * @memberof CRUDService
+	 */
 	async saveChaincodPeerRef(peers_ref_chaincode) {
 		const c = await this.sql.getRowByPkOne(
 			`select count(1) as c from peer_ref_chaincode prc where prc.peerid= '${
@@ -190,6 +307,12 @@ class CRUDService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel
+	 * @memberof CRUDService
+	 */
 	async saveChannel(channel) {
 		const c = await this.sql.getRowByPkOne(
 			`select count(1) as c from channel where name='${
@@ -217,6 +340,12 @@ class CRUDService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} peer
+	 * @memberof CRUDService
+	 */
 	async savePeer(peer) {
 		const c = await this.sql.getRowByPkOne(
 			`select count(1) as c from peer where channel_genesis_hash='${
@@ -229,6 +358,12 @@ class CRUDService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} peers_ref_Channel
+	 * @memberof CRUDService
+	 */
 	async savePeerChannelRef(peers_ref_Channel) {
 		const c = await this.sql.getRowByPkOne(
 			`select count(1) as c from peer_ref_channel prc where prc.peerid = '${
@@ -241,6 +376,13 @@ class CRUDService {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} peerid
+	 * @returns
+	 * @memberof CRUDService
+	 */
 	async getChannelsInfo(peerid) {
 		const channels = await this.sql
 			.getRowsBySQlNoCondition(` select c.id as id,c.name as channelName,c.blocks as blocks ,c.channel_genesis_hash as channel_genesis_hash,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c,
@@ -250,6 +392,12 @@ class CRUDService {
 	}
 
 	// Orderer BE-303
+	/**
+	 *
+	 *
+	 * @param {*} orderer
+	 * @memberof CRUDService
+	 */
 	async saveOrderer(orderer) {
 		const c = await this.sql.getRowByPkOne(
 			`select count(1) as c from orderer where requests='${orderer.requests}' `
@@ -262,6 +410,12 @@ class CRUDService {
 }
 module.exports = CRUDService;
 
+/**
+ *
+ *
+ * @param {*} rowResult
+ * @returns
+ */
 function isValidRow(rowResult) {
 	if (rowResult) {
 		const val = rowResult.c;

@@ -4,6 +4,12 @@
 
 const requtil = require('./requestutils');
 
+/**
+ *
+ *
+ * @param {*} router
+ * @param {*} platform
+ */
 const platformroutes = async function(router, platform) {
 	const proxy = platform.getProxy();
 
@@ -158,6 +164,7 @@ const platformroutes = async function(router, platform) {
 	 * }
 	 * ]
 	 */
+
 	router.get('/peersStatus/:channel', (req, res) => {
 		const channelName = req.params.channel;
 		if (channelName) {

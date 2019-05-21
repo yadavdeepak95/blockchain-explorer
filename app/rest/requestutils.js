@@ -2,6 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/**
+ *
+ *
+ * @param {*} action
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 async function respond(action, req, res, next) {
 	try {
 		const value = await action(req, res, next);
@@ -14,12 +22,24 @@ async function respond(action, req, res, next) {
 	}
 }
 
+/**
+ *
+ *
+ * @param {*} action
+ * @returns
+ */
 function responder(action) {
 	return async function(req, res, next) {
 		return await respond(action, req, res, next);
 	};
 }
 
+/**
+ *
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 function invalidRequest(req, res) {
 	const payload = reqPayload(req);
 	res.send({
@@ -29,6 +49,12 @@ function invalidRequest(req, res) {
 	});
 }
 
+/**
+ *
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 function notFound(req, res) {
 	const payload = reqPayload(req);
 	res.send({
@@ -38,6 +64,12 @@ function notFound(req, res) {
 	});
 }
 
+/**
+ *
+ *
+ * @param {*} req
+ * @returns
+ */
 function reqPayload(req) {
 	const requestPayload = [];
 	const { params, query, body } = req;
@@ -70,6 +102,7 @@ const orgsArrayToString = function(orgs) {
 	}
 	return temp;
 };
+
 const queryDatevalidator = function(from, to) {
 	if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
 		from = new Date(from).toISOString();

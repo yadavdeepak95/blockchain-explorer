@@ -2,9 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/**
+ * Generic, and Fabric Error messages
+ */
+
 exports.explorer = {
 	error: {
-		// Generic Error message
+		//		Generic Error message
 		ERROR_1001:
 			'Missing persistence type property [persistence] in explorerconfig.json',
 		ERROR_1002:
