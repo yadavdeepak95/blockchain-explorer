@@ -105,15 +105,6 @@
 		"react/prefer-stateless-function": ["off"],
 		"react/sort-comp": ["off"],
 		"react/jsx-one-expression-per-line": ["off"],
-
-		"overrides": [
-			{
-				"files": ["*.spec.js", "**/app/test/**"],
-				"rules": {
-					"no-unused-expressions": "off"
-				}
-			}
-		],
 		"padded-blocks": "off",
 		"camelcase": ["off"],
 		"no-magic-numbers": ["off"],
@@ -174,7 +165,7 @@
 		"no-lonely-if": ["error"],
 		"object-shorthand": ["off"],
 		"spellcheck/spell-checker": [
-			2,
+			"error",
 			{
 				"comments": true,
 				"strings": true,
@@ -438,12 +429,22 @@
 					"testorgschannel0",
 					"mynetwork",
 					"guitest",
-					"configfiles"
+					"configfiles",
+					"networkusername",
+					"networksecret"
 				],
 				"skipIfMatch": ["http://[^s]*"],
 				"skipWordIfMatch": ["^foobar.*$"],
 				"minLength": 3
 			}
 		]
-	}
+	},
+	"overrides": [
+		{
+			"files": ["*.spec.js", "**/app/test/**"],
+			"rules": {
+				"no-unused-expressions": "off"
+			}
+		}
+	]
 }

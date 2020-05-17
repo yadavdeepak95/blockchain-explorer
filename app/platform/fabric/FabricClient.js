@@ -2,13 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const Fabric_Client = require('fabric-client');
+const { Client, BlockDecoder, User } = require('fabric-network');
 const path = require('path');
 
-const Constants = require('fabric-client/lib/Constants.js');
-
-const BlockDecoder = require('fabric-client/lib/BlockDecoder');
-const User = require('fabric-client/lib/User.js');
 const ExplorerError = require('../../common/ExplorerError');
 const FabricUtils = require('./utils/FabricUtils.js');
 const FabricGateway = require('../../platform/fabric/gateway/FabricGateway');
@@ -16,8 +12,6 @@ const FabricConfig = require('../fabric/FabricConfig');
 const helper = require('../../common/helper');
 
 const logger = helper.getLogger('FabricClient');
-
-const ROLES = Constants.NetworkConfig.ROLES;
 
 const explorer_mess = require('../../common/ExplorerMessage').explorer;
 
@@ -44,13 +38,9 @@ class FabricClient {
 		this.channelsGenHash = new Map();
 		this.client_config = null;
 		this.config = null;
-		this.peerroles = {};
 		this.status = false;
 		this.tls = false;
 		this.asLocalhost = null;
-		for (const role of ROLES) {
-			this.peerroles[role] = role;
-		}
 	}
 
 	/**
@@ -299,7 +289,7 @@ class FabricClient {
 	async getRegisteredUser(client_config) {
 		let username = null;
 		try {
-			username = Fabric_Client.getConfigSetting('enroll-id', 'dflt_hlbeuser');
+			username = Client.getConfigSetting('network-id', 'dflt_hlbeuser');
 			const userOrg = client_config.client.organization;
 
 			logger.debug('Successfully initialized the credential stores');
@@ -319,8 +309,8 @@ class FabricClient {
 				);
 
 				const adminUserObj = await this.hfc_client.setUserContext({
-					username: Fabric_Client.getConfigSetting('admin-username', 'admin'),
-					password: Fabric_Client.getConfigSetting('admin-secret', 'adminpw')
+					username: Client.getConfigSetting('networkusername', 'admin'),
+					password: Client.getConfigSetting('networksecret', 'adminpw')
 				});
 				const caClient = this.hfc_client.getCertificateAuthority();
 				const secret = await caClient.register(
@@ -328,7 +318,7 @@ class FabricClient {
 						enrollmentID: username,
 						affiliation:
 							userOrg.toLowerCase() +
-							Fabric_Client.getConfigSetting('enroll-affiliation', '')
+							Client.getConfigSetting('network-affiliation', '')
 					},
 					adminUserObj
 				);
